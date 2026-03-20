@@ -23,4 +23,6 @@
 - [[API]] (в `7. Technical Documentation/API.md`)
 - [[Database]] (в `7. Technical Documentation/Database.md`)
 - [[Parser Architecture]] (в `7. Technical Documentation/Parser Architecture.md`)
+- [[Contracts]] (в `7. Technical Documentation/Contracts.md`)
+- [[01_Architecture Overview]] (в `7. Technical Documentation/01_Architecture Overview.md`)
 

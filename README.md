@@ -42,6 +42,3 @@ git push -u origin main
 - **Priority**: High / Medium / Low
 - **Story Points**: Number
 
-# SpyPrice
-# SpyPrice
-# SpyPrice
