@@ -9,17 +9,17 @@
 
 ## Связность между документами (Obsidian)
 В `docs/2. Sprint 1 (Weeks 1-3)/01_Concept and Architecture.md` уже есть wikilinks:
-- `[[API]]`
-- `[[Database]]`
-- `[[Parser Architecture]]`
+- [[API]]
+- [[Database]]
+- [[Parser Architecture]]
 
 Они должны вести именно на файлы в этом разделе.
 
 ## Где участники размещают наработки
-- **Лёша (backend)** обновляет `[[API]]` и `[[Database]]`:
+- **Лёша (backend)** обновляет [[API]] и [[Database]]:
   - меняет эндпоинты и контракты моделей (Pydantic) в `API.md`,
   - обновляет сущности/связи/индексы и текст ER в `Database.md`.
-- **Эдик (ETL/parser)** обновляет `[[Parser Architecture]]`:
+- **Эдик (ETL/parser)** обновляет [[Parser Architecture]]:
   - добавляет/меняет контракт извлечения цены,
   - описывает особенности адаптеров источников и обработку ошибок.
 - **Егор (frontend)** не ломая структуру хранит соответствие контрактам:

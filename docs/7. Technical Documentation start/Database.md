@@ -79,3 +79,55 @@
 - Правило нейминга миграций: “описательно” + timestamp (по принятому в репозитории шаблону).
 - Любые изменения в полях/типах (особенно `PriceSnapshot.price`) должны сопровождаться обновлением `API.md`.
 
+## ER
+```mermaid
+erDiagram
+    Users {
+        int Id PK
+        string Login
+        string Password
+        string Email
+        datetime Created_at
+        datetime Updated_at
+    }
+
+    Users_TrackingItems {
+        int Id PK
+        int User_id FK
+        int Tracking_id FK
+        datetime Created_at
+        datetime Updated_at
+    }
+
+    TrackingItems {
+        int Id PK
+        string Name
+        string URL
+        int Source_id FK
+        datetime Created_at
+        datetime Updated_at
+    }
+
+    Sources {
+        int Id PK
+        string URL
+        string Name
+        boolean isCollected
+        datetime Created_at
+        datetime Updated_at
+    }
+
+    PriceSnapshots {
+        int ID PK
+        int TrackingItem_id FK
+        decimal Price
+        string Currency
+        datetime Created_at
+        datetime Updated_at
+    }
+
+    Users ||--o{ Users_TrackingItems : "has"
+    TrackingItems ||--o{ Users_TrackingItems : "tracks"
+    Sources ||--o{ TrackingItems : "provides"
+    TrackingItems ||--o{ PriceSnapshots : "has"
+```
