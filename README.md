@@ -14,7 +14,7 @@
 - Рабочий процесс: feature‑ветка → PR → ревью → merge в `main`.
 
 ## Документация (Obsidian)
-Вся командная документация лежит в `docs/` и рассчитана на работу в Obsidian (или любом Markdown‑редакторе).
+Вся командная документация лежит в `docs/` и рассчитана на работу в Obsidian (или любом Markdown‑редакторе). **Оглавление и связь с официальным ТЗ** — в [`docs/README.md`](docs/README.md); полный текст задания — [`ТЗ.md`](ТЗ.md).
 
 ### Как работать в Obsidian
 1. Установите Obsidian.
@@ -41,4 +41,41 @@ git push -u origin main
 - **Sprint**: Iteration (Weeks 1–3, 4–6, …)
 - **Priority**: High / Medium / Low
 - **Story Points**: Number
+
+## Технический каркас (Лёша + Эдик)
+
+Реализован backend + ETL каркас:
+- `backend/` — FastAPI + PostgreSQL, JWT auth, CRUD товаров, история, метрики, internal ingest.
+- `etl/` — прототип адаптеров `dns_html` и `ozon_html`, retry/timeout, вежливый User-Agent, отправка в backend.
+- `docker-compose.yml` — запуск `db` + `backend`, ETL через профиль `manual`.
+
+### Быстрый запуск
+
+1. Скопируйте `.env.example` в `.env` и задайте секреты:
+```bash
+cp .env.example .env
+```
+2. Поднимите базу и API:
+```bash
+docker compose up --build -d db backend
+```
+3. Swagger:
+`http://localhost:8000/docs`
+
+### ETL (ручной прогон)
+
+1. Создайте пользователя, добавьте товар через API и получите `product_id`.
+2. В `.env` заполните `DEMO_ITEMS`:
+```bash
+DEMO_ITEMS=<product_id>|dns_html|https://www.dns-shop.ru/...;<product_id>|ozon_html|https://www.ozon.ru/...
+```
+3. Запустите ETL:
+```bash
+docker compose --profile manual run --rm etl
+```
+
+### Что защищено в ядре
+- JWT для пользовательских endpoint'ов.
+- Internal ingest защищен `X-ETL-API-Key`.
+- История/метрики/CRUD доступны только владельцу товара.
 

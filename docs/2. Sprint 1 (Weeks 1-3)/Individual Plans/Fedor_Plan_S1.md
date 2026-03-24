@@ -1,8 +1,8 @@
-q# План работы Фёдора (Team Lead / Дизайнер) | Спринт 1
+# План работы Фёдора (Team Lead / Дизайнер) | Спринт 1
 
 **Цель спринта:** подготовить концепцию, дизайн и архитектуру MVP для защиты на Показе 1.
 
-**Связанные заметки:** [[Egor_Plan_S1]], [[Lesha_Plan_S1]], [[Roma_Plan_S1]], [[Edik_Plan_S1]], [[Sprint Goal]], [[Decisions]], [[02_User Stories]]
+**Связанные заметки:** [[Egor_Plan_S1]], [[Lesha_Plan_S1]], [[Roma_Plan_S1]], [[Edik_Plan_S1]], [[Sprint Goal]], [[Program and Milestones]], [[Decisions]], [[02_User Stories]]
 
 ## Неделя 1 — Старт, концепция и требования
 - [ ] Провести кик-офф: цели, сроки, формат отчётности

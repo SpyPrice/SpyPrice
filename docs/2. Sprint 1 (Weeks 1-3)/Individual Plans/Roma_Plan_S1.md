@@ -2,7 +2,7 @@
 
 **Цель спринта:** подготовить воспроизводимую среду разработки/демо (Docker), базовый CI и основу деплоя к Показу 1.
 
-**Связанные заметки:** [[Fedor_Plan_S1]], [[Lesha_Plan_S1]], [[Egor_Plan_S1]], [[Decisions]], [[Sprint Goal]]
+**Связанные заметки:** [[Fedor_Plan_S1]], [[Lesha_Plan_S1]], [[Egor_Plan_S1]], [[Decisions]], [[Sprint Goal]], [[Program and Milestones]]
 
 ## Неделя 1 — Хостинг, репозиторий, задел под CI/Docker
 - [ ] Участвовать в кик-оффе и согласовании стека
