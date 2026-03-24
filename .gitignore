@@ -22,3 +22,5 @@ build/
 .coverage
 htmlcov/
 
+## Client
+node_modules/
