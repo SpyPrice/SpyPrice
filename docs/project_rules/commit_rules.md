@@ -8,10 +8,7 @@
 
 ```
 <type>(<scope>): <subject>
-
 <body>
-
-<footer>
 ```
 
 ### 1.1. Type (Обязательно)
@@ -30,7 +27,6 @@
 | `build`    | Изменения, влияющие на систему сборки или внешние зависимости (npm, gradle, webpack).                    |
 | `ci`       | Изменения в конфигурации CI/CD (GitHub Actions, GitLab CI, Jenkins).                                     |
 | `chore`    | Вспомогательные задачи, не связанные с кодом продукта (обновление зависимостей, настройка инструментов). |
-| `revert`   | Отмена предыдущего коммита.                                                                              |
 
 ### 1.2. Scope (Опционально)
 
@@ -77,7 +73,6 @@ fix(api): handle null response in user profile endpoint
 Previously, if the API returned null for the profile, the app would crash.
 Now we return an empty object and log a warning.
 
-Closes #42
 ```
 
 ```
@@ -113,7 +108,7 @@ feat: сделал
 
 ## 3. Рекомендации по работе с ветками
 
-1.  **Ветка разработки:** `dev` или `main`.
+1.  **Ветка разработки:** `dev/server`, `dev/client`, `dev/etl`, `dev/db`.
 2.  **Ветки задач:** Называйте по шаблону `<type>/<short-description>`.
     - _Пример:_ `feat/add-login-page`, `fix/button-styling`, `docs/update-api-spec`.
 3.  **Pull Requests:** Название PR должно отражать суть изменений (желательно повторять `subject` основного коммита). В описание PR добавляйте `body` и `footer`.
