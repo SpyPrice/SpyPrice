@@ -1,74 +1,129 @@
-import uuid
-from datetime import datetime, timezone
-
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Numeric, String, Text, UniqueConstraint
-from sqlalchemy.dialects.postgresql import JSONB, UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.database import Base
+from .database import Base
+from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Boolean, Numeric, Text
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 
-def utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+# Промежуточные таблицы
+# для связи тегов и товаров (many-to-many)
+tags_tracking_items = Table(
+    'tags_tracking_items',
+    Base.metadata,
+    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
+    Column('tracking_item_id', Integer, ForeignKey('tracking_items.id'), primary_key=True)
+)
 
+
+# Таблицы(модели)
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    hashed_password: Mapped[str] = mapped_column(String(255))
-    registered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
-    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    id = Column(Integer, primary_key=True, comment='Уникальный идентификатор пользователя')
+    login = Column(String, nullable=False, unique=True, comment='Логин пользователя')
+    password = Column(String, nullable=False, comment='Хэш пароля')
+    email = Column(String, nullable=False, unique=True, comment='Email пользователя')
+    created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
+    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
-    products = relationship("Product", back_populates="user")
+    # Связь с промежуточной таблицей (через класс)
+    tracking_links = relationship('UsersTrackingItem', back_populates='user', cascade='all, delete-orphan')
+
+    # Это теставая штука, но должна быть удобной(доступ к товарам напрямую)
+    @property
+    def tracking_items(self):
+        return [link.tracking_item for link in self.tracking_links]
 
 
 class Source(Base):
-    __tablename__ = "sources"
+    __tablename__ = 'sources'
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name: Mapped[str] = mapped_column(String(120), unique=True)
-    base_url: Mapped[str] = mapped_column(String(255))
-    parser_type: Mapped[str] = mapped_column(String(80), unique=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    id = Column(Integer, primary_key=True, comment='Идентификатор источника')
+    url = Column(String, comment='Базовый URL источника')
+    name = Column(String, nullable=False, comment='Название источника')
+    isCollected = Column(Boolean)
+    created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
+    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
-    products = relationship("Product", back_populates="source")
+    # Связь источник имеет товары
+    tracking_items = relationship('TrackingItem', back_populates='source', cascade='all, delete-orphan')
 
 
-class Product(Base):
-    __tablename__ = "products"
+class TrackingItem(Base):
+    __tablename__ = 'tracking_items'
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
-    source_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("sources.id"), index=True)
-    url: Mapped[str] = mapped_column(String(1024))
-    name: Mapped[str] = mapped_column(String(255))
-    tags: Mapped[list[str]] = mapped_column(JSONB, default=list)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
-    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    id = Column(Integer, primary_key=True, comment='Уникальный идентификатор товара')
+    name = Column(String, comment='Название товара')
+    url = Column(String, nullable=False, comment='Ссылка на товар')
+    isInStock = Column(Boolean, comment='Товар в наличии')
+    source_id = Column(Integer, ForeignKey('sources.id'), comment='Ссылка на источник')
+    created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
+    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
-    user = relationship("User", back_populates="products")
-    source = relationship("Source", back_populates="products")
-    snapshots = relationship("PriceSnapshot", back_populates="product")
+    # товар получен из источника
+    source = relationship('Source', back_populates='tracking_items')
+
+    # товар имеет снимки цен
+    price_snapshots = relationship(
+        'PriceSnapshot',
+        back_populates='tracking_item',
+        cascade='all, delete-orphan' # это если нужно удалить товар, чтобы удалилось все остально с ним связанное
+    )
+
+    # товар имеет теги (many-to-many)
+    tags = relationship(
+        'Tag',
+        secondary=tags_tracking_items,
+        back_populates='tracking_items',
+        comment='Теги, присвоенные товару'
+    )
+
+    # Удобный доступ к пользователям напрямую
+    @property
+    def users(self):
+        return [link.user for link in self.user_links]
 
 
 class PriceSnapshot(Base):
-    __tablename__ = "price_snapshots"
-    __table_args__ = (
-        UniqueConstraint("product_id", "fetched_at", name="uq_product_fetched_at"),
-        Index("ix_price_snapshots_product_fetched_at", "product_id", "fetched_at"),
+    __tablename__ = 'price_snapshots'
+
+    id = Column(Integer, primary_key=True, comment='Идентификатор снимка')
+    tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='Ссылка на товар')
+    price = Column(Numeric(10, 2), comment='Цена в момент снимка')
+    currency = Column(String, default='RUB', comment='Валюта цены')
+    created_at = Column(DateTime, server_default=func.now(), comment='Время создания снимка')
+
+    # снимок относится к товару
+    tracking_item = relationship('TrackingItem', back_populates='price_snapshots')
+
+
+class UsersTrackingItem(Base):
+    __tablename__ = 'users_tracking_items'
+
+    id = Column(Integer, primary_key=True, comment='Уникальный идентификатор связи')
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, comment='ID пользователя')
+    tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='ID товара')
+    created_at = Column(DateTime, server_default=func.now(), comment='Дата добавления товара пользователем')
+    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления связи')
+
+    # Связи для удобной навигации
+    user = relationship('User', back_populates='tracking_links')
+    tracking_item = relationship('TrackingItem', back_populates='user_links')
+
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True, comment='Название тега (уникальное)')
+    description = Column(Text, comment='Описание тега')
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+    # тег относится к товарам (many-to-many)
+    tracking_items = relationship(
+        'TrackingItem',
+        secondary=tags_tracking_items,
+        back_populates='tags',
+        comment='Товары, отмеченные этим тегом'
     )
-
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    product_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("products.id"), index=True)
-    price: Mapped[float] = mapped_column(Numeric(12, 2), default=0)
-    currency: Mapped[str] = mapped_column(String(3), default="RUB")
-    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
-    status: Mapped[str] = mapped_column(String(16), default="success")
-    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
-    availability: Mapped[str] = mapped_column(String(16), default="unknown")
-    raw_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-
-    product = relationship("Product", back_populates="snapshots")
