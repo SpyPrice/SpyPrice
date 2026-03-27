@@ -1,4 +1,4 @@
-# База данных (предварительная ER-схема)
+# База данных (ER-схема)
 
 Цель: единое понимание модели домена между `Database.md` ↔ `API.md` ↔ `Parser Architecture.md`.
 
@@ -7,145 +7,197 @@
 ## Сущности и поля
 
 ### `User`
+
 - `id` (UUID, PK)
+- `login` (varchar, unique, not null)
 - `email` (varchar, unique, not null)
 - `hashed_password` (varchar, not null)
-- `registered_at` (timestamptz, not null)
-- `is_deleted` (boolean, default false)
-
-### `Source`
-- `id` (UUID, PK)
-- `name` (varchar, not null)
-- `base_url` (varchar, not null)
-- `parser_type` (varchar, not null) — тип адаптера (например `ozon_html`)
-- `created_at` (timestamptz, not null)
-
-### `Product`
-- `id` (UUID, PK)
-- `user_id` (UUID, FK → `User.id`, not null)
-- `source_id` (UUID, FK → `Source.id`, not null)
-- `url` (varchar, not null)
-- `name` (varchar, not null)
-- `tags` (jsonb, опционально) или `varchar[]`
 - `created_at` (timestamptz, not null)
 - `updated_at` (timestamptz, not null)
-- `is_deleted` (boolean, default false)
+
+### `Source`
+
+- `id` (UUID, PK)
+- `url` (varchar, not null) — базовый URL источника
+- `name` (varchar, not null) — отображаемое имя
+- `is_collected` (boolean, default false) — активен ли источник для сбора
+- `created_at` (timestamptz, not null)
+- `updated_at` (timestamptz, not null)
+
+### `TrackingItem`
+
+- `id` (UUID, PK)
+- `name` (varchar, not null) — название товара
+- `url` (varchar, not null) — полный URL товара
+- `is_in_stock` (boolean, default false) — актуальный статус наличия
+- `source_id` (UUID, FK → `Source.id`, not null)
+- `created_at` (timestamptz, not null)
+- `updated_at` (timestamptz, not null)
 
 ### `PriceSnapshot`
-Срез цены “в момент времени”.
+
+Срез цены "в момент времени".
+
 - `id` (UUID, PK)
-- `product_id` (UUID, FK → `Product.id`, not null)
-- `price` (DECIMAL(12,2), not null) — при `status=error` может быть 0 или последнее известное значение (зафиксировать одну стратегию в коде)
-- `currency` (char(3), not null) — например `RUB`
-- `fetched_at` (timestamptz, not null)
-- `status` (enum: `success`, `error`, not null)
-- `error_message` (text, null) — если status=`error`
-- `availability` (enum: `in_stock`, `out_of_stock`, `unknown`, not null, default `unknown`) — **статус доступности** товара в смысле ТЗ; если парсер не извлёк — `unknown`
-- `raw_data` (jsonb, null) — опционально (для дебага адаптера)
+- `tracking_item_id` (UUID, FK → `TrackingItem.id`, not null)
+- `price` (DECIMAL(12,2), not null) — цена товара
+- `currency` (char(3), not null) — например `RUB`, `USD`
+- `created_at` (timestamptz, not null) — момент фиксации цены
 
 Дедупликация (на MVP):
+
 - вариант 1: хранить все снимки, даже если одинаковые цены
-- вариант 2: предотвращать дубли через уникальность `(product_id, fetched_at)` (или округление fetched_at)
+- вариант 2: предотвращать дубли через уникальность `(tracking_item_id, created_at)` (с округлением до минуты/часа)
 
 Рекомендация: вариант 2, чтобы ETL мог безопасно ретраить.
 
-### `AlertRule` (опционально для MVP)
+### `Tag`
+
+- `id` (UUID, PK)
+- `name` (varchar, unique, not null) — название тега
+- `created_at` (timestamptz, not null)
+- `updated_at` (timestamptz, not null)
+
+### `UserTrackingItem` (связующая таблица)
+
+Ассоциация пользователей с отслеживаемыми товарами (many-to-many).
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK → `User.id`, not null)
-- `product_id` (UUID, FK → `Product.id`, not null)
-- `threshold_type` (enum: `absolute`, `percent`, not null)
-- `threshold_value` (DECIMAL(12,2), not null)
-- `is_active` (boolean, default true)
+- `tracking_item_id` (UUID, FK → `TrackingItem.id`, not null)
 - `created_at` (timestamptz, not null)
+- `updated_at` (timestamptz, not null)
 
-### `AlertEvent` (опционально для MVP)
+### `TagTrackingItem` (связующая таблица)
+
+Ассоциация тегов с отслеживаемыми товарами (many-to-many).
+
 - `id` (UUID, PK)
-- `rule_id` (UUID, FK → `AlertRule.id`, not null)
-- `triggered_at` (timestamptz, not null)
-- `price_at_trigger` (DECIMAL(12,2), not null)
+- `tracking_item_id` (UUID, FK → `TrackingItem.id`, not null)
+- `tag_id` (UUID, FK → `Tag.id`, not null)
+- `created_at` (timestamptz, not null)
+- `updated_at` (timestamptz, not null)
 
 ## Связи (каркас)
-- `User (1)` → `Product (many)` через `Product.user_id`
-- `Source (1)` → `Product (many)` через `Product.source_id`
-- `Product (1)` → `PriceSnapshot (many)` через `PriceSnapshot.product_id`
-- `AlertRule (1)` → `AlertEvent (many)` через `AlertEvent.rule_id`
+
+- `User (1)` → `UserTrackingItem (many)` через `UserTrackingItem.user_id`
+- `TrackingItem (1)` → `UserTrackingItem (many)` через `UserTrackingItem.tracking_item_id`
+- `Source (1)` → `TrackingItem (many)` через `TrackingItem.source_id`
+- `TrackingItem (1)` → `PriceSnapshot (many)` через `PriceSnapshot.tracking_item_id`
+- `Tag (1)` → `TagTrackingItem (many)` через `TagTrackingItem.tag_id`
+- `TrackingItem (1)` → `TagTrackingItem (many)` через `TagTrackingItem.tracking_item_id`
 
 ## Индексы (для быстрых запросов MVP)
-- `PriceSnapshot`: индекс по `(product_id, fetched_at desc)`
-- `Product`: индекс по `(user_id, created_at desc)`
-- `AlertEvent`: индекс по `(rule_id, triggered_at desc)`
+
+- `PriceSnapshot`: индекс по `(tracking_item_id, created_at desc)` для быстрого получения последней цены
+- `TrackingItem`: индекс по `(source_id, created_at desc)` для фильтрации по источнику
+- `TrackingItem`: индекс по `is_in_stock` для поиска доступных товаров
+- `UserTrackingItem`: составной индекс по `(user_id, tracking_item_id)` для быстрой проверки существования связи
+- `TagTrackingItem`: составной индекс по `(tracking_item_id, tag_id)` для быстрой проверки связей тегов
+- `Tag`: индекс по `name` для быстрого поиска тега по имени
+
+## Дополнительные соображения
+
+### Каскадные операции
+
+- При удалении `User`: каскадно удалять связанные записи в `UserTrackingItem`
+- При удалении `TrackingItem`: каскадно удалять `PriceSnapshot`, `TagTrackingItem`, `UserTrackingItem`
+- При удалении `Tag`: каскадно удалять связи в `TagTrackingItem`
+- При удалении `Source`: запрещать удаление (`RESTRICT`), если есть связанные `TrackingItem`
+
+### Мягкое удаление (опционально для MVP)
+
+Если требуется сохранение истории, добавить в сущности:
+
+- `is_deleted` (boolean, default false)
+- `deleted_at` (timestamptz, null)
+
+Тогда:
+
+- `User.is_deleted` — заблокированные/удалённые пользователи
+- `TrackingItem.is_deleted` — скрытые товары (не удалять PriceSnapshot для истории)
+
+### Расширения для будущих версий
+
+- **AlertRule**: правила оповещения о снижении цены
+- **AlertEvent**: события срабатывания правил
+- **PriceSnapshot.status**: enum (`success`, `error`) для обработки ошибок парсинга
+- **PriceSnapshot.availability**: enum (`in_stock`, `out_of_stock`, `unknown`) для фиксации доступности
 
 ## Миграции
-- Используем **Alembic**.
-- Правило нейминга миграций: “описательно” + timestamp (по принятому в репозитории шаблону).
-- Любые изменения в полях/типах (особенно `PriceSnapshot.price`) должны сопровождаться обновлением `API.md`.
 
-## ERD
+- Используем **Alembic**.
+- Правило нейминга миграций: `YYYYMMDD_HHMMSS_описательное_название` (например `20250327_120000_add_user_tracking_items`)
+- Любые изменения в полях/типах (особенно `PriceSnapshot.price`) должны сопровождаться обновлением `API.md` и `Parser Architecture.md`.
+- Миграции должны быть идемпотентными: проверять существование объектов перед созданием/изменением.
+
+## ER-диаграмма (Mermaid)
+
 ```mermaid
 erDiagram
-    Users {
-        int Id PK
-        string Login
-        string Password
-        string Email
-        datetime Created_at
-        datetime Updated_at
+    User {
+        uuid id PK
+        varchar login UK
+        varchar email UK
+        varchar hashed_password
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    TrackingItems {
-        int Id PK
-        string Name
-        string URL
-        boolean isInStock
-        int Source_id FK
-        datetime Created_at
-        datetime Updated_at
+    Source {
+        uuid id PK
+        varchar url
+        varchar name
+        boolean is_collected
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    Sources {
-        int Id PK
-        string URL
-        string Name
-        boolean isCollected
-        datetime Created_at
-        datetime Updated_at
+    TrackingItem {
+        uuid id PK
+        varchar name
+        varchar url
+        boolean is_in_stock
+        uuid source_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    PriceSnapshots {
-        int Id PK
-        int TrackingItem_id FK
-        decimal Price
-        string Currency
-        datetime Created_at
+    PriceSnapshot {
+        uuid id PK
+        uuid tracking_item_id FK
+        decimal price
+        char3 currency
+        timestamptz created_at
     }
 
-    Tags {
-        int Id PK
-        string Name
-        datetime Created_at
-        datetime Updated_at
+    Tag {
+        uuid id PK
+        varchar name UK
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    Tags_TrackingItems {
-        int Id PK
-        int Tracking_id FK
-        int Tag_id FK
-        datetime Created_at
-        datetime Updated_at
+    UserTrackingItem {
+        uuid id PK
+        uuid user_id FK
+        uuid tracking_item_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    Users_TrackingItems {
-        int Id PK
-        int User_id FK
-        int Tracking_id FK
-        datetime Created_at
-        datetime Updated_at
+    TagTrackingItem {
+        uuid id PK
+        uuid tracking_item_id FK
+        uuid tag_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
 
-    Users ||--o{ Users_TrackingItems : "has"
-    TrackingItems ||--o{ Users_TrackingItems : "tracked by"
-    TrackingItems ||--o{ PriceSnapshots : "has"
-    Sources ||--o{ TrackingItems : "provides"
-    TrackingItems ||--o{ Tags_TrackingItems : "tagged with"
-    Tags ||--o{ Tags_TrackingItems : "assigned to"
+    User ||--o{ UserTrackingItem : "owns"
+    TrackingItem ||--o{ UserTrackingItem : "tracked_by"
+    Source ||--o{ TrackingItem : "contains"
+    TrackingItem ||--o{ PriceSnapshot : "has_price_history"
+    TrackingItem ||--o{ TagTrackingItem : "tagged_with"
+    Tag ||--o{ TagTrackingItem : "assigned_to"
 ```
