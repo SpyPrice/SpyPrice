@@ -113,7 +113,7 @@ def fetch_price_from_url(url, profile_path='./chrome_profile', headless=True):
             playwright.stop()
 
 
-if __name__ == '__main__':
+def run():
     if len(sys.argv) > 1:
         url = sys.argv[1]
     else:
@@ -127,3 +127,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
 
+if __name__ == '__main__':
+    run()
