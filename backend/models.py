@@ -1,13 +1,19 @@
 from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Boolean, Numeric, Text
-from sqlalchemy.orm import relationship, DeclarativeBase
-from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship, DeclarativeBase, column_property
+from sqlalchemy.sql import func, select
+from typing import List
+from decimal import Decimal
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 # Промежуточные таблицы
 # для связи тегов и товаров (many-to-many)
 tags_tracking_items = Table(
     'tags_tracking_items',
-    DeclarativeBase.metadata,
+    Base.metadata,
     Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
     Column('tracking_item_id', Integer, ForeignKey('tracking_items.id'), primary_key=True)
 )
@@ -15,7 +21,7 @@ tags_tracking_items = Table(
 
 # Таблицы(модели)
 
-class User(DeclarativeBase):
+class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор пользователя')
@@ -28,19 +34,18 @@ class User(DeclarativeBase):
     # Связь с промежуточной таблицей (через класс)
     tracking_links = relationship('UsersTrackingItem', back_populates='user', cascade='all, delete-orphan')
 
-    # Это теставая штука, но должна быть удобной(доступ к товарам напрямую)
     @property
-    def tracking_items(self):
+    def tracking_items(self) -> List["TrackingItem"]:
         return [link.tracking_item for link in self.tracking_links]
 
 
-class Source(DeclarativeBase):
+class Source(Base):
     __tablename__ = 'sources'
 
     id = Column(Integer, primary_key=True, comment='Идентификатор источника')
-    url = Column(String, comment='Базовый URL источника')
+    url = Column(Text, nullable=False, comment='Базовый URL источника')
     name = Column(String, nullable=False, comment='Название источника')
-    isCollected = Column(Boolean)
+    is_collected = Column(Boolean)
     created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
@@ -48,42 +53,7 @@ class Source(DeclarativeBase):
     tracking_items = relationship('TrackingItem', back_populates='source', cascade='all, delete-orphan')
 
 
-class TrackingItem(DeclarativeBase):
-    __tablename__ = 'tracking_items'
-
-    id = Column(Integer, primary_key=True, comment='Уникальный идентификатор товара')
-    name = Column(String, comment='Название товара')
-    url = Column(String, nullable=False, comment='Ссылка на товар')
-    isInStock = Column(Boolean, comment='Товар в наличии')
-    source_id = Column(Integer, ForeignKey('sources.id'), comment='Ссылка на источник')
-    created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
-    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
-
-    # товар получен из источника
-    source = relationship('Source', back_populates='tracking_items')
-
-    # товар имеет снимки цен
-    price_snapshots = relationship(
-        'PriceSnapshot',
-        back_populates='tracking_item',
-        cascade='all, delete-orphan' # это если нужно удалить товар, чтобы удалилось все остально с ним связанное
-    )
-
-    # товар имеет теги (many-to-many)
-    tags = relationship(
-        'Tag',
-        secondary=tags_tracking_items,
-        back_populates='tracking_items',
-        comment='Теги, присвоенные товару'
-    )
-
-    # Удобный доступ к пользователям напрямую
-    @property
-    def users(self):
-        return [link.user for link in self.user_links]
-
-
-class PriceSnapshot(DeclarativeBase):
+class PriceSnapshot(Base):
     __tablename__ = 'price_snapshots'
 
     id = Column(Integer, primary_key=True, comment='Идентификатор снимка')
@@ -96,7 +66,58 @@ class PriceSnapshot(DeclarativeBase):
     tracking_item = relationship('TrackingItem', back_populates='price_snapshots')
 
 
-class UsersTrackingItem(DeclarativeBase):
+class TrackingItem(Base):
+    __tablename__ = 'tracking_items'
+
+    id = Column(Integer, primary_key=True, comment='Уникальный идентификатор товара')
+    name = Column(String, comment='Название товара')
+    url = Column(Text, nullable=False, comment='Ссылка на товар')
+    is_in_stock = Column(Boolean, comment='Товар в наличии')
+    source_id = Column(Integer, ForeignKey('sources.id'), comment='Ссылка на источник')
+    created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
+    updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
+
+    # товар получен из источника
+    source = relationship('Source', back_populates='tracking_items')
+
+    # товар имеет теги (many-to-many)
+    tags = relationship(
+        'Tag',
+        secondary=tags_tracking_items,
+        back_populates='tracking_items',
+        comment='Теги, присвоенные товару'
+    )
+
+    # связь с пользователями
+    user_links = relationship(
+        'UsersTrackingItem',
+        back_populates='tracking_item',
+        cascade='all, delete-orphan'
+    )
+
+    # товар имеет снимки цен
+    price_snapshots = relationship(
+        'PriceSnapshot',
+        back_populates='tracking_item',
+        cascade='all, delete-orphan',
+        order_by='PriceSnapshot.created_at'
+    )
+
+    last_price = column_property(
+        select(PriceSnapshot.price)
+        .where(PriceSnapshot.tracking_item_id == id)
+        .order_by(PriceSnapshot.created_at.desc())
+        .limit(1)
+        .scalar_subquery()
+    )
+
+    @property
+    def source_name(self) -> str | None:
+        """Имя источника для удобного чтения в API"""
+        return self.source.name if self.source else None
+
+
+class UsersTrackingItem(Base):
     __tablename__ = 'users_tracking_items'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор связи')
@@ -110,7 +131,7 @@ class UsersTrackingItem(DeclarativeBase):
     tracking_item = relationship('TrackingItem', back_populates='user_links')
 
 
-class Tag(DeclarativeBase):
+class Tag(Base):
     __tablename__ = 'tags'
 
     id = Column(Integer, primary_key=True)
