@@ -21,6 +21,11 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 Документация OpenAPI: `http://localhost:8000/docs`.
 
+## Схема данных
+
+![Схема данных](../docs/7.%20Technical%20Documentation/Actual-data-diagram.png)
+
+
 ## Структура пакета `app`
 
 api - взаимодействие с сервером
