@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Boolean, Numeric, Text
+from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Boolean, Numeric, Text, Index
 from sqlalchemy.orm import relationship, DeclarativeBase, column_property
 from sqlalchemy.sql import func, select
 from typing import List
@@ -27,12 +27,16 @@ class User(Base):
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор пользователя')
     login = Column(String, nullable=False, unique=True, comment='Логин пользователя')
     password = Column(String, nullable=False, comment='Хэш пароля')
-    email = Column(String, nullable=False, unique=True, comment='Email пользователя')
+    email = Column(String(127), nullable=False, unique=True, comment='Email пользователя')
     created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
-    # Связь с промежуточной таблицей (через класс)
-    tracking_links = relationship('UsersTrackingItem', back_populates='user', cascade='all, delete-orphan')
+    tracking_links = relationship(
+        "UsersTrackingItem",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
     @property
     def tracking_items(self) -> List["TrackingItem"]:
@@ -45,25 +49,38 @@ class Source(Base):
     id = Column(Integer, primary_key=True, comment='Идентификатор источника')
     url = Column(Text, nullable=False, comment='Базовый URL источника')
     name = Column(String, nullable=False, comment='Название источника')
-    is_collected = Column(Boolean)
+    is_collected = Column(Boolean, comment='Доступен ли ресурс для сбора данных')
     created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
     # Связь источник имеет товары
-    tracking_items = relationship('TrackingItem', back_populates='source', cascade='all, delete-orphan')
+    tracking_items = relationship(
+        'TrackingItem',
+        back_populates='source',
+        cascade='all, delete-orphan',
+        lazy="selectin"
+    )
 
 
 class PriceSnapshot(Base):
     __tablename__ = 'price_snapshots'
 
     id = Column(Integer, primary_key=True, comment='Идентификатор снимка')
-    tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='Ссылка на товар')
+    tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='ID товара')
     price = Column(Numeric(10, 2), comment='Цена в момент снимка')
-    currency = Column(String, default='RUB', comment='Валюта цены')
+    currency = Column(String(3), default='RUB', comment='Валюта цены')
     created_at = Column(DateTime, server_default=func.now(), comment='Время создания снимка')
 
     # снимок относится к товару
     tracking_item = relationship('TrackingItem', back_populates='price_snapshots')
+
+
+# индекс для быстрого получения последней цены
+Index(
+    "ix_price_snapshots_item_created_desc",
+    PriceSnapshot.tracking_item_id,
+    PriceSnapshot.created_at.desc()
+)
 
 
 class TrackingItem(Base):
@@ -73,36 +90,35 @@ class TrackingItem(Base):
     name = Column(String, comment='Название товара')
     url = Column(Text, nullable=False, comment='Ссылка на товар')
     is_in_stock = Column(Boolean, comment='Товар в наличии')
+
     source_id = Column(Integer, ForeignKey('sources.id'), comment='Ссылка на источник')
+
     created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
     # товар получен из источника
-    source = relationship('Source', back_populates='tracking_items')
+    source = relationship('Source', back_populates='tracking_items', lazy='selectin')
 
-    # товар имеет теги (many-to-many)
-    tags = relationship(
-        'Tag',
-        secondary=tags_tracking_items,
-        back_populates='tracking_items',
-        comment='Теги, присвоенные товару'
-    )
+    # many-to-many теги
+    tags = relationship("Tag", secondary=tags_tracking_items, back_populates="tracking_items", lazy="selectin")
 
     # связь с пользователями
     user_links = relationship(
-        'UsersTrackingItem',
-        back_populates='tracking_item',
-        cascade='all, delete-orphan'
-    )
+        "UsersTrackingItem",
+        back_populates="tracking_item",
+        cascade="all, delete-orphan",
+        lazy="selectin")
 
-    # товар имеет снимки цен
+    # история цен
     price_snapshots = relationship(
-        'PriceSnapshot',
-        back_populates='tracking_item',
-        cascade='all, delete-orphan',
-        order_by='PriceSnapshot.created_at'
+        "PriceSnapshot",
+        back_populates="tracking_item",
+        cascade="all, delete-orphan",
+        order_by="PriceSnapshot.created_at",
+        lazy="select"
     )
 
+    # последняя цена одним SQL подзапросом
     last_price = column_property(
         select(PriceSnapshot.price)
         .where(PriceSnapshot.tracking_item_id == id)
@@ -113,9 +129,7 @@ class TrackingItem(Base):
 
     @property
     def source_name(self) -> str | None:
-        """Имя источника для удобного чтения в API"""
         return self.source.name if self.source else None
-
 
 class UsersTrackingItem(Base):
     __tablename__ = 'users_tracking_items'
@@ -128,7 +142,7 @@ class UsersTrackingItem(Base):
 
     # Связи для удобной навигации
     user = relationship('User', back_populates='tracking_links')
-    tracking_item = relationship('TrackingItem', back_populates='user_links')
+    tracking_item = relationship('TrackingItem', back_populates='user_links', lazy="selectin")
 
 
 class Tag(Base):
@@ -145,5 +159,6 @@ class Tag(Base):
         'TrackingItem',
         secondary=tags_tracking_items,
         back_populates='tags',
-        comment='Товары, отмеченные этим тегом'
+        comment='Товары, отмеченные этим тегом',
+        lazy = "selectin"
     )

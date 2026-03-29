@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class MyDataModels(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    pass
 
 
 class TimestampedModels(MyDataModels):
@@ -17,13 +17,14 @@ class UserCreate(MyDataModels):
     """Запрос создания пользователя"""
     login: str = Field(..., min_length=5, max_length=127)
     password: str = Field(..., min_length=8, max_length=71)
-    email: EmailStr = Field(..., min_length=5, max_length=127)
+    email: EmailStr
 
 
 class UserRead(TimestampedModels):
     id: int
     login: str
     email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TagCreate(MyDataModels):
@@ -35,24 +36,17 @@ class TagRead(TimestampedModels):
     id: int
     name: str
     description: str | None
+    model_config = ConfigDict(from_attributes=True)
 
 
-class PriceSnapshotRead(MyDataModels):
-    id: int
-    tracking_item_id: int
-    price: Decimal
-    currency: str
-    created_at: datetime
-
-
-class ItemCreateRequest(MyDataModels):
+class ItemCreate(MyDataModels):
     """Запрос но добавление нового отслеживаемого предмета от пользователя"""
     # Имя ресурса можно получить во время обработки ссылки.
     # source_name: str = Field(..., min_length=1, max_length=255)
     source_url: HttpUrl = Field(..., max_length=511)
 
 
-class ItemUpdateRequest(MyDataModels):
+class ItemUpdate(MyDataModels):
     name: str | None = None
     url: str | None = None
     is_in_stock: bool | None = None
@@ -68,3 +62,29 @@ class ItemRead(TimestampedModels):
     tags: list[TagRead] = Field(default_factory=list)
     """Последняя цена на товар"""
     last_price: Decimal | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PriceSnapshotCreate(MyDataModels):
+    tracking_item_id: int
+    price: Decimal
+    currency: str
+    created_at: datetime
+
+
+class PriceSnapshotRead(MyDataModels):
+    id: int
+    tracking_item_id: int
+    price: Decimal
+    currency: str
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SourceRead(TimestampedModels):
+    id: int
+    url: str
+    name: str
+    is_collected: bool
+    model_config = ConfigDict(from_attributes=True)
+
