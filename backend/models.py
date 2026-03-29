@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
 # для связи тегов и товаров (many-to-many)
 tags_tracking_items = Table(
     'tags_tracking_items',
-    Base.metadata,
+    DeclarativeBase.metadata,
     Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
     Column('tracking_item_id', Integer, ForeignKey('tracking_items.id'), primary_key=True)
 )
@@ -21,7 +21,7 @@ tags_tracking_items = Table(
 
 # Таблицы(модели)
 
-class User(Base):
+class User(DeclarativeBase):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор пользователя')
@@ -43,7 +43,7 @@ class User(Base):
         return [link.tracking_item for link in self.tracking_links]
 
 
-class Source(Base):
+class Source(DeclarativeBase):
     __tablename__ = 'sources'
 
     id = Column(Integer, primary_key=True, comment='Идентификатор источника')
@@ -83,7 +83,7 @@ Index(
 )
 
 
-class TrackingItem(Base):
+class TrackingItem(DeclarativeBase):
     __tablename__ = 'tracking_items'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор товара')
@@ -128,10 +128,24 @@ class TrackingItem(Base):
     )
 
     @property
-    def source_name(self) -> str | None:
-        return self.source.name if self.source else None
+    def users(self):
+        return [link.user for link in self.user_links]
 
-class UsersTrackingItem(Base):
+
+class PriceSnapshot(DeclarativeBase):
+    __tablename__ = 'price_snapshots'
+
+    id = Column(Integer, primary_key=True, comment='Идентификатор снимка')
+    tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='Ссылка на товар')
+    price = Column(Numeric(10, 2), comment='Цена в момент снимка')
+    currency = Column(String, default='RUB', comment='Валюта цены')
+    created_at = Column(DateTime, server_default=func.now(), comment='Время создания снимка')
+
+    # снимок относится к товару
+    tracking_item = relationship('TrackingItem', back_populates='price_snapshots')
+
+
+class UsersTrackingItem(DeclarativeBase):
     __tablename__ = 'users_tracking_items'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор связи')
@@ -145,7 +159,7 @@ class UsersTrackingItem(Base):
     tracking_item = relationship('TrackingItem', back_populates='user_links', lazy="selectin")
 
 
-class Tag(Base):
+class Tag(DeclarativeBase):
     __tablename__ = 'tags'
 
     id = Column(Integer, primary_key=True)
