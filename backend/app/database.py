@@ -1,20 +1,27 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import DeclarativeBase
+from collections.abc import AsyncGenerator
 
-from app.config import settings
+
+# В дальнейшем нужно получать из ENV
+DATABASE_URL = 'postgresql+asyncpg://user:password@localhost:5432/my_database'
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,          # вывод в консоль запросов к db
+    pool_pre_ping=True, # проверка перед подключением
+)
+
+async_session_maker = async_sessionmaker(
+    engine,
+    expire_on_commit=False,
+    class_=AsyncSession
+)
 
 
 class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine(settings.database_url, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session
