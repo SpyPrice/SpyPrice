@@ -4,7 +4,7 @@ from collections.abc import AsyncGenerator
 
 
 # В дальнейшем нужно получать из ENV
-DATABASE_URL = 'postgresql+asyncpg://user:password@localhost:5432/my_database'
+DATABASE_URL = 'postgresql+asyncpg://postgres:postgres@localhost:5432/price_tracker'
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,          # вывод в консоль запросов к db
