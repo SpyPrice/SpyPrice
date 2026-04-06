@@ -1,4 +1,4 @@
-from database import Base
+from app.database import Base
 from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Boolean, Numeric, Text, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -32,7 +32,7 @@ class User(Base):
         'UsersTrackingItem',
         back_populates='user',
         cascade='all, delete-orphan',
-        lazy='selectin'
+        # lazy='selectin'
     )
 
     @property
@@ -55,7 +55,7 @@ class Source(Base):
         'TrackingItem',
         back_populates='source',
         cascade='all, delete-orphan',
-        lazy='selectin'
+        # lazy='selectin'
     )
 
 
@@ -94,7 +94,11 @@ class TrackingItem(Base):
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления')
 
     # товар получен из источника
-    source = relationship('Source', back_populates='tracking_items', lazy='selectin')
+    source = relationship(
+        'Source',
+        back_populates='tracking_items',
+        # lazy='selectin'
+    )
 
     # many-to-many теги
     tags = relationship('Tag', secondary=tags_tracking_items, back_populates='tracking_items', lazy='selectin')
@@ -104,7 +108,8 @@ class TrackingItem(Base):
         'UsersTrackingItem',
         back_populates='tracking_item',
         cascade='all, delete-orphan',
-        lazy='selectin')
+        # lazy='selectin'
+    )
 
     # история цен
     price_snapshots = relationship(
@@ -112,7 +117,7 @@ class TrackingItem(Base):
         back_populates='tracking_item',
         cascade='all, delete-orphan',
         order_by='PriceSnapshot.created_at',
-        lazy='selectin'
+        # lazy='selectin'
     )
 
     @property
@@ -137,8 +142,16 @@ class UsersTrackingItem(Base):
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления связи')
 
     # Связи для удобной навигации
-    user = relationship('User', back_populates='tracking_links', lazy='selectin')
-    tracking_item = relationship('TrackingItem', back_populates='user_links', lazy='selectin')
+    user = relationship(
+        'User',
+        back_populates='tracking_links',
+        # lazy='selectin'
+    )
+    tracking_item = relationship(
+        'TrackingItem',
+        back_populates='user_links',
+        # lazy='selectin'
+    )
 
 
 class Tag(Base):
@@ -155,6 +168,5 @@ class Tag(Base):
         'TrackingItem',
         secondary=tags_tracking_items,
         back_populates='tags',
-        comment='Товары, отмеченные этим тегом',
-        lazy='selectin'
+        # lazy='selectin'
     )
