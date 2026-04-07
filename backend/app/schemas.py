@@ -27,6 +27,17 @@ class UserRead(TimestampedModels):
     model_config = ConfigDict(from_attributes=True)
 
 
+class Token(MyDataModels):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenWithUser(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserRead
+
+
 class TagCreate(MyDataModels):
     name: str = Field(..., min_length=2, max_length=60)
     description: str | None = Field(default=None, min_length=2, max_length=127)
