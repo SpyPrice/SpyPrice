@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def create_user(db: AsyncSession, email: str, login: str, hash_password: str):
-    user = User(email=email, login=login, password=hash_password)
+async def create_user(db: AsyncSession, email: str, name: str, hash_password: str):
+    user = User(email=email, name=name, password=hash_password)
     db.add(user)
     await db.flush()
     return user
