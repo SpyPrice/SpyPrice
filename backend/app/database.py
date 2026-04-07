@@ -1,9 +1,13 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase
+import os
 
 
-# В дальнейшем нужно получать из ENV
-DATABASE_URL = 'postgresql+asyncpg://postgres:postgres@localhost:5432/price_tracker'
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+asyncpg://postgres:postgres@localhost:5432/price_tracker"  # значение по умолчанию
+)
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,          # вывод в консоль запросов к db
