@@ -1,126 +1,106 @@
-import os
-import re
-import time
-from datetime import datetime, timezone
-from typing import Any
+import sys
+from urllib.parse import urlparse
 
-import httpx
-from bs4 import BeautifulSoup
-
-API_BASE_URL = os.getenv("API_BASE_URL", "http://backend:8000")
-ETL_API_KEY = os.getenv("ETL_API_KEY", "change-me-etl-key")
-REQUEST_TIMEOUT_SECONDS = int(os.getenv("REQUEST_TIMEOUT_SECONDS", "20"))
-MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))
-FETCH_DELAY_SECONDS = float(os.getenv("FETCH_DELAY_SECONDS", "1"))
-
-HEADERS = {
-    "User-Agent": "PriceTrackerBot/1.0 (+educational project)",
-    "Accept-Language": "ru,en;q=0.9",
-}
+from get_price.get_price_DNS import get_product_info as get_dns_info
+from get_price.get_price_Steam import get_game_info as get_steam_info
+from get_price.get_price_LisSkins import get_product_info as get_lisskins_info
+from get_price.get_price_Sportmaster import get_product_info as get_sportmaster_info
+from get_price.get_price_ChitaiGorod import get_product_info as get_chitai_gorod_info
+from get_price.get_price_Mosigra import get_product_info as get_mosigra_info
+from get_price.get_price_Hobbygames import get_product_info as get_hobbygames_info
+from get_price.get_price_Playerok import get_product_info as get_playerok_info
+from get_price.get_price_AutoRu import get_product_info as get_auto_ru_info
+from get_price.get_price_Avito import get_product_info as get_avito_info
 
 
-def extract_price_dns(html: str) -> tuple[str | None, str]:
-    soup = BeautifulSoup(html, "html.parser")
-    text = soup.get_text(" ", strip=True)
-    match = re.search(r"(\d[\d\s]{2,})\s?[₽р]", text)
-    if not match:
-        return None, "RUB"
-    value = re.sub(r"\s+", "", match.group(1))
-    return f"{int(value):.2f}", "RUB"
+def detect_store(url):
+    domain = urlparse(url).netloc.lower()
+    if "dns-shop.ru" in domain:
+        return "dns"
+    elif "steampowered.com" in domain or url.strip().isdigit():
+        return "steam"
+    elif "lis-skins.com" in domain or "lis-skins.ru" in domain:
+        return "lisskins"
+    elif "sportmaster.ru" in domain:
+        return "sportmaster"
+    elif "chitai-gorod.ru" in domain:
+        return "chitai_gorod"
+    elif "mosigra.ru" in domain:
+        return "mosigra"
+    elif "hobbygames.ru" in domain:
+        return "hobbygames"
+    elif "playerok.com" in domain:
+        return "playerok"
+    elif "auto.ru" in domain:
+        return "auto_ru"
+    elif "avito.ru" in domain:
+        return "avito"
+    else:
+        return None
 
 
-def extract_price_ozon(html: str) -> tuple[str | None, str]:
-    soup = BeautifulSoup(html, "html.parser")
-    text = soup.get_text(" ", strip=True)
-    match = re.search(r"(\d[\d\s]{2,})\s?[₽р]", text)
-    if not match:
-        return None, "RUB"
-    value = re.sub(r"\s+", "", match.group(1))
-    return f"{int(value):.2f}", "RUB"
+def fetch_info(user_input):
+    store = detect_store(user_input)
+
+    if store == "steam":
+        return get_steam_info(user_input)
+    elif store == "dns":
+        return get_dns_info(user_input, headless=False)
+    elif store == "lisskins":
+        return get_lisskins_info(user_input, headless=True)
+    elif store == "sportmaster":
+        return get_sportmaster_info(user_input, headless=True)
+    elif store == "chitai_gorod":
+        return get_chitai_gorod_info(user_input, headless=True)
+    elif store == "mosigra":
+        return get_mosigra_info(user_input, headless=True)
+    elif store == "hobbygames":
+        return get_hobbygames_info(user_input, headless=True)
+    elif store == "playerok":
+        return get_playerok_info(user_input, headless=True)
+    elif store == "auto_ru":
+        return get_auto_ru_info(user_input, headless=True)
+    elif store == "avito":
+        return get_avito_info(user_input, headless=False)
+    else:
+        raise ValueError(f"Неподдерживаемый магазин или некорректная ссылка {user_input}")
 
 
-def safe_fetch(url: str) -> str:
-    last_error = ""
-    for attempt in range(MAX_RETRIES):
-        try:
-            with httpx.Client(timeout=REQUEST_TIMEOUT_SECONDS, follow_redirects=True, headers=HEADERS) as client:
-                response = client.get(url)
-                response.raise_for_status()
-                return response.text
-        except Exception as exc:  # noqa: BLE001
-            last_error = str(exc)
-            sleep_sec = 2**attempt
-            time.sleep(sleep_sec)
-    raise RuntimeError(last_error)
+def print_info(info):
+    if not info:
+        print("Информация не найдена")
+        return
+
+    print(f"\n {info['store']}")
+    print(f"Название: {info['name']}")
+    print(f"Цена: {info['price_str']}")
+    print(f"Ссылка: {info['url']}")
+
+    # Дополнительная информация (не всегда робит)
+    extra = info.get('extra', {})
+    if info['store'] == 'Steam':
+        if extra.get('developers'):
+            print(f"Разработчик: {', '.join(extra['developers'])}")
+        if extra.get('release_date'):
+            print(f"Дата выхода: {extra['release_date']}")
+        if extra.get('discount_percent', 0) > 0:
+            print(f"Скидка: {extra['discount_percent']}%")
+    elif info['store'] == 'LisSkins':
+        if extra.get('prices_by_wear'):
+            print("Цены по износам:")
+            for wear, price in extra['prices_by_wear'].items():
+                print(f"  {wear}: ${price:.2f}")
 
 
-def post_snapshot(payload: dict[str, Any]) -> None:
-    with httpx.Client(timeout=REQUEST_TIMEOUT_SECONDS) as client:
-        response = client.post(
-            f"{API_BASE_URL}/api/v1/price-snapshots/internal",
-            json=payload,
-            headers={"X-ETL-API-Key": ETL_API_KEY},
-        )
-        response.raise_for_status()
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        user_input = sys.argv[1]
+    else:
+        user_input = input("Введите ссылку на товар: ").strip()
 
-
-def collect_once(product_id: str, source: str, url: str) -> None:
-    fetched_at = datetime.now(timezone.utc).isoformat()
     try:
-        html = safe_fetch(url)
-        if source == "dns_html":
-            price, currency = extract_price_dns(html)
-        elif source == "ozon_html":
-            price, currency = extract_price_ozon(html)
-        else:
-            raise ValueError(f"Unsupported source: {source}")
-
-        if price is None:
-            payload = {
-                "product_id": product_id,
-                "price": "0.00",
-                "currency": "RUB",
-                "fetched_at": fetched_at,
-                "status": "error",
-                "error_message": "price_not_found",
-                "availability": "unknown",
-                "raw_data": {"source": source},
-            }
-        else:
-            payload = {
-                "product_id": product_id,
-                "price": price,
-                "currency": currency,
-                "fetched_at": fetched_at,
-                "status": "success",
-                "error_message": None,
-                "availability": "unknown",
-                "raw_data": {"source": source},
-            }
-        post_snapshot(payload)
-    except Exception as exc:  # noqa: BLE001
-        error_payload = {
-            "product_id": product_id,
-            "price": "0.00",
-            "currency": "RUB",
-            "fetched_at": fetched_at,
-            "status": "error",
-            "error_message": str(exc)[:500],
-            "availability": "unknown",
-            "raw_data": {"source": source, "url": url},
-        }
-        post_snapshot(error_payload)
-    finally:
-        time.sleep(FETCH_DELAY_SECONDS)
-
-
-if __name__ == "__main__":
-    demo_items = os.getenv("DEMO_ITEMS", "")
-    if not demo_items:
-        print("Set DEMO_ITEMS as product_id|parser_type|url;product_id|parser_type|url")
-        raise SystemExit(1)
-
-    for row in demo_items.split(";"):
-        product_id, parser_type, url = row.split("|", maxsplit=2)
-        collect_once(product_id.strip(), parser_type.strip(), url.strip())
-    print("ETL run completed")
+        info = fetch_info(user_input)
+        print_info(info)
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        sys.exit(1)
