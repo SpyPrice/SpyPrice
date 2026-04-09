@@ -1,22 +1,31 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
-from ..schemas import UserRead
+from app.models import User
+from app.repository import users as users_repository
 
-from ..repository import users as user_repository
 
-
-def _hash_password(password: str):
+def _hash_password(password: str) -> str:
     return ''.join(chr(ord(i) + 1) for i in password)
 
 
-async def create_user(db: AsyncSession, email: str, login: str, password: str) -> UserRead:
-    if await user_repository.get_user(db, email):
+def _verify_password(check_password, hashed_password) -> bool:
+    return _hash_password(check_password) == hashed_password
+
+
+async def create_user(db: AsyncSession, email: str, name: str, password: str) -> User:
+    if await users_repository.get_user_by_email(db, email):
         raise HTTPException(status_code=400, detail='User already exists. Email is taken.')
 
-    user = await user_repository.create_user(db, email, login, _hash_password(password))
+    user = await users_repository.create_user(db, email, name, _hash_password(password))
     await db.commit()
-    return UserRead.model_validate(user)
+    return user
 
 
+async def authenticate_user(db: AsyncSession, email: str, password: str) -> User:
+    user = await users_repository.get_user_by_email(db, email)
+    if not user:
+        raise HTTPException(status_code=400, detail='User does not exist.')
+    elif not _verify_password(password, user.password):
+        raise HTTPException(status_code=400, detail='Invalid password or email.')
 
-
+    return user

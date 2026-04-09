@@ -22,7 +22,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор пользователя')
-    login = Column(String, nullable=False, unique=True, comment='Логин пользователя')
+    name = Column(String, nullable=False, comment='Имя пользователя')
     password = Column(String, nullable=False, comment='Хэш пароля')
     email = Column(String(127), nullable=False, unique=True, comment='Email пользователя')
     created_at = Column(DateTime, server_default=func.now(), comment='Дата создания')

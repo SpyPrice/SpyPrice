@@ -15,16 +15,27 @@ class TimestampedModels(MyDataModels):
 
 class UserCreate(MyDataModels):
     """Запрос создания пользователя"""
-    login: str = Field(..., min_length=5, max_length=127)
+    name: str = Field(..., min_length=5, max_length=127)
     password: str = Field(..., min_length=8, max_length=71)
     email: EmailStr
 
 
 class UserRead(TimestampedModels):
     id: int
-    login: str
+    name: str
     email: EmailStr
     model_config = ConfigDict(from_attributes=True)
+
+
+class Token(MyDataModels):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenWithUser(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserRead
 
 
 class TagCreate(MyDataModels):
