@@ -10,7 +10,7 @@ from app.dependency import get_current_user, get_async_session
 router = APIRouter()
 
 
-@router.post('/users', tags=['users'], response_model=TokenWithUser)
+@router.post('/register', tags=['users'], response_model=TokenWithUser)
 async def create_user(new_user: UserCreate, db: AsyncSession = Depends(get_async_session)):
     user = await users_service.create_user(db, new_user.email, new_user.name, new_user.password)
     access_token = create_access_token(data={'sub': str(user.id)})
@@ -22,7 +22,7 @@ async def create_user(new_user: UserCreate, db: AsyncSession = Depends(get_async
 
 
 @router.get('/me', tags=['users'], response_model=UserRead)
-async def get_current_user(current_user: UserRead = Depends(get_current_user)):
+async def get_me(current_user: UserRead = Depends(get_current_user)):
     return current_user
 
 
