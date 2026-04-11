@@ -1,4 +1,3 @@
-# base_parser.py
 import json
 import re
 import os
