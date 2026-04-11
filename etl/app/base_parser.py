@@ -9,7 +9,6 @@ from . import config
 
 
 class BaseStoreParser(ABC):
-
     store_name = "BaseStore"
 
     def __init__(self, headless=True):
