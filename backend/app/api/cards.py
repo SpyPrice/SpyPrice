@@ -12,7 +12,7 @@ from app.services import cards as cards_repository
 router = APIRouter()
 
 
-@router.post('/add_watch_item', tags=['cards'], response_model=WatchResponse)
+@router.post('/add_watch_item', tags=['cards', 'safe'], response_model=WatchResponse)
 async def add_watch(
         item: ItemCreate,
         db: AsyncSession = Depends(get_async_session),

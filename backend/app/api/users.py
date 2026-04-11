@@ -21,7 +21,7 @@ async def create_user(new_user: UserCreate, db: AsyncSession = Depends(get_async
     )
 
 
-@router.get('/me', tags=['users'], response_model=UserRead)
+@router.get('/me', tags=['users', 'safe'], response_model=UserRead)
 async def get_me(current_user: UserRead = Depends(get_current_user)):
     return current_user
 
