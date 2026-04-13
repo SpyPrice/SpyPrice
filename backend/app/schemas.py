@@ -76,6 +76,11 @@ class ItemRead(TimestampedModels):
     model_config = ConfigDict(from_attributes=True)
 
 
+class WatchResponse(MyDataModels):
+    status: str
+    message: str
+
+
 class PriceSnapshotCreate(MyDataModels):
     tracking_item_id: int
     price: Decimal
