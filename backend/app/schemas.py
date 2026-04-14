@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from pydantic import EmailStr, HttpUrl
+from typing import Literal
 from decimal import Decimal
 from datetime import datetime
 
@@ -15,7 +16,7 @@ class TimestampedModels(MyDataModels):
 
 class UserCreate(MyDataModels):
     """Запрос создания пользователя"""
-    name: str = Field(..., min_length=5, max_length=127)
+    name: str = Field(..., min_length=3, max_length=127)
     password: str = Field(..., min_length=8, max_length=71)
     email: EmailStr
 
@@ -77,7 +78,7 @@ class ItemRead(TimestampedModels):
 
 
 class WatchResponse(MyDataModels):
-    status: str
+    status: Literal['success', 'exists', 'pending', 'error']
     message: str
 
 
@@ -104,3 +105,12 @@ class SourceRead(TimestampedModels):
     is_collected: bool
     model_config = ConfigDict(from_attributes=True)
 
+
+class ItemCreateWithPriceSnapshot(MyDataModels):
+    user_id: int
+    url: str
+    name: str
+    source_id: int
+    is_in_stock: str | None = None
+    price: Decimal
+    currency: str
