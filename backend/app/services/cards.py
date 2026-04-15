@@ -2,7 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 
 from app.repository import cards as cards_repository
-from app.models import TrackingItem, PriceSnapshot
 from decimal import Decimal
 
 from urllib.parse import urlparse

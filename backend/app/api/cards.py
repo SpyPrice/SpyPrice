@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependency import get_current_user, get_async_session
-from app.schemas import UserRead, ItemCreate, WatchResponse, ItemCreateWithPriceSnapshot
+from app.schemas import UserRead, ItemCreate, WatchResponse, ItemCreateWithPriceSnapshot, ItemRead
 
 from app.services import cards as cards_service
 
@@ -14,7 +14,7 @@ from app.services import cards as cards_service
 router = APIRouter()
 
 
-@router.post('/add_watch_item', tags=['cards', 'safe'], response_model=WatchResponse)
+@router.post('/cards/add_watch_item', tags=['cards', 'safe'], response_model=WatchResponse)
 async def add_watch(
         item: ItemCreate,
         db: AsyncSession = Depends(get_async_session),
@@ -43,7 +43,7 @@ async def add_watch(
     )
 
 
-@router.post('/webhook/etl-add-item-parse-result', include_in_schema=False)
+@router.post('/webhook/etl_add_item_parse_result', include_in_schema=False)
 async def parse_result(
         card: ItemCreateWithPriceSnapshot,
         db: AsyncSession = Depends(get_async_session)
@@ -71,3 +71,8 @@ async def parse_result(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f'Error: {e}'
         )
+
+
+@router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=ItemRead)
+async def get_all_watch_items(db: AsyncSession = Depends(get_async_session), current_user: UserRead = Depends(get_current_user)):
+    pass
