@@ -1,6 +1,7 @@
-from app.models import TrackingItem, UsersTrackingItem, Source
+from app.models import TrackingItem, UsersTrackingItem, Source, PriceSnapshot
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
+from decimal import Decimal
 
 
 async def get_card_by_url(url: str, db: AsyncSession) -> TrackingItem | None:
@@ -35,7 +36,7 @@ async def check_user_card_watch(user_id: int, card_id: int, db: AsyncSession) ->
     return result.scalar_one_or_none()
 
 
-async def create_card(url: str, name: str, is_in_stock: bool, source_id: int, db: AsyncSession) -> TrackingItem:
+async def create_card(url: str, name: str, is_in_stock: bool | None, source_id: int, db: AsyncSession) -> TrackingItem:
     new_card = TrackingItem(
         url=url,
         name=name,
@@ -48,3 +49,13 @@ async def create_card(url: str, name: str, is_in_stock: bool, source_id: int, db
     return new_card
 
 
+async def create_price_snapshot(item_id: int, price: Decimal | None, currency: str | None, db: AsyncSession) -> PriceSnapshot:
+    new_price_snapshot = PriceSnapshot(
+        tracking_item_id=item_id,
+        price=price,
+        currency=currency
+    )
+    db.add(new_price_snapshot)
+    await db.flush()
+    await db.refresh(new_price_snapshot)
+    return new_price_snapshot
