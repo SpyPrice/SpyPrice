@@ -73,6 +73,10 @@ async def parse_result(
         )
 
 
-@router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=ItemRead)
-async def get_all_watch_items(db: AsyncSession = Depends(get_async_session), current_user: UserRead = Depends(get_current_user)):
-    pass
+@router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=list[ItemRead])
+async def get_all_watch_items_with_snapshots(
+        db: AsyncSession = Depends(get_async_session),
+        current_user: UserRead = Depends(get_current_user)
+):
+    user_cards = await cards_service.get_all_users_cards_with_snapshots(current_user.id, db)
+    return user_cards
