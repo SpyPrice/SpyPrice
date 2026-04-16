@@ -39,24 +39,24 @@ async def add_watch(url: str, user_id: int, db: AsyncSession) -> str:
         return 'success'
 
     # Карточки нет -> отправляем запрос в ETL на создание
-    await notify_etl_to_parse(norm_url, user_id)
+    await notify_etl_to_parse(norm_url, user_id, source_id)
     return 'pending'
 
 
-async def notify_etl_to_parse(url: str, user_id: int):
+async def notify_etl_to_parse(url: str, user_id: int, source_id: int):
     # Потом брать из ENV
-    etl_url = 'http://127.0.0.1:8000/ask_parse'
+    etl_url = 'http://127.0.0.1:8080/ask_parse_new_item'
     callback_url = 'http://127.0.0.1:8000/webhook/etl-add-item-parse-result'
     print(f'{url=}, {user_id=}')
     async with AsyncClient() as client:
         try:
-            m = await client.post(etl_url, json={
+            result = await client.post(etl_url, json={
                 'url': url,
                 'user_id': user_id,
-                'callback_url': callback_url
+                'callback_url': callback_url,
+                'source_id': source_id
             })
-            if m.status_code != 200:
-                raise Exception(m.status_code)
+            result.raise_for_status()
         except Exception as e:
             print('\n'*3 + f'ошибка связи с ETL: {e}' + '\n'*3)
 
