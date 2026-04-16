@@ -19,7 +19,21 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+
+		"paths": {
+			"@/*": ["./src/*"],
+			"@Api/*": ["./src/Api/*"],
+			"@Components/*": ["./src/Components/*"],
+			"@Constants/*": ["./src/Constants/*"],
+			"@Contexts/*": ["./src/Contexts/*"],
+			"@Hooks/*": ["./src/Hooks/*"],
+			"@Models/*": ["./src/Models/*"],
+			"@Providers/*": ["./src/Providers/*"],
+			"@Schemas/*": ["./src/Schemas/*"],
+			"@Styles/*": ["./src/Styles/*"],
+			"@Utils/*": ["./src/Utils/*"]
+		}
 	},
 	"include": ["src", ".storybook"]
 }

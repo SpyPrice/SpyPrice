@@ -21,11 +21,11 @@ export default defineConfig({
 			'@Utils': path.resolve(__dirname, './src/Utils'),
 		},
 	},
-	css: {
-		preprocessorOptions: {
-			scss: {
-				additionalData: `@import "@Styles/variables.scss";`,
-			},
-		},
-	},
+	// css: {
+	// 	preprocessorOptions: {
+	// 		scss: {
+	// 			additionalData: `@import "@Styles/variables.scss";`,
+	// 		},
+	// 	},
+	// },
 })
