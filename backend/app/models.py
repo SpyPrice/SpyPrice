@@ -86,7 +86,7 @@ class TrackingItem(Base):
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор товара')
     name = Column(String, comment='Название товара')
     url = Column(Text, nullable=False, comment='Ссылка на товар')
-    is_in_stock = Column(Boolean, comment='Товар в наличии')
+    is_in_stock = Column(Boolean, nullable=True, comment='Товар в наличии')
 
     source_id = Column(Integer, ForeignKey('sources.id'), comment='Ссылка на источник')
 
@@ -136,7 +136,7 @@ class UsersTrackingItem(Base):
     __tablename__ = 'users_tracking_items'
 
     id = Column(Integer, primary_key=True, comment='Уникальный идентификатор связи')
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, comment='ID пользователя')
+    user_id = Column(Integer, ForeignKey('users.id'), comment='ID пользователя')
     tracking_item_id = Column(Integer, ForeignKey('tracking_items.id'), nullable=False, comment='ID товара')
     created_at = Column(DateTime, server_default=func.now(), comment='Дата добавления товара пользователем')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления связи')

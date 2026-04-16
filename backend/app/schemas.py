@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from pydantic import EmailStr, HttpUrl
+from typing import Literal
 from decimal import Decimal
 from datetime import datetime
 
@@ -15,7 +16,7 @@ class TimestampedModels(MyDataModels):
 
 class UserCreate(MyDataModels):
     """Запрос создания пользователя"""
-    name: str = Field(..., min_length=5, max_length=127)
+    name: str = Field(..., min_length=3, max_length=127)
     password: str = Field(..., min_length=8, max_length=71)
     email: EmailStr
 
@@ -43,7 +44,7 @@ class TagCreate(MyDataModels):
     description: str | None = Field(default=None, min_length=2, max_length=127)
 
 
-class TagRead(TimestampedModels):
+class TagRead(MyDataModels):
     id: int
     name: str
     description: str | None
@@ -63,17 +64,36 @@ class ItemUpdate(MyDataModels):
     is_in_stock: bool | None = None
 
 
-class ItemRead(TimestampedModels):
+class ItemRead(MyDataModels):
     id: int
     name: str
     url: str
     is_in_stock: bool | None = None
-    source_id: int
-    source_name: str
-    tags: list[TagRead] = Field(default_factory=list)
-    """Последняя цена на товар"""
-    last_price: Decimal | None = None
+    currency: str = 'RUB'
+    last_snapshot: ShortPriceSnapshot | None
+    snapshot_7_days_ago: ShortPriceSnapshot | None
+    source: ShortSourceRead
+
+    tags: list[TagRead] | None = Field(default_factory=list)
+
     model_config = ConfigDict(from_attributes=True)
+
+
+class ShortSourceRead(MyDataModels):
+    id: int
+    name: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ShortPriceSnapshot(MyDataModels):
+    price: Decimal | None = None
+    time: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WatchResponse(MyDataModels):
+    status: Literal['success', 'exists', 'pending', 'error']
+    message: str
 
 
 class PriceSnapshotCreate(MyDataModels):
@@ -99,3 +119,12 @@ class SourceRead(TimestampedModels):
     is_collected: bool
     model_config = ConfigDict(from_attributes=True)
 
+
+class ItemCreateWithPriceSnapshot(MyDataModels):
+    user_id: int
+    url: str
+    name: str
+    source_id: int
+    is_in_stock: str | None = None
+    price: Decimal
+    currency: str
