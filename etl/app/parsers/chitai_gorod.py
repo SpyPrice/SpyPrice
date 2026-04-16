@@ -1,11 +1,15 @@
 import re
+from decimal import Decimal
+from typing import Optional, Dict, Any
+from playwright.async_api import Page
+
 from ..base_parser import BaseStoreParser
 from .. import config
 
 class ChitaiGorodParser(BaseStoreParser):
     store_name = "Читай-город"
 
-    async def _extract_info(self, page, url):
+    async def _extract_info(self, page: Page, url: str) -> Optional[Dict[str, Any]]:
         await page.wait_for_selector('h1', timeout=config.WAIT_TIMEOUT)
 
         ld = await self._extract_json_ld(page)
@@ -35,19 +39,18 @@ class ChitaiGorodParser(BaseStoreParser):
             return None
 
         if '.' in price_text:
-            price_float = float(re.sub(r'[^\d.]', '', price_text))
-            price_int = int(price_float)
+            price = Decimal(re.sub(r'[^\d.]', '', price_text))
         else:
             price_clean = re.sub(r'[^\d]', '', price_text)
             if not price_clean:
                 return None
-            price_int = int(price_clean)
+            price = Decimal(price_clean)
 
-        price_formatted = f"{price_int:,} руб".replace(',', ' ')
+        price_formatted = f"{price:,} руб".replace(',', ' ')
 
         return {
             'name': name,
             'price_str': price_formatted,
-            'price_float': float(price_int),
-            'extra': {}
+            'price': price,
+            'currency': 'RUB'
         }
