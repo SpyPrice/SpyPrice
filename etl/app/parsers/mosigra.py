@@ -1,13 +1,16 @@
 import re
+from decimal import Decimal
+
 from ..base_parser import BaseStoreParser
 from .. import config
-
+from playwright.async_api import Page
+from typing import Dict, Any, Optional
 
 class MosigraParser(BaseStoreParser):
     store_name = "Мосигра"
 
-    async def _extract_info(self, page, url):
-        await page.wait_for_timeout(config.WAIT_TIMEOUT)
+    async def _extract_info(self, page: Page, url: str) -> Optional[Dict[str, Any]]:
+        await page.wait_for_selector('h1', timeout=config.WAIT_TIMEOUT)
 
         ld = await self._extract_json_ld(page)
         if ld:
@@ -40,6 +43,6 @@ class MosigraParser(BaseStoreParser):
         return {
             'name': name,
             'price_str': price_text,
-            'price_float': float(price_clean),
-            'extra': {}
+            'price': Decimal(price_clean),
+            'currency': 'RUB'
         }

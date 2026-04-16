@@ -2,15 +2,15 @@ from urllib.parse import urlparse
 
 from .steam import SteamParser
 from .dns import DNSParser
-from .ozon import OzonParser
-from .sportmaster import SportmasterParser
+#from .ozon import OzonParser
+#from .sportmaster import SportmasterParser
 from .lisskins import LisSkinsParser
 from .mosigra import MosigraParser
 from .hobbygames import HobbygamesParser
 from .chitai_gorod import ChitaiGorodParser
 from .playerok import PlayerokParser
-from .auto_ru import AutoRuParser
-from .avito import AvitoParser
+#from .auto_ru import AutoRuParser
+#from .avito import AvitoParser
 from .steam_market import SteamMarketParser
 
 
@@ -55,12 +55,12 @@ def get_parser(store_key, headless=True):
             return SteamMarketParser(headless)
         case "dns":
             return DNSParser(headless)
-        case "ozon":
-            return OzonParser(headless)
+        #case "ozon":
+        #    return OzonParser(headless)
         case "lisskins":
             return LisSkinsParser(headless)
-        case "sportmaster":
-            return SportmasterParser(headless)
+        #case "sportmaster":
+        #    return SportmasterParser(headless)
         case "chitai_gorod":
             return ChitaiGorodParser(headless)
         case "mosigra":
@@ -69,9 +69,9 @@ def get_parser(store_key, headless=True):
             return HobbygamesParser(headless)
         case "playerok":
             return PlayerokParser(headless)
-        case "auto_ru":
-            return AutoRuParser(headless)
-        case "avito":
-            return AvitoParser(headless)
+        #case "auto_ru":
+        #    return AutoRuParser(headless)
+        #case "avito":
+        #    return AvitoParser(headless)
         case _:
             raise ValueError(f"Неподдерживаемый магазин: {store_key}")
