@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from decimal import Decimal
 from typing import Optional
-from app.parsers import get_parser, detect_store
+from app.choose_parser import get_parser, detect_store
 from app.schemas import ItemResponse, ItemRequest
 import logging
 

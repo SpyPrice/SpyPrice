@@ -2,7 +2,7 @@ import sys
 import asyncio
 from typing import Optional
 
-from app.parsers import get_parser, detect_store
+from app.choose_parser import get_parser, detect_store
 
 
 async def async_main(user_input):
