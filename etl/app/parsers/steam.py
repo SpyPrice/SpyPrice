@@ -1,7 +1,10 @@
 import asyncio
+from decimal import Decimal
+
 import requests
 from .. import config
-
+from typing import Optional, Dict, Any
+import logging
 
 class SteamParser:
     store_name = "Steam"
@@ -9,10 +12,10 @@ class SteamParser:
     def __init__(self, headless=True):
         pass
 
-    async def get_product_info(self, url_or_id):
+    async def get_product_info(self, url_or_id: str) -> Optional[Dict[str, Any]]:
         return await asyncio.to_thread(self._get_product_info_sync, url_or_id)
 
-    def _get_product_info_sync(self, url_or_id):
+    def _get_product_info_sync(self, url_or_id: str) -> Optional[Dict[str, Any]]:
         if "store.steampowered.com/app/" in url_or_id:
             try:
                 app_id = url_or_id.split('/app/')[1].split('/')[0]
@@ -42,30 +45,24 @@ class SteamParser:
 
             if is_free:
                 price_str = "Бесплатно"
-                price_float = 0.0
+                price = 0
             elif price_info:
                 price_str = price_info.get("final_formatted", "Цена не указана")
-                price_float = price_info.get("final", 0) / 100
+                price = Decimal(price_info.get("final", 0)) / 100
             else:
                 price_str = "Цена не найдена"
-                price_float = None
+                price = None
+
+            if price is None:
+                return None
 
             return {
-                "store": self.store_name,
                 "name": name,
                 "price_str": price_str,
-                "price_float": price_float,
+                "price": Decimal(price),
                 "url": f"https://store.steampowered.com/app/{app_id}",
-                "extra": {
-                    "app_id": app_id,
-                    "is_free": is_free,
-                    "currency": price_info.get("currency"),
-                    "discount_percent": price_info.get("discount_percent", 0),
-                    "developers": game.get("developers", []),
-                    "publishers": game.get("publishers", []),
-                    "release_date": game.get("release_date", {}).get("date")
-                }
+                "currency": price_info.get("currency", "RUB")
             }
         except Exception as e:
-            print(f"Ошибка Steam API: {e}")
+            logging.error(f"Ошибка Steam API: {e}")
             return None
