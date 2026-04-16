@@ -125,6 +125,13 @@ class ItemCreateWithPriceSnapshot(MyDataModels):
     url: str
     name: str
     source_id: int
-    is_in_stock: str | None = None
+    is_in_stock: bool | None = None
     price: Decimal
     currency: str
+
+
+class AskNewItemParse(MyDataModels):
+    url: str
+    user_id: int
+    source_id: int
+    callback_url: str
