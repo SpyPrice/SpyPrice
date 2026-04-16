@@ -135,3 +135,9 @@ class AskNewItemParse(MyDataModels):
     user_id: int
     source_id: int
     callback_url: str
+
+
+class ParseError(BaseModel):
+    source_id: int
+    url: str
+    message: str

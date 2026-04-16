@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependency import get_current_user, get_async_session
-from app.schemas import UserRead, ItemCreate, WatchResponse, ItemCreateWithPriceSnapshot, ItemRead
+from app.schemas import UserRead, ItemCreate, WatchResponse, ItemCreateWithPriceSnapshot, ItemRead, ParseError
 
 from app.services import cards as cards_service
 
@@ -73,6 +73,11 @@ async def parse_result(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f'Error: {e}'
         )
+
+
+@router.post('/webhook/etl_add_item_parse_result/error', include_in_schema=False)
+def parse_error_result(error: ParseError):
+    print(f'\n\nНе удалось спарсить с источника номер {error.source_id}, url: {error.url}\nОшибка: {error.message}\n\n')
 
 
 @router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=list[ItemRead])

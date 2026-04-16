@@ -51,7 +51,7 @@ class BaseStoreParser(ABC):
         await page.screenshot(path=screenshot_path)
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(await page.content())
-        logging.DEBUG(f"Отладочные файлы сохранены: {screenshot_path}, {html_path}")
+        logging.debug(f"Отладочные файлы сохранены: {screenshot_path}, {html_path}")
 
     async def _extract_json_ld(self, page: Page) -> Optional[Dict[str, Any]]:
         try:

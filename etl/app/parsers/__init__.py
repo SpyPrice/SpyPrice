@@ -2,15 +2,15 @@ from urllib.parse import urlparse
 
 from .steam import SteamParser
 from .dns import DNSParser
-from .ozon import OzonParser
-from .sportmaster import SportmasterParser
+# from .ozon import OzonParser
+# from .sportmaster import SportmasterParser
 from .lisskins import LisSkinsParser
 from .mosigra import MosigraParser
 from .hobbygames import HobbygamesParser
 from .chitai_gorod import ChitaiGorodParser
 from .playerok import PlayerokParser
-from .auto_ru import AutoRuParser
-from .avito import AvitoParser
+# from .auto_ru import AutoRuParser
+# from .avito import AvitoParser
 from .steam_market import SteamMarketParser
 
 

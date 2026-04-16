@@ -75,7 +75,7 @@ class SteamMarketParser:
         import re
         if not price_str or price_str == 'Цена не найдена':
             return None
-        cleaned = re.sub(r'[^\d.,]', '', price_str).replace(',', '.')
+        cleaned = re.sub(r'[^\d.,]', '', price_str).replace(',', '.').rstrip('.')
         try:
             return Decimal(cleaned)
         except ValueError:
