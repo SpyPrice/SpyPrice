@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from urllib.parse import urlparse
 
-from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead
+from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead, AskNewItemParse
 
 
 def get_normalize_url(url: str) -> str:
@@ -46,16 +46,16 @@ async def add_watch(url: str, user_id: int, db: AsyncSession) -> str:
 async def notify_etl_to_parse(url: str, user_id: int, source_id: int):
     # Потом брать из ENV
     etl_url = 'http://127.0.0.1:8080/ask_parse_new_item'
-    callback_url = 'http://127.0.0.1:8000/webhook/etl-add-item-parse-result'
+    callback_url = 'http://127.0.0.1:8000/webhook/etl_add_item_parse_result'
     print(f'{url=}, {user_id=}')
     async with AsyncClient() as client:
         try:
-            result = await client.post(etl_url, json={
-                'url': url,
-                'user_id': user_id,
-                'callback_url': callback_url,
-                'source_id': source_id
-            })
+            result = await client.post(etl_url, json=AskNewItemParse(
+                url=url,
+                user_id=user_id,
+                source_id=source_id,
+                callback_url=callback_url
+            ).model_dump())
             result.raise_for_status()
         except Exception as e:
             print('\n'*3 + f'ошибка связи с ETL: {e}' + '\n'*3)
@@ -63,7 +63,7 @@ async def notify_etl_to_parse(url: str, user_id: int, source_id: int):
 
 async def create_card_and_watch(user_id: int, url: str, name: str, is_in_stock: bool | None,
                                 source_id: int, db: AsyncSession) -> int:
-    new_card = await cards_repository.create_card(url, name, is_in_stock, source_id, db)
+    new_card = await cards_repository.create_card(get_normalize_url(url), name, is_in_stock, source_id, db)
     await cards_repository.user_watch_card_add(user_id, new_card.id, db)
     await db.commit()
     return new_card.id

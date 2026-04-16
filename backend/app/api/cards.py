@@ -64,7 +64,9 @@ async def parse_result(
             currency=card.currency,
             db=db
         )
-        return status.HTTP_200_OK
+        return {
+            'status': status.HTTP_200_OK
+        }
 
     except Exception as e:
         raise HTTPException(
