@@ -1,3 +1,9 @@
-.container {
-  // Add your styles here
+.card {
+	padding: 32px;
+	background: $white;
+	border: 1px solid $border;
+	border-radius: 14px;
+
+	display: flex;
+	flex-direction: column;
 }
