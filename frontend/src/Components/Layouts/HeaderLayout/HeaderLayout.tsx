@@ -1,27 +1,13 @@
-import styles from './HeaderLayout.module.scss'
+import Header from '@/Components/Widgets/Header'
+import { Outlet } from 'react-router-dom'
 
-interface HeaderLayoutProps {
-  className?: string
-  children?: React.ReactNode
-  onClick?: () => void
-  disabled?: boolean
-}
-
-export const HeaderLayout = ({ 
-  className, 
-  children, 
-  onClick, 
-  disabled = false 
-}: HeaderLayoutProps) => {
-  return (
-    <div 
-      className={`${styles.container} ${className || ''}`}
-      onClick={!disabled ? onClick : undefined}
-      aria-disabled={disabled}
-    >
-      {children || <h1>HeaderLayout Component</h1>}
-    </div>
-  )
+export const HeaderLayout = () => {
+	return (
+		<>
+			<Header />
+			<Outlet />
+		</>
+	)
 }
 
 export default HeaderLayout

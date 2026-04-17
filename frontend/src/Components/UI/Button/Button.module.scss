@@ -2,14 +2,14 @@
 	padding: 8px 16px;
 	border: none;
 	border-radius: 4px;
-	background-color: $primary-color;
+	background-color: white;
 	color: white;
 	cursor: pointer;
-	font-size: $font-size-base;
+	font-size: 20px;
 	transition: all 0.2s ease;
 
 	&:hover:not(:disabled) {
-		background-color: darken($primary-color, 10%);
+		background-color: darken(white, 10%);
 	}
 
 	&:disabled {
