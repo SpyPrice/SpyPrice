@@ -1,24 +1,37 @@
 import styles from './Input.module.scss'
 
 interface InputProps {
-  className?: string
-  children?: React.ReactNode
-  onClick?: () => void
+	className?: string
+	id?: string
+	type?: 'text' | 'email' | 'password' | ''
+	value?: string | number
+	defaultValue?: string | number
+	placeholder?: string
+	onChange?: React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>
 }
 
-export const Input = ({ 
-  className, 
-  children, 
-  onClick, 
+export const Input = ({
+	className,
+	id,
+	type = 'text',
+	value,
+	defaultValue,
+	placeholder,
+	onChange,
+	...props
 }: InputProps) => {
-  return (
-    <div 
-      className={`${styles.container} ${className || ''}`}
-      onClick={onClick}
-    >
-      {children || <h1>Input Component</h1>}
-    </div>
-  )
+	return (
+		<input
+			className={`${styles.input} ${className || ''}`}
+			id={id}
+			type={type}
+			value={value}
+			defaultValue={defaultValue}
+			placeholder={placeholder}
+			onChange={onChange}
+			{...props}
+		/>
+	)
 }
 
 export default Input

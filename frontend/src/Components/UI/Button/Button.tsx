@@ -2,8 +2,10 @@ import styles from './Button.module.scss'
 
 interface ButtonProps {
 	className?: string
-	children?: React.ReactNode
+	children: React.ReactNode
 	type?: 'dark' | 'light' | 'dark-no-back'
+	size?: 'small' | 'medium' | 'large'
+	fullWidth?: boolean
 	onClick?: () => void
 	disabled?: boolean
 }
@@ -11,17 +13,24 @@ interface ButtonProps {
 export const Button = ({
 	className,
 	children,
+	size = 'medium',
+	type = 'dark',
+	fullWidth = false,
 	onClick,
 	disabled = false,
 }: ButtonProps) => {
 	return (
-		<div
-			className={`${styles.container} ${className || ''}`}
+		<button
+			className={`${styles.button} 
+        ${styles[type]} 
+        ${styles[size]}
+        ${fullWidth ? styles.fullWidth : ''}
+        ${className || ''}`}
 			onClick={!disabled ? onClick : undefined}
-			aria-disabled={disabled}
+			disabled={disabled}
 		>
-			{children || <h1>Button Component</h1>}
-		</div>
+			{children}
+		</button>
 	)
 }
 
