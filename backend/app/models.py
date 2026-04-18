@@ -9,10 +9,12 @@ from decimal import Decimal
 # Промежуточные таблицы
 # для связи тегов и товаров (many-to-many)
 tags_tracking_items = Table(
-    'tags_tracking_items',
+    'tags_tracking_items_by_user',
     Base.metadata,
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
-    Column('tracking_item_id', Integer, ForeignKey('tracking_items.id'), primary_key=True)
+    Column('id', Integer, primary_key=True),
+    Column('tag_id', Integer, ForeignKey('tags.id')),
+    Column('user_tracking_id', Integer, ForeignKey('users_tracking_items.id')),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False)
 )
 
 
@@ -100,9 +102,6 @@ class TrackingItem(Base):
         # lazy='selectin'
     )
 
-    # many-to-many теги
-    tags = relationship('Tag', secondary=tags_tracking_items, back_populates='tracking_items', lazy='selectin')
-
     # связь с пользователями
     user_links = relationship(
         'UsersTrackingItem',
@@ -141,6 +140,15 @@ class UsersTrackingItem(Base):
     created_at = Column(DateTime, server_default=func.now(), comment='Дата добавления товара пользователем')
     updated_at = Column(DateTime, onupdate=func.now(), comment='Дата последнего обновления связи')
 
+
+    tags = relationship(
+        'Tag',
+        secondary=tags_tracking_items,
+        back_populates='user_tracking_items',
+        # lazy='selectin'
+    )
+
+
     # Связи для удобной навигации
     user = relationship(
         'User',
@@ -165,7 +173,7 @@ class Tag(Base):
 
     # тег относится к товарам (many-to-many)
     tracking_items = relationship(
-        'TrackingItem',
+        'UsersTrackingItem',
         secondary=tags_tracking_items,
         back_populates='tags',
         # lazy='selectin'

@@ -59,8 +59,7 @@ async def start_parsing_exists_item_and_callback(data: AskExistsItemParse):
                 )
                 response = await client.post(data.callback_url, json=to_send_data.model_dump(mode='json'))
                 response.raise_for_status()
-                error_url = data.callback_url[:data.callback_url.find('/webhook')] + '/webhook/error'
-                print('\n\nУспешно спарсено, результат отправлен\n\n', error_url)
+                print('\n\nУспешно спарсено, результат отправлен\n\n')
             else:
                 raise ValueError(f'Не удалось спарсить карточку (Результат парсинга: None). Карточка: {data.item_id=} {data.url=}')
         except Exception as e:
@@ -77,7 +76,7 @@ async def get_snapshot(url: str) -> ParseResult | None:
     store_key = detect_store(url)
     if not store_key:
         return None
-    parser = get_parser(store_key, headless=True)
+    parser = get_parser(store_key, headless=False)
     result = await parser.get_product_info(url)
     if result is None or result.get('price') is None:
         return None
