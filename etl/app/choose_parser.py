@@ -2,15 +2,15 @@ from urllib.parse import urlparse
 
 from etl.app.parsers.steam import SteamParser
 from etl.app.parsers.dns import DNSParser
-#from .ozon import OzonParser
-#from .sportmaster import SportmasterParser
+#from etl.app.ozon import OzonParser
+#from etl.app.sportmaster import SportmasterParser
 from etl.app.parsers.lisskins import LisSkinsParser
 from etl.app.parsers.mosigra import MosigraParser
 from etl.app.parsers.hobbygames import HobbygamesParser
 from etl.app.parsers.chitai_gorod import ChitaiGorodParser
 from etl.app.parsers.playerok import PlayerokParser
-#from .auto_ru import AutoRuParser
-#from .avito import AvitoParser
+#from etl.app.auto_ru import AutoRuParser
+#from etl.app.avito import AvitoParser
 from etl.app.parsers.steam_market import SteamMarketParser
 
 

@@ -1,8 +1,8 @@
 import re
 from decimal import Decimal
 
-from ..base_parser import BaseStoreParser
-from .. import config
+from etl.app.base_parser import BaseStoreParser
+from etl.app import config
 from typing import Any, Optional, Dict
 from playwright.async_api import Page
 

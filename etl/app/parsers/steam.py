@@ -2,7 +2,7 @@ import asyncio
 from decimal import Decimal
 
 import requests
-from .. import config
+from etl.app import config
 from typing import Optional, Dict, Any
 import logging
 

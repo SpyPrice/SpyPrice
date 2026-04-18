@@ -43,6 +43,24 @@ async def add_watch(
     )
 
 
+@router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=list[ItemRead])
+async def get_all_watch_items_with_snapshots(
+        db: AsyncSession = Depends(get_async_session),
+        current_user: UserRead = Depends(get_current_user)
+):
+    user_cards = await cards_service.get_all_users_cards_with_snapshots(current_user.id, db)
+    return user_cards
+
+
+@router.post('/cards/parse_item', tags=['cards', 'safe'], response_model=ItemRead, include_in_schema=True)
+async def parse_item(
+        item_id: int,
+        db: AsyncSession = Depends(get_async_session),
+):
+    pass
+
+
+
 @router.post('/webhook/etl_add_item_parse_result', include_in_schema=False)
 async def parse_result(
         card: ItemCreateWithPriceSnapshot,
@@ -78,12 +96,3 @@ async def parse_result(
 @router.post('/webhook/etl_add_item_parse_result/error', include_in_schema=False)
 def parse_error_result(error: ParseError):
     print(f'\n\nНе удалось спарсить с источника номер {error.source_id}, url: {error.url}\nОшибка: {error.message}\n\n')
-
-
-@router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=list[ItemRead])
-async def get_all_watch_items_with_snapshots(
-        db: AsyncSession = Depends(get_async_session),
-        current_user: UserRead = Depends(get_current_user)
-):
-    user_cards = await cards_service.get_all_users_cards_with_snapshots(current_user.id, db)
-    return user_cards
