@@ -111,11 +111,10 @@ class PriceSnapshotRead(MyDataModels):
     model_config = ConfigDict(from_attributes=True)
 
 
-class SourceRead(TimestampedModels):
+class SourceRead(MyDataModels):
     id: int
     url: str
     name: str
-    is_collected: bool
     model_config = ConfigDict(from_attributes=True)
 
 
