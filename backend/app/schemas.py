@@ -100,7 +100,6 @@ class PriceSnapshotCreate(MyDataModels):
     tracking_item_id: int
     price: Decimal
     currency: str
-    created_at: datetime
 
 
 class PriceSnapshotRead(MyDataModels):
@@ -133,6 +132,13 @@ class ItemCreateWithPriceSnapshot(MyDataModels):
 class AskNewItemParse(MyDataModels):
     url: str
     user_id: int
+    source_id: int
+    callback_url: str
+
+
+class AskExistsItemParse(MyDataModels):
+    item_id: int
+    url: str
     source_id: int
     callback_url: str
 
