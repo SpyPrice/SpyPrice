@@ -13,4 +13,4 @@ COPY app.py ./etl/
 COPY backend_connect.py ./etl/
 
 #"xvfb-run"
-CMD ["xvfb-run", "uvicorn", "etl.backend_connect:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["xvfb-run", "-a", "uvicorn", "etl.backend_connect:app", "--host", "0.0.0.0", "--port", "8080"]
