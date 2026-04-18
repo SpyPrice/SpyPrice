@@ -1,5 +1,6 @@
 import HeaderLayout from '@/Components/Layouts/HeaderLayout'
 import LoginPage from '@/Components/Pages/LoginPage'
+import RegisterPage from '@/Components/Pages/RegisterPage'
 import StartPage from '@/Components/Pages/StartPage'
 import '@Styles/global.scss'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -18,7 +19,7 @@ function App() {
 						<Route path='/tracking/:id' element={<NotFoundPage />} />
 					</Route>
 					<Route path='/login' element={<LoginPage />} />
-					<Route path='/register' element={<NotFoundPage />} />
+					<Route path='/register' element={<RegisterPage />} />
 					<Route path='*' element={<NotFoundPage />} />
 				</Routes>
 			</BrowserRouter>
