@@ -11,8 +11,8 @@ export const LoginPage = () => {
 		<div className={styles.container}>
 			<h2>SpyPrice</h2>
 			<div className={styles.block}>
-				<p>Вход в аккаунт</p>
-				<div className={styles.inputgroup}>
+				<p className={styles.login_p}>Вход в аккаунт</p>
+				<div className={styles.input_group}>
 					<label htmlFor='email'>Email</label>
 					<Input
 						id='email'
@@ -23,11 +23,12 @@ export const LoginPage = () => {
 						}
 					/>
 				</div>
-				<div className={styles.inputgroup}>
+				<div className={styles.input_group}>
 					<label htmlFor='password'>Пароль</label>
 					<Input
 						id='password'
 						type='password'
+						placeholder='••••••••'
 						onChange={el =>
 							setInputsData({ ...inputsData, password: el.currentTarget.value })
 						}
@@ -35,7 +36,7 @@ export const LoginPage = () => {
 				</div>
 				<Button fullWidth>Войти</Button>
 
-				<p>
+				<p className={styles.no_account}>
 					Нет аккаунта? <Link to={'/register'}>Зарегистрироваться</Link>
 				</p>
 			</div>
