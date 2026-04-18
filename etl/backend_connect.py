@@ -41,7 +41,7 @@ async def start_parsing_new_item_and_callback(data: AskNewItemParse):
                 url=data.url,
                 message=str(e)
             )
-            error_url = data.callback_url[:data.callback_url.rfind('/webhook')] + '/error'
+            error_url = data.callback_url[:data.callback_url.find('/webhook')] + '/webhook/error'
             await client.post(error_url, json=error.model_dump(mode='json'))
             print(f'Не удалось отправить запрос/спарсить данные. Ошибка: {e}')
 
@@ -76,7 +76,7 @@ async def get_snapshot(url: str) -> ParseResult | None:
     store_key = detect_store(url)
     if not store_key:
         return None
-    parser = get_parser(store_key, headless=False)
+    parser = get_parser(store_key, headless=True)
     result = await parser.get_product_info(url)
     if result is None or result.get('price') is None:
         return None

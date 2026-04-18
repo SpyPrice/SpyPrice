@@ -13,10 +13,10 @@ async def get_card_by_url(url: str, db: AsyncSession) -> TrackingItem | None:
     return result.scalar_one_or_none()
 
 
-async def get_card_by_id(card_id: int, db: AsyncSession) -> TrackingItem:
+async def get_card_by_id(card_id: int, db: AsyncSession) -> TrackingItem | None:
     query = select(TrackingItem).where(TrackingItem.id == card_id)
     result = await db.execute(query)
-    return result.scalar_one()
+    return result.scalar_one_or_none()
 
 
 async def get_source_id(source_url: str, db: AsyncSession) -> int | None:
@@ -86,7 +86,7 @@ async def get_user_cards(user_id: int, db: AsyncSession) -> Sequence[UsersTracki
 
 async def get_card_snapshots(card_id: int, db: AsyncSession) -> Sequence[Decimal, datetime]:
     query = (
-        select(PriceSnapshot.price, PriceSnapshot.currency, PriceSnapshot.created_at)
+        select(PriceSnapshot.price, PriceSnapshot.created_at)
         .where(PriceSnapshot.tracking_item_id == card_id)
         .order_by(PriceSnapshot.created_at.asc())
     )

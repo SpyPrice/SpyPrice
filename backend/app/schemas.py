@@ -143,7 +143,19 @@ class AskExistsItemParse(MyDataModels):
     callback_url: str
 
 
-class ParseError(BaseModel):
+class ParseError(MyDataModels):
     source_id: int
     url: str
     message: str
+
+
+class PriceStatistics(MyDataModels):
+    min_price: ShortPriceSnapshot
+    max_price: ShortPriceSnapshot
+    avg_price: Decimal
+
+
+class ItemStatistic(MyDataModels):
+    item: ItemRead
+    statistics: PriceStatistics
+    update_history: list[ShortPriceSnapshot]

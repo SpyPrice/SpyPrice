@@ -56,17 +56,17 @@ async def parse_item(
         db: AsyncSession = Depends(get_async_session),
 ):
     card = await cards_service.get_card_by_id(item_id, db)
-    url = card.url
-    source_id = card.source_id
-    if url is None:
+    if card is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
         )
-    else:
-        await notify_etl_to_parse_exists_item(item_id, url, source_id)
-        return {
-            'status': status.HTTP_200_OK
-        }
+    url = card.url
+    source_id = card.source_id
+
+    await notify_etl_to_parse_exists_item(item_id, url, source_id)
+    return {
+        'status': status.HTTP_200_OK
+    }
 
 
 @router.post('/webhook/etl_exists_item_parse_result', tags=['back'], include_in_schema=False)

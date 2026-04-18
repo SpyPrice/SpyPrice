@@ -10,7 +10,7 @@ DATABASE_URL = os.getenv(
 
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,          # вывод в консоль запросов к db
+    # echo=False,          # вывод в консоль запросов к db
     pool_pre_ping=True, # проверка перед подключением
 )
 

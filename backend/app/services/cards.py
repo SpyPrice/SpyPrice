@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 from app.api.backend_etl_api_connect import notify_etl_to_parse_new_item
 
-from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead
+from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead, PriceStatistics
 from app.models import TrackingItem
 
 
@@ -59,41 +59,63 @@ async def create_price_snapshot(item_id: int, price: Decimal, currency: str | No
     return new_price_snapshot.id
 
 
-async def get_all_users_cards_with_snapshots(user_id: int, db: AsyncSession):
+async def generate_item_read(item_id: int, db: AsyncSession) -> ItemRead | None:
+    item = await cards_repository.get_card_by_id(item_id, db)
+    if item is None:
+        return None
+    snapshots = await cards_repository.get_card_last_and_week_snapshot(item_id, db)
+    source = await cards_repository.get_source_by_id(item.source_id, db)
+
+    last_row = snapshots.get('last')
+    old_row = snapshots.get('old')
+    last_snapshot = ShortPriceSnapshot(
+        price=last_row.price,
+        time=last_row.created_at
+    ) if last_row else None
+    snapshot_7_days_ago = ShortPriceSnapshot(
+        price=old_row.price,
+        time=old_row.created_at
+    ) if old_row else None
+
+    return ItemRead(
+        id=item_id,
+        name=item.name,
+        url=item.url,
+        is_in_stock=item.is_in_stock,
+        currency='RUB',  # Пока заглушка, потом поменять логику работы с currency
+        last_snapshot=last_snapshot,
+        snapshot_7_days_ago=snapshot_7_days_ago,
+        source=ShortSourceRead(
+            id=source.id,
+            name=source.name
+        ),
+        tags=[]  # Пока заглушка, потом поменять логику tags
+    )
+
+
+async def get_all_users_cards_with_snapshots(user_id: int, db: AsyncSession) -> list[ItemRead]:
     result: list[ItemRead] = []
     user_tracking_cards = await cards_repository.get_user_cards(user_id, db)
     for tracking_cards in user_tracking_cards:
-        snapshots = await cards_repository.get_card_last_and_week_snapshot(tracking_cards.tracking_item_id, db)
-        item = await cards_repository.get_card_by_id(tracking_cards.tracking_item_id, db)
-        source = await cards_repository.get_source_by_id(item.source_id, db)
-
-        last_row = snapshots.get('last')
-        old_row = snapshots.get('old')
-        last_snapshot = ShortPriceSnapshot(
-            price=last_row.price,
-            time=last_row.created_at
-        ) if last_row else None
-        snapshot_7_days_ago = ShortPriceSnapshot(
-            price=old_row.price,
-            time=old_row.created_at
-        ) if old_row else None
-
-        result.append(ItemRead(
-            id=tracking_cards.tracking_item_id,
-            name=item.name,
-            url=item.url,
-            is_in_stock=item.is_in_stock,
-            currency='RUB',  # Пока заглушка, потом поменять логику работы с currency
-            last_snapshot=last_snapshot,
-            snapshot_7_days_ago=snapshot_7_days_ago,
-            source=ShortSourceRead(
-                id=source.id,
-                name=source.name
-            ),
-            tags=[]   # Пока заглушка, потом поменять логику tags
-        ))
+        item_read = await generate_item_read(tracking_cards.tracking_item_id, db)
+        if item_read is not None:
+            result.append(item_read)
     return result
 
 
-async def get_card_by_id(card_id: int, db: AsyncSession) -> TrackingItem:
+async def get_card_by_id(card_id: int, db: AsyncSession) -> TrackingItem | None:
     return await cards_repository.get_card_by_id(card_id, db)
+
+
+async def get_all_snapshots(card_id: int, db: AsyncSession) -> list[ShortPriceSnapshot]:
+    all_snapshots = await cards_repository.get_card_snapshots(card_id, db)
+    converted = [ShortPriceSnapshot(price=snapshot.price, time=snapshot.created_at) for snapshot in all_snapshots]
+    return converted
+
+
+async def get_price_statistics(price_snapshots: list[ShortPriceSnapshot], db: AsyncSession) -> PriceStatistics:
+    return PriceStatistics(
+        min_price=min(price_snapshots, key=lambda price_snapshot: price_snapshot.price),
+        max_price=max(price_snapshots, key=lambda price_snapshot: price_snapshot.price),
+        avg_price=sum([price_snapshot.price for price_snapshot in price_snapshots]) / len(price_snapshots)
+    )

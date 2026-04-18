@@ -144,7 +144,7 @@ class UsersTrackingItem(Base):
     tags = relationship(
         'Tag',
         secondary=tags_tracking_items,
-        back_populates='user_tracking_items',
+        back_populates='tracking_items',
         # lazy='selectin'
     )
 

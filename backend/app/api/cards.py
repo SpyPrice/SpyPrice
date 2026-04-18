@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependency import get_current_user, get_async_session
-from app.schemas import UserRead, ItemCreate, WatchResponse, ItemCreateWithPriceSnapshot, ItemRead, ParseError
+from app.schemas import UserRead, ItemCreate, WatchResponse, ItemRead, ItemStatistic, PriceStatistics
 
 from app.services import cards as cards_service
 
@@ -51,3 +51,24 @@ async def get_all_watch_items_with_snapshots(
     user_cards = await cards_service.get_all_users_cards_with_snapshots(current_user.id, db)
     return user_cards
 
+
+@router.get('/cards/card_info', tags=['cards'], response_model=ItemStatistic)
+async def get_card_info(
+        card_id: int,
+        db: AsyncSession = Depends(get_async_session)):
+
+    item = await cards_service.generate_item_read(card_id, db)
+    if item is None:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND
+        )
+
+    all_price_snapshots = await cards_service.get_all_snapshots(card_id, db)
+
+    statistics = await cards_service.get_price_statistics(all_price_snapshots, db)
+
+    return ItemStatistic(
+        item=item,
+        statistics=statistics,
+        update_history=all_price_snapshots
+    )
