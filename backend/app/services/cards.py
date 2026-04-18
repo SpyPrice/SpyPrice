@@ -1,12 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from httpx import AsyncClient
 
 from app.repository import cards as cards_repository
 from decimal import Decimal
 
 from urllib.parse import urlparse
 
-from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead, AskNewItemParse
+from app.api.backend_etl_api_connect import notify_etl_to_parse_new_item
+
+from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead
+from app.models import TrackingItem
 
 
 def get_normalize_url(url: str) -> str:
@@ -39,26 +41,8 @@ async def add_watch(url: str, user_id: int, db: AsyncSession) -> str:
         return 'success'
 
     # Карточки нет -> отправляем запрос в ETL на создание
-    await notify_etl_to_parse(norm_url, user_id, source_id)
+    await notify_etl_to_parse_new_item(norm_url, user_id, source_id)
     return 'pending'
-
-
-async def notify_etl_to_parse(url: str, user_id: int, source_id: int):
-    # Потом брать из ENV
-    etl_url = 'http://127.0.0.1:8080/ask_parse_new_item'
-    callback_url = 'http://127.0.0.1:8000/webhook/etl_add_item_parse_result'
-    print(f'{url=}, {user_id=}')
-    async with AsyncClient() as client:
-        try:
-            result = await client.post(etl_url, json=AskNewItemParse(
-                url=url,
-                user_id=user_id,
-                source_id=source_id,
-                callback_url=callback_url
-            ).model_dump())
-            result.raise_for_status()
-        except Exception as e:
-            print('\n'*3 + f'ошибка связи с ETL: {e}' + '\n'*3)
 
 
 async def create_card_and_watch(user_id: int, url: str, name: str, is_in_stock: bool | None,
@@ -109,3 +93,7 @@ async def get_all_users_cards_with_snapshots(user_id: int, db: AsyncSession):
             tags=[]   # Пока заглушка, потом поменять логику tags
         ))
     return result
+
+
+async def get_card_by_id(card_id: int, db: AsyncSession) -> TrackingItem:
+    return await cards_repository.get_card_by_id(card_id, db)
