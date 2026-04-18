@@ -41,7 +41,8 @@ async def start_parsing_new_item_and_callback(data: AskNewItemParse):
                 url=data.url,
                 message=str(e)
             )
-            await client.post(data.callback_url + '/error', json=error.model_dump(mode='json'))
+            error_url = data.callback_url[:data.callback_url.rfind('/webhook')] + '/error'
+            await client.post(error_url, json=error.model_dump(mode='json'))
             print(f'Не удалось отправить запрос/спарсить данные. Ошибка: {e}')
 
 
@@ -58,7 +59,8 @@ async def start_parsing_exists_item_and_callback(data: AskExistsItemParse):
                 )
                 response = await client.post(data.callback_url, json=to_send_data.model_dump(mode='json'))
                 response.raise_for_status()
-                print('\n\nУспешно спарсено, результат отправлен\n\n')
+                error_url = data.callback_url[:data.callback_url.find('/webhook')] + '/webhook/error'
+                print('\n\nУспешно спарсено, результат отправлен\n\n', error_url)
             else:
                 raise ValueError(f'Не удалось спарсить карточку (Результат парсинга: None). Карточка: {data.item_id=} {data.url=}')
         except Exception as e:

@@ -1,3 +1,5 @@
+from os import getenv
+
 from httpx import AsyncClient
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -43,13 +45,8 @@ async def parse_new_item_result(
         )
 
 
-@router.post('/webhook/etl_add_item_parse_result/error', tags=['back'], include_in_schema=False)
-async def parse_new_item_error_result(error: ParseError):
-    print(f'\n\nНе удалось спарсить с источника номер {error.source_id}, url: {error.url}\nОшибка: {error.message}\n\n')
-
-
-@router.post('/webhook/etl_exists_item_parse_result/error', tags=['back'], include_in_schema=False)
-async def parse_exists_item_error_result(error: ParseError):
+@router.post('/webhook/error', tags=['back'], include_in_schema=False)
+async def parse_error_result(error: ParseError):
     print(f'\n\nНе удалось спарсить с источника номер {error.source_id}, url: {error.url}\nОшибка: {error.message}\n\n')
 
 
@@ -89,9 +86,12 @@ async def parse_item_exists_result(
 
 
 async def notify_etl_to_parse_exists_item(item_id: int, url: str, source_id: int):
-    # Потом брать из ENV
-    etl_url = 'http://127.0.0.1:8080/ask_parse_exists_item'
-    callback_url = 'http://127.0.0.1:8000/webhook/etl_exists_item_parse_result'
+    etl_base_url = getenv('ETL_URL', 'http://127.0.0.1:8080')
+    backend_base_url = getenv('API_BASE_URL', 'http://127.0.0.1:8000')
+
+    etl_url = f"{etl_base_url}/ask_parse_exists_item"
+    callback_url = f"{backend_base_url}/webhook/etl_exists_item_parse_result"
+
     print(f'Отправляем в etl exists_item {url=}')
     async with AsyncClient() as client:
         try:
@@ -107,9 +107,12 @@ async def notify_etl_to_parse_exists_item(item_id: int, url: str, source_id: int
 
 
 async def notify_etl_to_parse_new_item(url: str, user_id: int, source_id: int):
-    # Потом брать из ENV
-    etl_url = 'http://127.0.0.1:8080/ask_parse_new_item'
-    callback_url = 'http://127.0.0.1:8000/webhook/etl_add_item_parse_result'
+    etl_base_url = getenv('ETL_URL', 'http://127.0.0.1:8080')
+    backend_base_url = getenv('API_BASE_URL', 'http://127.0.0.1:8000')
+
+    etl_url = f"{etl_base_url}/ask_parse_new_item"
+    callback_url = f"{backend_base_url}/webhook/etl_add_item_parse_result"
+
     print(f'Отправляем в etl new_item {url=}, {user_id=}')
     async with AsyncClient() as client:
         try:
