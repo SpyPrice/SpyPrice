@@ -20,7 +20,7 @@ services:
       context: ./backend
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-price_tracker}
-      ETL_URL: http://backend:8000
+      ETL_URL: http://etl:8080
       JWT_SECRET: ${JWT_SECRET:-change-me}
       ETL_API_KEY: ${ETL_API_KEY:-change-me-etl-key}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
