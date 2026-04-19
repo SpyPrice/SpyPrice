@@ -9,7 +9,7 @@ from typing import Any, Optional, Dict
 import logging
 
 from playwright.async_api import async_playwright, Page
-from etl.app import config
+from . import config
 
 
 class BaseStoreParser(ABC):

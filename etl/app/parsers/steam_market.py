@@ -2,8 +2,9 @@ import asyncio
 import requests
 from urllib.parse import quote
 from decimal import Decimal
+import re
 from typing import Optional, Dict, Any
-from etl.app import config
+from .. import config
 import logging
 
 class SteamMarketParser:
