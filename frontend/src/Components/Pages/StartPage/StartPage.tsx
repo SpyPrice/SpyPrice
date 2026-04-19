@@ -7,6 +7,28 @@ import styles from './StartPage.module.scss'
 export const StartPage = () => {
 	return (
 		<>
+			<header className={styles.header}>
+				<div className={styles.logo}>
+					<img src='/logo.svg' alt='Логотип' />
+					SpyPrice
+				</div>
+				<div className={styles.right}>
+					{/* <div className='theme'>
+					<Button>
+						<img src='./dark.svg' />
+					</Button>
+				</div> */}
+					<div className={styles.auth_buttons}>
+						<Link to={'/login'}>
+							<Button type='dark-no-back'>Войти</Button>
+						</Link>
+						<Link to={'/register'}>
+							<Button>Регистрация</Button>
+						</Link>
+					</div>
+				</div>
+			</header>
+
 			<section className={styles.main_block}>
 				<h1>
 					Отслеживайте цены. <br />
@@ -64,9 +86,11 @@ export const StartPage = () => {
 						Присоединяйтесь к тысячам пользователей, которые уже следят за
 						ценами
 					</h3>
-					<Button size='large' type='light'>
-						Создать аккаунт
-					</Button>
+					<Link to={'/register'}>
+						<Button size='large' type='light'>
+							Создать аккаунт
+						</Button>
+					</Link>
 				</div>
 			</section>
 			<Footer />

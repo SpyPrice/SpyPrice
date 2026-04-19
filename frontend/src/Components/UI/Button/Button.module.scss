@@ -76,6 +76,19 @@
 	}
 }
 
+.danger {
+	background-color: #e53e3e;
+	color: #ffffff;
+
+	&:hover:not(:disabled) {
+		background-color: #c53030;
+	}
+
+	&:active:not(:disabled) {
+		background-color: #9b2c2c;
+	}
+}
+
 // Дополнительные варианты размеров (опционально)
 .small {
 	padding: 6px 12px;

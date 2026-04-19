@@ -23,6 +23,12 @@
 		.register_p {
 			font-size: 16px;
 			font-weight: bold;
+			margin-bottom: 6px;
+		}
+
+		.register_p_description {
+			font-size: 16px;
+			color: $gray;
 			margin-bottom: 16px;
 		}
 

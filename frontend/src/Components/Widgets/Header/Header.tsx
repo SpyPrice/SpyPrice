@@ -1,27 +1,46 @@
-import Button from '@/Components/UI/Button'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styles from './Header.module.scss'
 
 export const Header = () => {
+	const location = useLocation()
+
 	return (
 		<header className={styles.header}>
-			<div className={styles.logo}>
-				<img src='/logo.svg' alt='Логотип' />
-				SpyPrice
-			</div>
-			<div className={styles.right}>
-				{/* <div className='theme'>
+			<div className={styles.container}>
+				<div className={styles.left}>
+					<div className={styles.logo}>
+						<img src='/logo.svg' alt='Логотип' />
+						SpyPrice
+					</div>
+					<nav className={styles.nav}>
+						<ul>
+							<li>
+								<Link
+									className={`${styles.navLink} ${location.pathname === '/dashboard' ? styles.active : ''}`}
+									to={'/dashboard'}
+								>
+									<img src='/dashboard.svg' alt='Товары' />
+									Товары
+								</Link>
+							</li>
+							<li>
+								<Link
+									className={`${styles.navLink} ${location.pathname === '/profile' ? styles.active : ''}`}
+									to={'/profile'}
+								>
+									<img src='/profile.svg' alt='Профиль' />
+									Профиль
+								</Link>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<div className={styles.right}>
+					{/* <div className='theme'>
 					<Button>
 						<img src='./dark.svg' />
 					</Button>
 				</div> */}
-				<div className={styles.auth_buttons}>
-					<Link to={'/login'}>
-						<Button type='dark-no-back'>Войти</Button>
-					</Link>
-					<Link to={'/register'}>
-						<Button>Регистрация</Button>
-					</Link>
 				</div>
 			</div>
 		</header>

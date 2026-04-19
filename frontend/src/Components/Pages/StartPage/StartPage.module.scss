@@ -20,6 +20,7 @@
 		margin-bottom: 32px;
 		color: $gray;
 		font-weight: normal;
+		text-align: center;
 	}
 
 	.buttons {
@@ -98,5 +99,33 @@
 			margin-bottom: 32px;
 			color: $white;
 		}
+	}
+}
+
+.header {
+	max-width: 100%;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 24px 16px;
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		img {
+			width: 32px;
+			height: 32px;
+		}
+
+		font-size: 24px;
+		font-weight: bold;
+	}
+
+	.auth_buttons {
+		display: flex;
+		gap: 10px;
 	}
 }

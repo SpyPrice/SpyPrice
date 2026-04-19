@@ -3,11 +3,12 @@ import styles from './Button.module.scss'
 interface ButtonProps {
 	className?: string
 	children: React.ReactNode
-	type?: 'dark' | 'light' | 'dark-no-back'
+	type?: 'dark' | 'light' | 'dark-no-back' | 'light-no-back' | 'danger'
 	size?: 'small' | 'medium' | 'large'
 	fullWidth?: boolean
 	onClick?: () => void
 	disabled?: boolean
+	formType?: 'button' | 'submit' | 'reset'
 }
 
 export const Button = ({
@@ -18,6 +19,7 @@ export const Button = ({
 	fullWidth = false,
 	onClick,
 	disabled = false,
+	formType = 'button',
 }: ButtonProps) => {
 	return (
 		<button
@@ -28,6 +30,7 @@ export const Button = ({
         ${className || ''}`}
 			onClick={!disabled ? onClick : undefined}
 			disabled={disabled}
+			type={formType}
 		>
 			{children}
 		</button>

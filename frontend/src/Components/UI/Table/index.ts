@@ -1,2 +1,4 @@
-export { Table } from './Table'
-export { default } from './Table'
+export { default, Table } from './Table'
+export { TableCell } from './TableCell'
+export { TableHeader } from './TableHeader'
+export { TableRow } from './TableRow'

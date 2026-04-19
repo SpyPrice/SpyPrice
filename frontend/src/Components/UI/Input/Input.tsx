@@ -8,6 +8,8 @@ interface InputProps {
 	defaultValue?: string | number
 	placeholder?: string
 	onChange?: React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>
+	required?: boolean
+	disabled?: boolean
 }
 
 export const Input = ({
@@ -18,6 +20,8 @@ export const Input = ({
 	defaultValue,
 	placeholder,
 	onChange,
+	required = false,
+	disabled = false,
 	...props
 }: InputProps) => {
 	return (
@@ -29,6 +33,8 @@ export const Input = ({
 			defaultValue={defaultValue}
 			placeholder={placeholder}
 			onChange={onChange}
+			required={required}
+			disabled={disabled}
 			{...props}
 		/>
 	)

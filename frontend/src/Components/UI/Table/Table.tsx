@@ -1,24 +1,47 @@
+import { createContext, useContext } from 'react'
 import styles from './Table.module.scss'
 
-interface TableProps {
-  className?: string
-  children?: React.ReactNode
-  onClick?: () => void
+interface TableContextType {
+	variant?: 'default' | 'striped' | 'bordered'
+	size?: 'small' | 'medium' | 'large'
 }
 
-export const Table = ({ 
-  className, 
-  children, 
-  onClick, 
+const TableContext = createContext<TableContextType>({})
+
+export const useTable = () => useContext(TableContext)
+
+interface TableProps {
+	className?: string
+	children?: React.ReactNode
+	variant?: 'default' | 'striped' | 'bordered'
+	size?: 'small' | 'medium' | 'large'
+	fullWidth?: boolean
+}
+
+export const Table = ({
+	className,
+	children,
+	variant = 'default',
+	size = 'medium',
+	fullWidth = true,
 }: TableProps) => {
-  return (
-    <div 
-      className={`${styles.container} ${className || ''}`}
-      onClick={onClick}
-    >
-      {children || <h1>Table Component</h1>}
-    </div>
-  )
+	return (
+		<TableContext.Provider value={{ variant, size }}>
+			<div className={styles.tableWrapper}>
+				<table
+					className={`
+            ${styles.table}
+            ${styles[variant]}
+            ${styles[size]}
+            ${fullWidth ? styles.fullWidth : ''}
+            ${className || ''}
+          `}
+				>
+					{children}
+				</table>
+			</div>
+		</TableContext.Provider>
+	)
 }
 
 export default Table

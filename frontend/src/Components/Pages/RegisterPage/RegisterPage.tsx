@@ -1,10 +1,13 @@
 import Button from '@/Components/UI/Button'
 import Input from '@/Components/UI/Input'
+import { useTitle } from '@/Hooks'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './RegisterPage.module.scss'
 
 export const RegisterPage = () => {
+	useTitle('Регистрация')
+
 	const [inputsData, setInputsData] = useState({
 		email: '',
 		password: '',
@@ -14,8 +17,11 @@ export const RegisterPage = () => {
 	return (
 		<div className={styles.container}>
 			<h2>SpyPrice</h2>
-			<div className={styles.block}>
+			<form className={styles.block}>
 				<p className={styles.register_p}>Создание аккаунта </p>
+				<p className={styles.register_p_description}>
+					Начните отслеживать цены бесплатно
+				</p>
 				<div className={styles.input_group}>
 					<label htmlFor='email'>Email</label>
 					<Input
@@ -52,12 +58,14 @@ export const RegisterPage = () => {
 						}
 					/>
 				</div>
-				<Button fullWidth>Создать аккаунт</Button>
+				<Button formType='submit' fullWidth>
+					Создать аккаунт
+				</Button>
 
 				<p className={styles.have_account}>
 					Уже есть аккаунт? <Link to={'/login'}>Войти</Link>
 				</p>
-			</div>
+			</form>
 			<Link to={'/'}>
 				<Button type='dark-no-back'>← Вернуться на главную</Button>
 			</Link>

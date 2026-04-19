@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 interface AuthContextType {
 	user: UserRead | null
 	isLoading: boolean
-	isAuntheticated: boolean
+	isAuthenticated: boolean
 	login: (email: string, password: string) => Promise<void>
 	register: (data: UserCreate) => Promise<void>
 	logout: () => void
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 			value={{
 				user,
 				isLoading,
-				isAuntheticated: !!user,
+				isAuthenticated: !!user,
 				login,
 				register,
 				logout,

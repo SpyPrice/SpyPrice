@@ -1,3 +1,68 @@
-.container {
-  // Add your styles here
+.tableWrapper {
+	overflow-x: auto;
+	border-radius: 8px;
+}
+
+.table {
+	border-collapse: collapse;
+	width: 100%;
+
+	&.fullWidth {
+		width: 100%;
+	}
+
+	// Варианты оформления
+	&.default {
+		background-color: white;
+
+		td,
+		th {
+			border-bottom: 1px solid #e0e0e0;
+		}
+	}
+
+	&.striped {
+		tbody tr:nth-child(odd) {
+			background-color: #f9f9f9;
+		}
+
+		td,
+		th {
+			border-bottom: 1px solid #e0e0e0;
+		}
+	}
+
+	&.bordered {
+		border: 1px solid #e0e0e0;
+
+		td,
+		th {
+			border: 1px solid #e0e0e0;
+		}
+	}
+
+	// Размеры
+	&.small {
+		td,
+		th {
+			padding: 8px 12px;
+			font-size: 13px;
+		}
+	}
+
+	&.medium {
+		td,
+		th {
+			padding: 12px 16px;
+			font-size: 14px;
+		}
+	}
+
+	&.large {
+		td,
+		th {
+			padding: 16px 20px;
+			font-size: 15px;
+		}
+	}
 }

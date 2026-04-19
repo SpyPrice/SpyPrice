@@ -4,8 +4,10 @@ import { Outlet } from 'react-router-dom'
 export const HeaderLayout = () => {
 	return (
 		<>
+			{/* <ProtectedRoute> */}
 			<Header />
 			<Outlet />
+			{/* </ProtectedRoute> */}
 		</>
 	)
 }
