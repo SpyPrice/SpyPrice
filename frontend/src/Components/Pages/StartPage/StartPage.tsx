@@ -10,7 +10,7 @@ export const StartPage = () => {
 			<header className={styles.header}>
 				<div className={styles.logo}>
 					<img src='/logo.svg' alt='Логотип' />
-					SpyPrice
+					<p>SpyPrice</p>
 				</div>
 				<div className={styles.right}>
 					{/* <div className='theme'>
@@ -56,8 +56,7 @@ export const StartPage = () => {
 					</div>
 					<p className={styles.card_header}>Добавьте ссылку</p>
 					<p className={styles.card_content}>
-						Просто вставьте URL товара из DNS, Ozon, Wildberries и других
-						магазинов
+						Просто вставьте URL товара из DNS, Ozon и других магазинов
 					</p>
 				</Card>
 				<Card>

@@ -28,7 +28,6 @@ export const DashboardPage = () => {
 		try {
 			const data: any = await cardsApi.getAllWatchItems()
 			setProducts(data)
-			console.log(data)
 		} catch (error) {
 			console.error('Failed to fetch products:', error)
 		}

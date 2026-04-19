@@ -49,13 +49,13 @@ export const ProductTable = ({ data }: ProductTableProps) => {
 			</TableHeader>
 			{data.map(el => {
 				return (
-					<TableRow onClick={() => navigate(`/tracking/${el.id}`)}>
+					<TableRow key={el.id} onClick={() => navigate(`/tracking/${el.id}`)}>
 						<TableCell>
 							<div className={styles.name}>
 								<p>{el.name}</p>
 								<div className={styles.badges}>
-									{el.tags.map(el => {
-										return <Badge>{el.name}</Badge>
+									{el.tags.map(tag => {
+										return <Badge key={tag.id}>{tag.name}</Badge>
 									})}
 								</div>
 							</div>
