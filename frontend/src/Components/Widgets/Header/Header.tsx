@@ -10,7 +10,7 @@ export const Header = () => {
 				<div className={styles.left}>
 					<div className={styles.logo}>
 						<img src='/logo.svg' alt='Логотип' />
-						SpyPrice
+						<p>SpyPrice</p>
 					</div>
 					<nav className={styles.nav}>
 						<ul>

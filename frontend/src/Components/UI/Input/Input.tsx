@@ -3,7 +3,7 @@ import styles from './Input.module.scss'
 interface InputProps {
 	className?: string
 	id?: string
-	type?: 'text' | 'email' | 'password' | ''
+	type?: 'text' | 'email' | 'password' | 'url'
 	value?: string | number
 	defaultValue?: string | number
 	placeholder?: string

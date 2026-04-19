@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 			localStorage.setItem('access_token', response.access_token)
 			setUser(response.user)
 			toast.success('Регистрация успешна')
-		} catch (error) {
+		} catch (error: any) {
 			toast.error('Ошибка регистрации!')
 			throw error
 		}

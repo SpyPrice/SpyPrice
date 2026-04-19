@@ -1,3 +1,21 @@
 .container {
-  // Add your styles here
+	// Add your styles here
+}
+
+.name {
+	display: flex;
+	flex-direction: column;
+
+	p {
+		font-size: 16px;
+	}
+}
+
+.badges {
+	display: flex;
+	gap: 5px;
+}
+
+.price {
+	font-size: 18px;
 }

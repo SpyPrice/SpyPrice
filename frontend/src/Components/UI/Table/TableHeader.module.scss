@@ -1,6 +1,10 @@
 .header {
-	background-color: #f5f5f5;
+	// background-color: #f5f5f5;
 	font-weight: 600;
+	td {
+		font-size: 14px;
+		color: $gray;
+	}
 }
 
 .sticky {

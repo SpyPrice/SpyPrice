@@ -3,7 +3,7 @@ import Badge from '@/Components/UI/Badge'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import styles from './TrackingPage.module.scss'
 
 export const TrackingPage = () => {
@@ -52,7 +52,9 @@ export const TrackingPage = () => {
 
 	return (
 		<div className={styles.container}>
-			<Button type='dark-no-back'>← Вернуться на главную</Button>
+			<Link to={'/dashboard'}>
+				<Button type='dark-no-back'>← Вернуться на главную</Button>
+			</Link>
 			<div className={styles.content}>
 				<div className={styles.block}>
 					<h2>{data?.item.name}</h2>
