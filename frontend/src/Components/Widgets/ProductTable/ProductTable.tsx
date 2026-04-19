@@ -5,6 +5,8 @@ interface ProductTableProps {
 }
 
 export const ProductTable = ({ data }: ProductTableProps) => {
+	data
+
 	return (
 		<Table>
 			<TableHeader>

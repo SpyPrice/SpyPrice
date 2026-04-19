@@ -4,6 +4,7 @@ import { useAuth } from '@/Contexts/AuthContext'
 import { useTitle } from '@/Hooks'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import styles from './LoginPage.module.scss'
 
 export const LoginPage = () => {
@@ -18,6 +19,7 @@ export const LoginPage = () => {
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (!inputsData.email || !inputsData.password) {
+			toast('Пожалуйста, заполните все поля', { type: 'error' })
 			setErrorMessage('Пожалуйста, заполните все поля')
 			return
 		}
@@ -66,6 +68,7 @@ export const LoginPage = () => {
 				<Button formType='submit' fullWidth disabled={isLoading}>
 					{isLoading ? 'Вход...' : 'Войти'}
 				</Button>
+				{errorMessage}
 
 				<p className={styles.no_account}>
 					Нет аккаунта? <Link to={'/register'}>Зарегистрироваться</Link>

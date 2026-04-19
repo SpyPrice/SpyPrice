@@ -25,8 +25,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
 		const token = localStorage.getItem('access_token')
 		if (token) {
 			try {
-				const userData = await authApi.getMe()
-				setUser(userData!)
+				const userData: any = await authApi.getMe()
+				setUser(userData)
 			} catch (error) {
 				localStorage.removeItem('access_token')
 				console.error('Auth check failed:', error)
@@ -37,11 +37,12 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 	const login = async (email: string, password: string) => {
 		try {
-			const response = await authApi.login(email, password)
-			localStorage.setItem('access_token', response.data.access_token)
+			const response: any = await authApi.login(email, password)
 
-			const userData = await authApi.getMe()
-			setUser(userData!)
+			localStorage.setItem('access_token', response.access_token)
+
+			const userData: any = await authApi.getMe()
+			setUser(userData)
 
 			toast.success('Успешный вход!')
 		} catch (error) {
@@ -52,9 +53,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 	const register = async (data: UserCreate) => {
 		try {
-			const response = await authApi.register(data)
-			localStorage.setItem('access_token', response.data.access_token)
-			setUser(response.data.user)
+			const response: any = await authApi.register(data)
+			localStorage.setItem('access_token', response.access_token)
+			setUser(response.user)
 			toast.success('Регистрация успешна')
 		} catch (error) {
 			toast.error('Ошибка регистрации!')

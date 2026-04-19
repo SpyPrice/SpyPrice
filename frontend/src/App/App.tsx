@@ -5,6 +5,7 @@ import LoginPage from '@/Components/Pages/LoginPage'
 import ProfilePage from '@/Components/Pages/ProfilePage'
 import RegisterPage from '@/Components/Pages/RegisterPage'
 import StartPage from '@/Components/Pages/StartPage'
+import TrackingPage from '@/Components/Pages/TrackingPage'
 import { AuthProvider } from '@/Contexts/AuthContext'
 import '@Styles/global.scss'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -20,7 +21,7 @@ function App() {
 						<Route element={<HeaderLayout />}>
 							<Route path='/dashboard' element={<DashboardPage />} />
 							<Route path='/profile' element={<ProfilePage />} />
-							<Route path='/tracking/:id' element={<NotFoundPage />} />
+							<Route path='/tracking/:id' element={<TrackingPage />} />
 						</Route>
 						<Route element={<PublicLayout />}>
 							<Route path='/' element={<StartPage />} />

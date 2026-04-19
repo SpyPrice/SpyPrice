@@ -26,10 +26,17 @@ export interface TokenWithUser extends Token {
 export const authApi = {
 	register: (data: UserCreate) => api.post<TokenWithUser>('/register', data),
 
-	login: (username: string, password: string) =>
-		api.post<Token>('/login', { username, password }),
+	login: async (username: string, password: string) => {
+		const formData = new URLSearchParams()
+		formData.append('username', username)
+		formData.append('password', password)
 
-	getMe: () => {
-		api.get<UserRead>('/me')
+		return api.post<Token>('/login', formData, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+		})
 	},
+
+	getMe: () => api.get<UserRead>('/me'),
 }

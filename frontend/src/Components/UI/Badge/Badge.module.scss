@@ -1,11 +1,63 @@
 .badge {
+	width: max-content;
+	border-radius: 8px;
 }
 
 .small {
+	padding: 2px 8px;
+	font-size: 10px;
 }
 
 .medium {
+	padding: 2px 8px;
+	font-size: 12px;
 }
 
 .large {
+	padding: 4px 10px;
+	font-size: 18px;
+}
+
+.main {
+	background: $background;
+	border: 1px solid $secondary-background;
+}
+
+.second {
+	background: $secondary-background;
+}
+
+.down {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	background: $down-badge-background;
+	color: $down-badge;
+	font-size: 20px;
+	font-weight: 600;
+	padding: 4px 8px;
+
+	img {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+.up {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	background: $down-badge-background;
+	color: $down-badge;
+	border-radius: 4px;
+	font-size: 20px;
+	font-weight: 600;
+	padding: 4px 8px;
+
+	img {
+		width: 16px;
+		height: 16px;
+	}
 }

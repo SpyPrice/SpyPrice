@@ -1,8 +1,23 @@
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
+import { useAuth } from '@/Contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 import styles from './ProfilePage.module.scss'
 
 export const ProfilePage = () => {
+	const { user, logout } = useAuth()
+	const navigate = useNavigate()
+
+	const formatDate = (dateString?: string) => {
+		if (!dateString) return 'Не указана'
+		const date = new Date(dateString)
+		return date.toLocaleDateString('ru-RU', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		})
+	}
+
 	return (
 		<div className={styles.container}>
 			<h2>Профиль</h2>
@@ -12,17 +27,26 @@ export const ProfilePage = () => {
 				<p>Данные вашего профиля</p>
 				<div className={styles.info_group}>
 					<Card className={styles.info_item}>
+						<img src='/profile.svg' alt='Пользователь' />
+						<div className={styles.info_text}>
+							<p className={styles.info_label}>Имя пользователя</p>
+							<p className={styles.info_value}>{user?.name}</p>
+						</div>
+					</Card>
+					<Card className={styles.info_item}>
 						<img src='/email.svg' alt='Почта' />
 						<div className={styles.info_text}>
 							<p className={styles.info_label}>Email</p>
-							<p className={styles.info_value}>example@mail.ru</p>
+							<p className={styles.info_value}>{user?.email}</p>
 						</div>
 					</Card>
 					<Card className={styles.info_item}>
 						<img src='/calendar.svg' alt='Календарь' />
 						<div className={styles.info_text}>
 							<p className={styles.info_label}>Дата регистрации</p>
-							<p className={styles.info_value}>19 апреля 2026 г.</p>
+							<p className={styles.info_value}>
+								{formatDate(user?.created_at)}
+							</p>
 						</div>
 					</Card>
 				</div>
@@ -30,7 +54,13 @@ export const ProfilePage = () => {
 
 			<Card className={styles.actions_card}>
 				<h3>Действия</h3>
-				<Button type='danger'>
+				<Button
+					type='danger'
+					onClick={() => {
+						logout()
+						navigate('/')
+					}}
+				>
 					<img src='/delete.svg' alt='Удалить' />
 					<p>Выйти из аккаунта</p>
 				</Button>
