@@ -43,5 +43,13 @@ services:
       - backend
     profiles: ["manual"]
 
+    nginx:
+      build:
+        context: ./frontend
+      ports:
+        - "80:80"
+      depends_on:
+        - backend
+
 volumes:
   pg_data:
