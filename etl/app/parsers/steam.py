@@ -2,7 +2,7 @@ import asyncio
 from decimal import Decimal
 
 import requests
-from etl.app import config
+from .. import config
 from typing import Optional, Dict, Any
 import logging
 
@@ -57,6 +57,7 @@ class SteamParser:
                 return None
 
             return {
+                "store": self.store_name,
                 "name": name,
                 "price_str": price_str,
                 "price": Decimal(price),
