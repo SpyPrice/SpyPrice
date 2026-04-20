@@ -84,6 +84,12 @@ async def get_user_cards(user_id: int, db: AsyncSession) -> Sequence[UsersTracki
     return result.scalars().all()
 
 
+async def get_all_cards_id_source_url(db: AsyncSession):
+    query = select(TrackingItem.id, TrackingItem.source_id, TrackingItem.url).order_by(TrackingItem.source_id)
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
 async def get_card_snapshots(card_id: int, db: AsyncSession) -> Sequence[Decimal, datetime]:
     query = (
         select(PriceSnapshot.price, PriceSnapshot.created_at)
