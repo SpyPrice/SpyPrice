@@ -40,9 +40,15 @@ class BaseStoreParser(ABC):
             await self.playwright.stop()
 
     async def _emulate_human(self, page) -> None:
-        await page.mouse.move(random.randint(100, 500), random.randint(100, 500))
-        await page.evaluate("window.scrollTo(0, document.body.scrollHeight * 0.3);")
-        await page.wait_for_timeout(1500)
+        try:
+            await page.mouse.move(random.randint(100, 500), random.randint(100, 500))
+            await page.evaluate("window.scrollTo(0, document.body.scrollHeight * 0.3);")
+            await page.wait_for_timeout(1500)
+        except Exception as e:
+            if "Execution context was destroyed" in str(e):
+                logging.debug("Navigation detected during emulation, skipping scroll.")
+            else:
+                logging.debug(f"Emulate human error (ignored): {e}")
 
     async def _save_debug(self, page, prefix='error') -> None:
         timestamp = int(await page.evaluate("() => Date.now()"))

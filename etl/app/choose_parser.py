@@ -71,7 +71,7 @@ def get_parser(store_key, headless=True):
         case "steam_market":
             return SteamMarketParser(headless)
         case "dns":
-            return DNSParser(headless)
+            return DNSParser(False)
         case "ozon":
             return OzonParser(False)
         case "lisskins":
@@ -85,7 +85,7 @@ def get_parser(store_key, headless=True):
         case "playerok":
             return PlayerokParser(headless)
         case "auto_ru":
-            return AutoRuParser(headless)
+            return AutoRuParser(False)
         case "avito":
             return AvitoParser(False)
         case "prostore":

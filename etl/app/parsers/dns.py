@@ -23,6 +23,7 @@ class DNSParser(BaseStoreParser):
         )
 
     async def _extract_info(self, page, url):
+        await page.wait_for_load_state("networkidle")
         await page.wait_for_selector('h1.product-card-top__title', timeout=config.WAIT_TIMEOUT)
         await page.wait_for_selector('.product-buy__price', timeout=config.WAIT_TIMEOUT)
 
