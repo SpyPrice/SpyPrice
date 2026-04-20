@@ -1,8 +1,8 @@
 import re
 from decimal import Decimal
 
-from etl.app.base_parser import BaseStoreParser
-from etl.app import config
+from ..base_parser import BaseStoreParser
+from .. import config
 from typing import Any, Optional, Dict
 from playwright.async_api import Page
 
@@ -20,7 +20,7 @@ class HobbygamesParser(BaseStoreParser):
         name_elem = page.locator('h1').first
         name = (await name_elem.text_content()).strip() if await name_elem.count() > 0 else "Неизвестный товар"
 
-        price_elem = page.locator('[class*="price"], .product-price, .current-price').first
+        price_elem = page.locator('.product-card-price__current').first
         if await price_elem.count() == 0:
             return None
 

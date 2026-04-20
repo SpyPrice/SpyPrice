@@ -11,7 +11,7 @@ async def async_main(user_input):
         print("Не удалось определить магазин")
         return
 
-    parser = get_parser(store_key, headless=False)
+    parser = get_parser(store_key, headless=True)
     info = await parser.get_product_info(user_input)
     print_info(info)
 
@@ -20,9 +20,9 @@ def print_info(info):
         print("Информация не найдена")
         return
 
-    print(f"{info['store']}")
+    #print(f"{info['store']}")
     print(f"Название: {info['name']}")
-    print(f"Цена: {info['price_str']}")
+    print(f"Цена: {info['price']}")
     print(f"Ссылка: {info['url']}")
 
 if __name__ == '__main__':
