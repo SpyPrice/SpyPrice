@@ -19,17 +19,15 @@ async def parse_new_item_result(
         db: AsyncSession = Depends(get_async_session)
 ):
     try:
-        card_id = await cards_service.create_card_and_watch(
-            user_id=card.user_id,
-            url=card.url,
+        await cards_service.change_card_name_and_stock_from_default(
+            item_id=card.item_id,
             name=card.name,
             is_in_stock=card.is_in_stock,
-            source_id=card.source_id,
             db=db
         )
 
         await cards_service.create_price_snapshot(
-            item_id=card_id,
+            item_id=card.item_id,
             price=card.price,
             currency=card.currency,
             db=db
@@ -89,8 +87,8 @@ async def notify_etl_to_parse_exists_item(item_id: int, url: str, source_id: int
     etl_base_url = getenv('ETL_URL', 'http://127.0.0.1:8080')
     backend_base_url = getenv('API_BASE_URL', 'http://127.0.0.1:8000')
 
-    etl_url = f"{etl_base_url}/ask_parse_exists_item"
-    callback_url = f"{backend_base_url}/webhook/etl_exists_item_parse_result"
+    etl_url = f'{etl_base_url}/ask_parse_exists_item'
+    callback_url = f'{backend_base_url}/webhook/etl_exists_item_parse_result'
 
     print(f'Отправляем в etl exists_item {url=}')
     async with AsyncClient() as client:
@@ -106,19 +104,19 @@ async def notify_etl_to_parse_exists_item(item_id: int, url: str, source_id: int
             print('\n'*3 + f'ошибка связи с ETL: {e}' + '\n'*3)
 
 
-async def notify_etl_to_parse_new_item(url: str, user_id: int, source_id: int):
+async def notify_etl_to_parse_new_item(item_id: int, url: str, source_id: int):
     etl_base_url = getenv('ETL_URL', 'http://127.0.0.1:8080')
     backend_base_url = getenv('API_BASE_URL', 'http://127.0.0.1:8000')
 
-    etl_url = f"{etl_base_url}/ask_parse_new_item"
-    callback_url = f"{backend_base_url}/webhook/etl_add_item_parse_result"
+    etl_url = f'{etl_base_url}/ask_parse_new_item'
+    callback_url = f'{backend_base_url}/webhook/etl_add_item_parse_result'
 
-    print(f'Отправляем в etl new_item {url=}, {user_id=}')
+    print(f'Отправляем в etl new_item_(который теперь уже есть в бд, надо только ему имя обновить) {url=}')
     async with AsyncClient() as client:
         try:
             result = await client.post(etl_url, json=AskNewItemParse(
                 url=url,
-                user_id=user_id,
+                item_id=item_id,
                 source_id=source_id,
                 callback_url=callback_url
             ).model_dump())
