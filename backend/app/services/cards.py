@@ -5,9 +5,9 @@ from decimal import Decimal
 
 from urllib.parse import urlparse
 
-from app.api.backend_etl_api_connect import notify_etl_to_parse_new_item
+from app.api.backend_etl_api_connect import notify_etl_to_parse_new_item, notify_etl_to_parse_exists_item
 
-from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead, PriceStatistics
+from app.schemas import ItemRead, ShortPriceSnapshot, ShortSourceRead, PriceStatistics, TagCreate
 from app.models import TrackingItem
 
 
@@ -23,7 +23,7 @@ def get_base_url(url: str) -> str:
     return f'{parsed.scheme}://{parsed.netloc}'.strip('/')
 
 
-async def add_watch(url: str, user_id: int, db: AsyncSession) -> str:
+async def add_watch(url: str, user_id: int, tags: list[TagCreate] | None, db: AsyncSession) -> str:
     source_id = await cards_repository.get_source_id(get_base_url(url), db)
 
     if source_id is None:
@@ -38,11 +38,43 @@ async def add_watch(url: str, user_id: int, db: AsyncSession) -> str:
             return 'already_watched'
         await cards_repository.user_watch_card_add(user_id, card.id, db)
         await db.commit()
+        await add_user_tags_to_item(card.id, user_id, tags, db)
         return 'success'
 
-    # Карточки нет -> отправляем запрос в ETL на создание
-    await notify_etl_to_parse_new_item(norm_url, user_id, source_id)
+    # Карточки нет -> Добавляем в бд, а потом отправляем запрос в ETL на парсинг
+    card_id = await create_card_and_watch(
+        user_id=user_id,
+        url=url,
+        name='pending while parse new item',
+        is_in_stock=True,
+        source_id=source_id,
+        db=db
+    )
+
+    await add_user_tags_to_item(card_id, user_id, tags, db)
+
+    await notify_etl_to_parse_new_item(card_id, norm_url, source_id)
     return 'pending'
+
+
+async def change_card_name_and_stock_from_default(item_id: int, name: str, is_in_stock: bool | None, db: AsyncSession):
+    await cards_repository.change_card_name_and_stock(item_id, name, is_in_stock, db)
+    await db.commit()
+
+
+async def add_user_tags_to_item(card_id: int, user_id: int, tags: list[TagCreate] | None, db: AsyncSession):
+    id_link_user_to_card = await cards_repository.get_id_link_user_to_card(user_id, card_id, db)
+    if id_link_user_to_card is None:
+        raise ValueError(f'Пользователь {user_id=} не отслеживает карточку {card_id=}')
+
+    tag_names = [{'name': tag.name} for tag in tags]
+
+    all_tag_ids = await cards_repository.create_user_tags(tag_names, db)
+
+    for tag_id in all_tag_ids:
+        await cards_repository.add_user_tag_to_item(tag_id, id_link_user_to_card, db)
+
+    await db.commit()
 
 
 async def create_card_and_watch(user_id: int, url: str, name: str, is_in_stock: bool | None,
@@ -59,12 +91,16 @@ async def create_price_snapshot(item_id: int, price: Decimal, currency: str | No
     return new_price_snapshot.id
 
 
-async def generate_item_read(item_id: int, db: AsyncSession) -> ItemRead | None:
+async def generate_item_read(item_id: int, db: AsyncSession, user_id=None) -> ItemRead | None:
     item = await cards_repository.get_card_by_id(item_id, db)
     if item is None:
         return None
     snapshots = await cards_repository.get_card_last_and_week_snapshot(item_id, db)
     source = await cards_repository.get_source_by_id(item.source_id, db)
+    if user_id is None:
+        tags = []
+    else:
+        tags = await cards_repository.get_tags_for_user_item(user_id, item_id, db)
 
     last_row = snapshots.get('last')
     old_row = snapshots.get('old')
@@ -89,7 +125,7 @@ async def generate_item_read(item_id: int, db: AsyncSession) -> ItemRead | None:
             id=source.id,
             name=source.name
         ),
-        tags=[]  # Пока заглушка, потом поменять логику tags
+        tags=tags
     )
 
 
@@ -97,7 +133,7 @@ async def get_all_users_cards_with_snapshots(user_id: int, db: AsyncSession) -> 
     result: list[ItemRead] = []
     user_tracking_cards = await cards_repository.get_user_cards(user_id, db)
     for tracking_cards in user_tracking_cards:
-        item_read = await generate_item_read(tracking_cards.tracking_item_id, db)
+        item_read = await generate_item_read(tracking_cards.tracking_item_id, db, user_id=user_id)
         if item_read is not None:
             result.append(item_read)
     return result
@@ -113,9 +149,21 @@ async def get_all_snapshots(card_id: int, db: AsyncSession) -> list[ShortPriceSn
     return converted
 
 
-async def get_price_statistics(price_snapshots: list[ShortPriceSnapshot], db: AsyncSession) -> PriceStatistics:
+async def get_price_statistics(price_snapshots: list[ShortPriceSnapshot]) -> PriceStatistics:
+    sum_price, snapshots_count = Decimal('0'), 0
+    min_price, max_price = None, None
+    for snapshot in price_snapshots:
+        if snapshot.price is not None:
+            if min_price is None:
+                min_price, max_price = snapshot, snapshot
+
+            snapshots_count += 1
+            min_price = min([snapshot, min_price], key=lambda item: item.price)
+            max_price = max([snapshot, max_price], key=lambda item: item.price)
+            sum_price += snapshot.price
+
     return PriceStatistics(
-        min_price=min(price_snapshots, key=lambda price_snapshot: price_snapshot.price),
-        max_price=max(price_snapshots, key=lambda price_snapshot: price_snapshot.price),
-        avg_price=sum([price_snapshot.price for price_snapshot in price_snapshots]) / len(price_snapshots)
+        min_price=min_price,
+        max_price=max_price,
+        avg_price=(sum_price/snapshots_count).quantize(Decimal('0.01'))
     )

@@ -41,7 +41,8 @@ class TokenWithUser(BaseModel):
 
 class TagCreate(MyDataModels):
     name: str = Field(..., min_length=2, max_length=60)
-    description: str | None = Field(default=None, min_length=2, max_length=127)
+    # Не перегружаем информацией сайт и пользователя
+    # description: str | None = Field(default=None, min_length=2, max_length=127)
 
 
 class TagRead(MyDataModels):
@@ -55,7 +56,8 @@ class ItemCreate(MyDataModels):
     """Запрос но добавление нового отслеживаемого предмета от пользователя"""
     # Имя ресурса можно получить во время обработки ссылки.
     # source_name: str = Field(..., min_length=1, max_length=255)
-    source_url: HttpUrl = Field(..., max_length=511)
+    source_url: HttpUrl = Field(..., max_length=1023)
+    tags: list[TagCreate] | None = Field(default_factory=list)
 
 
 class ItemUpdate(MyDataModels):
@@ -119,7 +121,7 @@ class SourceRead(MyDataModels):
 
 
 class ItemCreateWithPriceSnapshot(MyDataModels):
-    user_id: int
+    item_id: int
     url: str
     name: str
     source_id: int
@@ -129,8 +131,8 @@ class ItemCreateWithPriceSnapshot(MyDataModels):
 
 
 class AskNewItemParse(MyDataModels):
+    item_id: int
     url: str
-    user_id: int
     source_id: int
     callback_url: str
 
