@@ -45,8 +45,10 @@ export const AuthProvider = ({ children }: { children: any }) => {
 			setUser(userData)
 
 			toast.success('Успешный вход!')
-		} catch (error) {
-			toast.error('Ошибка входа!')
+		} catch (error: any) {
+			toast.error(
+				error.response?.data?.detail || 'Неправильный логин или пароль!',
+			)
 			throw error
 		}
 	}
@@ -56,9 +58,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
 			const response: any = await authApi.register(data)
 			localStorage.setItem('access_token', response.access_token)
 			setUser(response.user)
-			toast.success('Регистрация успешна')
+			toast.success('Регистрация успешна!')
 		} catch (error: any) {
-			toast.error('Ошибка регистрации!')
+			toast.error(error.response?.data?.detail || 'Ошибка регистрации!')
 			throw error
 		}
 	}

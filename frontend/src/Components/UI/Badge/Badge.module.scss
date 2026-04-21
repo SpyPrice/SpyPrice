@@ -19,8 +19,8 @@
 }
 
 .main {
-	background: $background;
-	border: 1px solid $secondary-background;
+	background: $white;
+	border: 2px solid $secondary-background;
 }
 
 .second {
@@ -49,8 +49,8 @@
 	justify-content: center;
 	align-items: center;
 	gap: 4px;
-	background: $down-badge-background;
-	color: $down-badge;
+	background: $up-badge-background;
+	color: $up-badge;
 	border-radius: 4px;
 	font-size: 20px;
 	font-weight: 600;

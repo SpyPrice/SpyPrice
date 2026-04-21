@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import styles from './LoginPage.module.scss'
 
 export const LoginPage = () => {
-	useTitle('Вход в аккаунт')
+	useTitle('Вход')
 	const { login } = useAuth()
 	const navigate = useNavigate()
 
@@ -35,12 +35,12 @@ export const LoginPage = () => {
 
 	return (
 		<div className={styles.container}>
-			<h2>SpyPrice</h2>
+			<div className={styles.logo}>
+				<img src='/logo.svg' alt='Логотип' />
+				<h2>SpyPrice</h2>
+			</div>
 			<form onSubmit={e => handleSubmit(e)} className={styles.block}>
 				<p className={styles.login_p}>Вход в аккаунт</p>
-				<p className={styles.login_p_description}>
-					Введите ваш email и пароль для входа
-				</p>
 				<div className={styles.input_group}>
 					<label htmlFor='email'>Email</label>
 					<Input

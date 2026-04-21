@@ -2,7 +2,12 @@ import { cardsApi, type ItemStatistic } from '@/Api/trackingApi'
 import Badge from '@/Components/UI/Badge'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
-import Table, { TableCell, TableHeader, TableRow } from '@/Components/UI/Table'
+import Table, {
+	TableBody,
+	TableCell,
+	TableHeader,
+	TableRow,
+} from '@/Components/UI/Table'
 import { useTitle } from '@/Hooks'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -36,7 +41,10 @@ export const TrackingPage = () => {
 		}
 	}
 
-	const formatDateShortTime = (dateString: string): string => {
+	const formatDateShort = (
+		dateString: string,
+		time: boolean = false,
+	): string => {
 		const date = new Date(dateString)
 
 		const months = [
@@ -59,31 +67,7 @@ export const TrackingPage = () => {
 		const hours = date.getHours().toString().padStart(2, '0')
 		const minutes = date.getMinutes().toString().padStart(2, '0')
 
-		return `${day} ${month}, ${hours}:${minutes}`
-	}
-
-	const formatDateShort = (dateString: string): string => {
-		const date = new Date(dateString)
-
-		const months = [
-			'янв.',
-			'фев.',
-			'мар.',
-			'апр.',
-			'мая',
-			'июн.',
-			'июл.',
-			'авг.',
-			'сен.',
-			'окт.',
-			'ноя.',
-			'дек.',
-		]
-
-		const day = date.getDate()
-		const month = months[date.getMonth()]
-
-		return `${day} ${month}`
+		return time ? `${day} ${month}, ${hours}:${minutes}` : `${day} ${month}`
 	}
 
 	return (
@@ -140,7 +124,7 @@ export const TrackingPage = () => {
 				<div className={styles.updatePriceDate}>
 					<p className={styles.title}>Последнее обновление</p>
 					<p className={styles.updatePriceDate_value}>
-						{formatDateShortTime(item?.item.last_snapshot?.time!)}
+						{formatDateShort(item?.item.last_snapshot?.time!, true)}
 					</p>
 				</div>
 			</Card>
@@ -178,14 +162,16 @@ export const TrackingPage = () => {
 						<TableCell>Дата и время</TableCell>
 						<TableCell>Цена</TableCell>
 					</TableHeader>
-					{item?.update_history.map((el: any, index) => {
-						return (
-							<TableRow key={index}>
-								<TableCell>{formatDateShortTime(el.time)}</TableCell>
-								<TableCell>{el.price} ₽</TableCell>
-							</TableRow>
-						)
-					})}
+					<TableBody>
+						{item?.update_history.map((el: any, index) => {
+							return (
+								<TableRow key={index}>
+									<TableCell>{formatDateShort(el.time, true)}</TableCell>
+									<TableCell>{el.price} ₽</TableCell>
+								</TableRow>
+							)
+						})}
+					</TableBody>
 				</Table>
 			</Card>
 		</div>

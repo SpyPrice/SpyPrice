@@ -1,6 +1,11 @@
 import type { ItemRead } from '@/Api/trackingApi'
 import Badge from '@/Components/UI/Badge'
-import Table, { TableCell, TableHeader, TableRow } from '@/Components/UI/Table'
+import Table, {
+	TableBody,
+	TableCell,
+	TableHeader,
+	TableRow,
+} from '@/Components/UI/Table'
 import { useNavigate } from 'react-router-dom'
 import styles from './ProductTable.module.scss'
 
@@ -47,43 +52,48 @@ export const ProductTable = ({ data }: ProductTableProps) => {
 				<TableCell>За 30 дней</TableCell>
 				<TableCell>Обновлено</TableCell>
 			</TableHeader>
-			{data.map(el => {
-				return (
-					<TableRow key={el.id} onClick={() => navigate(`/tracking/${el.id}`)}>
-						<TableCell>
-							<div className={styles.name}>
-								<p>{el.name}</p>
-								<div className={styles.badges}>
-									{el.tags.map(tag => {
-										return <Badge key={tag.id}>{tag.name}</Badge>
-									})}
+			<TableBody>
+				{data.map(el => {
+					return (
+						<TableRow
+							key={el.id}
+							onClick={() => navigate(`/tracking/${el.id}`)}
+						>
+							<TableCell>
+								<div className={styles.name}>
+									<p>{el.name}</p>
+									<div className={styles.badges}>
+										{el.tags.map(tag => {
+											return <Badge key={tag.id}>{tag.name}</Badge>
+										})}
+									</div>
 								</div>
-							</div>
-						</TableCell>
-						<TableCell>
-							<Badge type='main'>{el.source.name}</Badge>
-						</TableCell>
-						<TableCell className={styles.price}>
-							{el.last_snapshot?.price} ₽
-						</TableCell>
-						<TableCell>
-							{el.snapshot_7_days_ago == null ? (
-								<Badge size='large'>-</Badge>
-							) : (
-								el.snapshot_7_days_ago?.price
-							)}
-						</TableCell>
-						<TableCell>
-							{el.snapshot_7_days_ago == null ? (
-								<Badge size='large'>-</Badge>
-							) : (
-								el.snapshot_7_days_ago?.price
-							)}
-						</TableCell>
-						<TableCell>{formatDateShort(el.last_snapshot?.time!)}</TableCell>
-					</TableRow>
-				)
-			})}
+							</TableCell>
+							<TableCell>
+								<Badge type='main'>{el.source.name}</Badge>
+							</TableCell>
+							<TableCell className={styles.price}>
+								{el.last_snapshot?.price} ₽
+							</TableCell>
+							<TableCell>
+								{el.snapshot_7_days_ago == null ? (
+									<Badge size='large'>-</Badge>
+								) : (
+									el.snapshot_7_days_ago?.price
+								)}
+							</TableCell>
+							<TableCell>
+								{el.snapshot_7_days_ago == null ? (
+									<Badge size='large'>-</Badge>
+								) : (
+									el.snapshot_7_days_ago?.price
+								)}
+							</TableCell>
+							<TableCell>{formatDateShort(el.last_snapshot?.time!)}</TableCell>
+						</TableRow>
+					)
+				})}
+			</TableBody>
 		</Table>
 	)
 }

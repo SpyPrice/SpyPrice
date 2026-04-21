@@ -16,6 +16,15 @@
 		p {
 			color: $gray;
 		}
+
+		button {
+			justify-content: center;
+
+			p {
+				color: $white;
+				margin-bottom: 0;
+			}
+		}
 	}
 }
 
@@ -23,11 +32,6 @@
 	h3 {
 		font-size: 18px;
 		font-weight: bold;
-	}
-
-	p {
-		font-size: 14px;
-		color: $gray;
 		margin-bottom: 14px;
 	}
 

@@ -23,12 +23,12 @@ export const RegisterPage = () => {
 		e.preventDefault()
 
 		if (!inputsData.email || !inputsData.password || !inputsData.name) {
-			toast('Пожалуйста, заполните все поля', { type: 'error' })
+			toast.error('Пожалуйста, заполните все поля')
 			return
 		}
 
 		if (inputsData.password.length < 8) {
-			toast('Пароль ддолжен быть больше 8 символов', { type: 'error' })
+			toast.error('Пароль должен быть больше 8 символов')
 			return
 		}
 
@@ -47,12 +47,12 @@ export const RegisterPage = () => {
 
 	return (
 		<div className={styles.container}>
-			<h2>SpyPrice</h2>
+			<div className={styles.logo}>
+				<img src='/logo.svg' alt='Логотип' />
+				<h2>SpyPrice</h2>
+			</div>
 			<form onSubmit={e => handleSubmit(e)} className={styles.block}>
 				<p className={styles.register_p}>Создание аккаунта </p>
-				<p className={styles.register_p_description}>
-					Начните отслеживать цены бесплатно
-				</p>
 				<div className={styles.input_group}>
 					<label htmlFor='name'>Имя</label>
 					<Input
@@ -86,6 +86,7 @@ export const RegisterPage = () => {
 						}
 					/>
 				</div>
+
 				<Button formType='submit' fullWidth disabled={isLoading}>
 					{isLoading ? 'Создание аккаунта...' : 'Создать аккаунт'}
 				</Button>

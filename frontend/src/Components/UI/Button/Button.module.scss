@@ -62,7 +62,6 @@
 	}
 }
 
-// Dark-no-back тип (прозрачный с текстом)
 .dark-no-back {
 	background-color: transparent;
 	color: #1a1a1a;
@@ -89,7 +88,19 @@
 	}
 }
 
-// Дополнительные варианты размеров (опционально)
+.warning {
+	background-color: $warning;
+	color: #ffffff;
+
+	&:hover:not(:disabled) {
+		background-color: $warning;
+	}
+
+	&:active:not(:disabled) {
+		background-color: $warning;
+	}
+}
+
 .small {
 	padding: 6px 12px;
 	font-size: 12px;
@@ -105,17 +116,14 @@
 	font-size: 16px;
 }
 
-// Full width (опционально)
 .fullWidth {
 	width: 100%;
 }
 
-// С иконкой слева (опционально)
 .withIconLeft {
 	padding-left: 12px;
 }
 
-// С иконкой справа (опционально)
 .withIconRight {
 	padding-right: 12px;
 }

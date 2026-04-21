@@ -4,6 +4,7 @@ import DashboardPage from '@/Components/Pages/DashboardPage'
 import LoginPage from '@/Components/Pages/LoginPage'
 import ProfilePage from '@/Components/Pages/ProfilePage'
 import RegisterPage from '@/Components/Pages/RegisterPage'
+import ShopsPage from '@/Components/Pages/ShopsPage'
 import StartPage from '@/Components/Pages/StartPage'
 import TrackingPage from '@/Components/Pages/TrackingPage'
 import { AuthProvider } from '@/Contexts/AuthContext'
@@ -22,6 +23,7 @@ function App() {
 							<Route path='/dashboard' element={<DashboardPage />} />
 							<Route path='/profile' element={<ProfilePage />} />
 							<Route path='/tracking/:id' element={<TrackingPage />} />
+							<Route path='/shops' element={<ShopsPage />} />
 						</Route>
 						<Route element={<PublicLayout />}>
 							<Route path='/' element={<StartPage />} />

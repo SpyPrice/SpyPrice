@@ -3,6 +3,7 @@ import Button from '@/Components/UI/Button'
 import Input from '@/Components/UI/Input'
 import Modal from '@/Components/UI/Modal'
 import ProductTable from '@/Components/Widgets/ProductTable'
+import { useTitle } from '@/Hooks'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import styles from './DashboardPage.module.scss'
@@ -15,6 +16,8 @@ const getProductText = (count: number): string => {
 }
 
 export const DashboardPage = () => {
+	useTitle('Товары')
+
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [products, setProducts] = useState<ItemRead[]>([])
 	const [inputsData, setInputsData] = useState({ url: '' })
@@ -63,7 +66,10 @@ export const DashboardPage = () => {
 					<p>
 						{products.length} {getProductText(products.length)}
 					</p>
-					<Button onClick={() => setIsModalOpen(true)}>Добавить товар</Button>
+					<Button onClick={() => setIsModalOpen(true)}>
+						<img src='/plus.svg' alt='Плюс' />
+						<p>Добавить товар</p>
+					</Button>
 				</div>
 
 				{/* <Filter /> */}
@@ -79,9 +85,6 @@ export const DashboardPage = () => {
 			>
 				<div className={styles.modal}>
 					<h3>Добавить товар</h3>
-					<p>
-						Вставьте ссылку на товар и выберите магазин для отслеживания цены
-					</p>
 
 					<form onSubmit={handleSubmit}>
 						<div className={styles.input_group}>

@@ -1,10 +1,12 @@
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
 import { useAuth } from '@/Contexts/AuthContext'
+import { useTitle } from '@/Hooks'
 import { useNavigate } from 'react-router-dom'
 import styles from './ProfilePage.module.scss'
 
 export const ProfilePage = () => {
+	useTitle('Профиль')
 	const { user, logout } = useAuth()
 	const navigate = useNavigate()
 
@@ -55,13 +57,13 @@ export const ProfilePage = () => {
 			<Card className={styles.actions_card}>
 				<h3>Действия</h3>
 				<Button
-					type='danger'
+					type='warning'
 					onClick={() => {
 						logout()
 						navigate('/')
 					}}
 				>
-					<img src='/delete.svg' alt='Удалить' />
+					<img src='/logout.svg' alt='Выход' />
 					<p>Выйти из аккаунта</p>
 				</Button>
 			</Card>

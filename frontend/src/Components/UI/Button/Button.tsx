@@ -3,7 +3,13 @@ import styles from './Button.module.scss'
 interface ButtonProps {
 	className?: string
 	children: React.ReactNode
-	type?: 'dark' | 'light' | 'dark-no-back' | 'light-no-back' | 'danger'
+	type?:
+		| 'dark'
+		| 'light'
+		| 'dark-no-back'
+		| 'light-no-back'
+		| 'danger'
+		| 'warning'
 	size?: 'small' | 'medium' | 'large'
 	fullWidth?: boolean
 	onClick?: () => void

@@ -25,6 +25,15 @@ export const Header = () => {
 							</li>
 							<li>
 								<Link
+									className={`${styles.navLink} ${location.pathname === '/shops' ? styles.active : ''}`}
+									to={'/shops'}
+								>
+									<img src='/shop.svg' alt='Магазин' />
+									Магазины
+								</Link>
+							</li>
+							<li>
+								<Link
 									className={`${styles.navLink} ${location.pathname === '/profile' ? styles.active : ''}`}
 									to={'/profile'}
 								>
