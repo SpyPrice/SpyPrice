@@ -21,10 +21,11 @@ class MosigraParser(BaseStoreParser):
         if await price_elem.count() == 0:
             return None
 
-        price_text = (await price_elem.text_content()).strip()
-        price_part = price_text.split()[0] if price_text else ''
-        price_clean = re.sub(r'[^\d.]', '', price_part)
+        price_text = (await price_elem.text_content()).strip().rstrip('₽').replace(' ', '')
+        price_clean = re.sub(r'[^\d.]', '', price_text)
 
+        if price_text == '':
+            return None
 
         return {
             'name': name,
