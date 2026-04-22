@@ -1,0 +1,134 @@
+.main_block {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 80px 16px;
+
+	h1 {
+		font-size: 60px;
+		margin-bottom: 24px;
+		text-align: center;
+		background: $accent;
+		background-clip: text;
+		color: transparent;
+	}
+
+	h2 {
+		font-size: 20px;
+		margin-bottom: 32px;
+		color: $gray;
+		font-weight: normal;
+		text-align: center;
+	}
+
+	.buttons {
+		display: flex;
+		gap: 15px;
+	}
+}
+
+.cards {
+	display: flex;
+	justify-content: space-between;
+	padding: 64px 16px;
+	gap: 15px;
+
+	.card_img {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 16px;
+
+		height: 48px;
+		width: 48px;
+		border-radius: 10px;
+		&_blue {
+			background: $blue;
+		}
+		&_green {
+			background: $green;
+		}
+		&_purple {
+			background: $purple;
+		}
+
+		img {
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	.card_header {
+		font-size: 20px;
+		margin-bottom: 8px;
+	}
+
+	.card_content {
+		font-size: 16px;
+		color: $gray;
+	}
+}
+
+.create_account_block {
+	width: 100%;
+	padding: 80px 16px;
+
+	.info_block {
+		width: 100%;
+		border-radius: 16px;
+		padding: 48px;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		background: $accent;
+
+		h2 {
+			font-size: 36px;
+			margin-bottom: 16px;
+			color: $white;
+		}
+
+		h3 {
+			font-weight: normal;
+			font-size: 20px;
+			margin-bottom: 32px;
+			color: $white;
+		}
+	}
+}
+
+.header {
+	max-width: 100%;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 24px 16px;
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		img {
+			width: 32px;
+			height: 32px;
+		}
+
+		font-size: 30px;
+		font-weight: bold;
+		background: $accent;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.auth_buttons {
+		display: flex;
+		gap: 10px;
+	}
+}

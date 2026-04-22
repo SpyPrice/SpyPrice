@@ -1,0 +1,57 @@
+.container {
+	width: 1200px;
+	margin: 0 auto;
+	padding: 32px;
+
+	h2 {
+		font-size: 30px;
+		margin-bottom: 4px;
+	}
+
+	.block {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 24px;
+
+		p {
+			color: $gray;
+		}
+
+		button {
+			justify-content: center;
+
+			p {
+				color: $white;
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+.modal {
+	h3 {
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 14px;
+	}
+
+	form {
+		.input_group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 8px;
+
+			label {
+				font-size: 14px;
+				font-weight: bold;
+				margin-bottom: 8px;
+			}
+		}
+	}
+
+	.groupButtons {
+		display: flex;
+		justify-content: end;
+		gap: 8px;
+	}
+}

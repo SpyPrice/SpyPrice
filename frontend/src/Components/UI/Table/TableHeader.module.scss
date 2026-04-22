@@ -1,0 +1,18 @@
+.header {
+	// background-color: #f5f5f5;
+	font-weight: 600;
+	td {
+		font-size: 14px;
+		color: $gray;
+	}
+}
+
+.sticky {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+
+	.header {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	}
+}

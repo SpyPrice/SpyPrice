@@ -1,0 +1,79 @@
+.container {
+	width: 700px;
+	margin: 0 auto;
+	padding: 32px;
+
+	h2 {
+		font-size: 30px;
+		margin-bottom: 5px;
+	}
+
+	p {
+		font-size: 16px;
+		color: $gray;
+		margin-bottom: 20px;
+	}
+
+	.info_card {
+		margin-bottom: 20px;
+
+		h3 {
+			font-size: 16px;
+			margin-bottom: 5px;
+		}
+
+		.info_group {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.info_item {
+			background: $background;
+			border: none;
+			padding: 12px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 10px;
+
+			img {
+				width: 20px;
+				height: 20px;
+			}
+
+			.info_text {
+				.info_label {
+					font-size: 14px;
+					color: $gray;
+					margin-bottom: 5px;
+				}
+
+				.info_value {
+					font-size: 16px;
+					font-weight: bold;
+					color: $black;
+					margin-bottom: 0px;
+				}
+			}
+		}
+	}
+
+	.actions_card {
+		display: block;
+
+		h3 {
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+
+		button {
+			justify-content: center;
+
+			p {
+				color: $white;
+				margin-bottom: 0;
+			}
+		}
+	}
+}
