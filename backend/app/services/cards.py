@@ -46,7 +46,7 @@ async def add_watch(url: str, user_id: int, tags: list[TagCreate] | None, db: As
     card_id = await create_card_and_watch(
         user_id=user_id,
         url=url,
-        name='pending while parse new item',
+        name='Ожидание работы парсера цен...',
         is_in_stock=True,
         source_id=source_id,
         db=db
