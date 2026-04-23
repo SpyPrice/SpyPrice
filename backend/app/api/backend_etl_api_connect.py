@@ -13,7 +13,7 @@ from app.dependency import get_async_session
 router = APIRouter()
 
 
-@router.post('/webhook/etl_add_item_parse_result', tags=['back'], include_in_schema=False)
+@router.post('/webhook/etl_add_item_parse_result', tags=['backend'], include_in_schema=False)
 async def parse_new_item_result(
         card: ItemCreateWithPriceSnapshot,
         db: AsyncSession = Depends(get_async_session)
@@ -43,12 +43,12 @@ async def parse_new_item_result(
         )
 
 
-@router.post('/webhook/error', tags=['back'], include_in_schema=False)
+@router.post('/webhook/error', tags=['backend'], include_in_schema=False)
 async def parse_error_result(error: ParseError):
     print(f'\n\nНе удалось спарсить с источника номер {error.source_id}, url: {error.url}\nОшибка: {error.message}\n\n')
 
 
-@router.post('/cards/parse_item', tags=['back'], include_in_schema=True)
+@router.post('/cards/parse_item', tags=['backend'], include_in_schema=True)
 async def parse_item(
         item_id: int,
         db: AsyncSession = Depends(get_async_session),
@@ -67,7 +67,7 @@ async def parse_item(
     }
 
 
-@router.post('/webhook/etl_exists_item_parse_result', tags=['back'], include_in_schema=False)
+@router.post('/webhook/etl_exists_item_parse_result', tags=['backend'], include_in_schema=False)
 async def parse_item_exists_result(
         snapshot: PriceSnapshotCreate,
         db: AsyncSession = Depends(get_async_session),

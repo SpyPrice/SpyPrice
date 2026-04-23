@@ -1,5 +1,5 @@
 from app.models import TrackingItem, UsersTrackingItem, Source, PriceSnapshot, Tag, tags_tracking_items
-from sqlalchemy import Sequence, select, update, exists, literal_column, union_all
+from sqlalchemy import Sequence, select, delete, update, exists, literal_column, union_all
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from decimal import Decimal
@@ -93,6 +93,12 @@ async def get_user_cards(user_id: int, db: AsyncSession) -> Sequence[UsersTracki
     return result.scalars().all()
 
 
+async def get_all_card_ids(db: AsyncSession) -> Sequence[TrackingItem]:
+    query = select(TrackingItem.id)
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
 async def get_all_cards_id_source_url(db: AsyncSession):
     query = select(TrackingItem.id, TrackingItem.source_id, TrackingItem.url).order_by(TrackingItem.source_id)
     result = await db.execute(query)
@@ -154,6 +160,17 @@ async def add_user_tag_to_item(tag_id: int, id_link_user_to_card: int, db: Async
     await db.execute(query)
 
 
+async def delete_link_card_user(card_id: int, user_id: int, db: AsyncSession):
+    query = (
+        delete(UsersTrackingItem)
+        .where(
+            UsersTrackingItem.user_id == user_id,
+            UsersTrackingItem.tracking_item_id == card_id
+        )
+    )
+    await db.execute(query)
+
+
 async def get_card_snapshots(card_id: int, db: AsyncSession) -> Sequence[Decimal, datetime]:
     query = (
         select(PriceSnapshot.price, PriceSnapshot.created_at)
@@ -166,6 +183,7 @@ async def get_card_snapshots(card_id: int, db: AsyncSession) -> Sequence[Decimal
 
 async def get_card_last_and_week_snapshot(card_id: int, db: AsyncSession):
     week_ago = datetime.now() - timedelta(days=7)
+    month_ago = datetime.now() - timedelta(days=30)
 
     last_query = (
         select(
@@ -189,11 +207,22 @@ async def get_card_last_and_week_snapshot(card_id: int, db: AsyncSession):
         .limit(1)
     )
 
-    combined = union_all(last_query, old_query).subquery()
+    very_old_query = (
+        select(
+            PriceSnapshot.price,
+            PriceSnapshot.created_at,
+            literal_column("'very_old'").label('type')
+        )
+        .where(PriceSnapshot.tracking_item_id == card_id, PriceSnapshot.created_at <= month_ago)
+        .order_by(PriceSnapshot.created_at.desc())
+        .limit(1)
+    )
+
+    combined = union_all(last_query, old_query, very_old_query).subquery()
     result = await db.execute(select(combined))
     rows = result.all()
 
-    data = {'last': None, 'old': None}
+    data = {'last': None, 'old': None, 'very_old': None}
     for row in rows:
         data[row.type] = row
 
