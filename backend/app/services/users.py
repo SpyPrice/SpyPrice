@@ -14,7 +14,7 @@ def _verify_password(check_password, hashed_password) -> bool:
 
 async def create_user(db: AsyncSession, email: str, name: str, password: str) -> User:
     if await users_repository.get_user_by_email(db, email):
-        raise HTTPException(status_code=400, detail='User already exists. Email is taken.')
+        raise HTTPException(status_code=400, detail='Пользователь с такой почтой уже существует.')
 
     user = await users_repository.create_user(db, email, name, _hash_password(password))
     await db.commit()
@@ -24,8 +24,8 @@ async def create_user(db: AsyncSession, email: str, name: str, password: str) ->
 async def authenticate_user(db: AsyncSession, email: str, password: str) -> User:
     user = await users_repository.get_user_by_email(db, email)
     if not user:
-        raise HTTPException(status_code=400, detail='User does not exist.')
+        raise HTTPException(status_code=400, detail='Пользователь не найден.')
     elif not _verify_password(password, user.password):
-        raise HTTPException(status_code=400, detail='Invalid password or email.')
+        raise HTTPException(status_code=400, detail='Неверный пароль или логин.')
 
     return user
