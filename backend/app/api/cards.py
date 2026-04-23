@@ -51,6 +51,24 @@ async def add_watch(
     )
 
 
+@router.post('/cards/delete_watch_item', tags=['cards', 'safe'])
+async def delete_watch_item(
+        card_id: int,
+        db: AsyncSession = Depends(get_async_session),
+        current_user: UserRead = Depends(get_current_user)
+):
+    try:
+        await cards_service.delete_watch_card(card_id, current_user.id, db)
+        return {
+            'status': 'success',
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+
 @router.get('/cards/get_all_watch_items', tags=['cards', 'safe'], response_model=list[ItemRead])
 async def get_all_watch_items_with_snapshots(
         db: AsyncSession = Depends(get_async_session),
@@ -60,12 +78,20 @@ async def get_all_watch_items_with_snapshots(
     return user_cards
 
 
+@router.get('/cards/get_all_cards', tags=['cards'], response_model=list[ItemRead])
+async def get_all_cards_with_snapshots(db: AsyncSession = Depends(get_async_session)):
+    cards = await cards_service.get_all_cards_with_snapshots(db)
+    return cards
+
+
 @router.get('/cards/card_info', tags=['cards'], response_model=ItemStatistic)
 async def get_card_info(
         card_id: int,
-        db: AsyncSession = Depends(get_async_session)):
+        db: AsyncSession = Depends(get_async_session),
+        current_user: UserRead = Depends(get_current_user)
+):
 
-    item = await cards_service.generate_item_read(card_id, db)
+    item = await cards_service.generate_item_read(card_id, db, user_id=current_user.id)
     if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

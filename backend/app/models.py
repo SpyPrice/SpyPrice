@@ -12,7 +12,7 @@ tags_tracking_items = Table(
     'tags_tracking_items_by_user',
     Base.metadata,
     Column('id', Integer, primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tags.id')),
+    Column('tag_id', Integer, ForeignKey('tags.id', ondelete='CASCADE')),
     Column('user_tracking_id', Integer, ForeignKey('users_tracking_items.id')),
     Column('created_at', DateTime, server_default=func.now(), nullable=False)
 )
