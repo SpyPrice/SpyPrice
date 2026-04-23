@@ -38,7 +38,8 @@ async def add_watch(url: str, user_id: int, tags: list[TagCreate] | None, db: As
             return 'already_watched'
         await cards_repository.user_watch_card_add(user_id, card.id, db)
         await db.commit()
-        await add_user_tags_to_item(card.id, user_id, tags, db)
+        if tags:
+            await add_user_tags_to_item(card.id, user_id, tags, db)
         return 'success'
 
     # Карточки нет -> Добавляем в бд, а потом отправляем запрос в ETL на парсинг
@@ -51,7 +52,8 @@ async def add_watch(url: str, user_id: int, tags: list[TagCreate] | None, db: As
         db=db
     )
 
-    await add_user_tags_to_item(card_id, user_id, tags, db)
+    if tags:
+        await add_user_tags_to_item(card_id, user_id, tags, db)
 
     await notify_etl_to_parse_new_item(card_id, norm_url, source_id)
     return 'pending'
