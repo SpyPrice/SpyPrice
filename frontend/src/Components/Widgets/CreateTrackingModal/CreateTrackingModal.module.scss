@@ -1,0 +1,64 @@
+.modal {
+	h3 {
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 14px;
+	}
+
+	form {
+		.input_group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 8px;
+
+			label {
+				font-size: 14px;
+				font-weight: bold;
+				margin-bottom: 8px;
+			}
+		}
+	}
+
+	.groupButtons {
+		display: flex;
+		justify-content: end;
+		gap: 8px;
+	}
+
+	.tags_group {
+		display: flex;
+		justify-content: space-between;
+		gap: 8px;
+
+		input {
+			width: 100%;
+		}
+
+		button {
+			padding: 4px 20px;
+		}
+	}
+
+	.tags_div {
+		display: flex;
+		gap: 8px;
+		margin: 8px 0;
+
+		.tag {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 6px;
+
+			button {
+				padding: 0;
+				background: transparent;
+				border: none;
+
+				&:hover {
+					color: $up-badge;
+				}
+			}
+		}
+	}
+}

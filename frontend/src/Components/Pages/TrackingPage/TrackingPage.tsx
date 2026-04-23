@@ -1,4 +1,5 @@
 import { cardsApi, type ItemStatistic } from '@/Api/trackingApi'
+import DeleteIcon from '@/Assets/delete.svg?react'
 import Badge from '@/Components/UI/Badge'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
@@ -10,7 +11,8 @@ import Table, {
 } from '@/Components/UI/Table'
 import { useTitle } from '@/Hooks'
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 import styles from './TrackingPage.module.scss'
 
@@ -19,6 +21,7 @@ export const TrackingPage = () => {
 	const [item, setItem] = useState<ItemStatistic>()
 	const [dataChart, setDataChart] = useState<any>()
 	const { id } = useParams()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fetchProducts()
@@ -27,18 +30,66 @@ export const TrackingPage = () => {
 	const fetchProducts = async () => {
 		try {
 			const data: any = await cardsApi.getCardInfo(+id!)
+
 			setItem(data)
-			setDataChart(
-				data?.update_history.map((el: any) => {
-					return {
-						price: el.price,
-						time: formatDateShort(el.time),
-					}
-				}),
+
+			const sortedHistory = data?.update_history.sort(
+				(a: any, b: any) =>
+					new Date(a.time).getTime() - new Date(b.time).getTime(),
 			)
+
+			let chartData
+			if (sortedHistory?.length > 20) {
+				chartData = groupDataByDay(sortedHistory)
+			} else {
+				chartData = sortedHistory?.map((el: any) => {
+					return {
+						Цена: el.price,
+						time: formatDateShort(el.time, false),
+					}
+				})
+			}
+
+			setDataChart(chartData)
 		} catch (error) {
 			console.error('Failed to fetch item:', error)
+			navigate('/dashboard')
 		}
+	}
+
+	const groupDataByDay = (history: any[]) => {
+		const groupedByDate: {
+			[key: string]: {
+				price: number
+				time: string
+				fullDate: Date
+				originalTime: Date
+			}
+		} = {}
+
+		history.forEach((el: any) => {
+			const dateKey = formatDateShort(el.time, false) // Только дата без времени
+			const currentDate = new Date(el.time)
+
+			if (
+				!groupedByDate[dateKey] ||
+				currentDate > groupedByDate[dateKey].originalTime
+			) {
+				groupedByDate[dateKey] = {
+					price: el.price,
+					time: el.time,
+					fullDate: currentDate,
+					originalTime: currentDate,
+				}
+			}
+		})
+
+		return Object.values(groupedByDate)
+			.sort((a, b) => a.fullDate.getTime() - b.fullDate.getTime())
+			.map(el => ({
+				Цена: el.price,
+				time: formatDateShort(el.time, false),
+			}))
 	}
 
 	const formatDateShort = (
@@ -70,6 +121,16 @@ export const TrackingPage = () => {
 		return time ? `${day} ${month}, ${hours}:${minutes}` : `${day} ${month}`
 	}
 
+	const handleDelete = async () => {
+		const response: any = await cardsApi.deleteCard(+id!)
+		if (response.status == 'success') {
+			navigate('/dashboard')
+			toast.info('Удалено успешно!')
+		} else {
+			toast.error('Ошибка удаления!')
+		}
+	}
+
 	return (
 		<div className={styles.container}>
 			<Link to={'/dashboard'}>
@@ -78,15 +139,18 @@ export const TrackingPage = () => {
 			<div className={styles.content}>
 				<div className={styles.block}>
 					<h2>{item?.item.name}</h2>
-					{/* <div className={styles.buttons}>
-            <Button>Редактировать</Button>
-            <Button type='danger'>Удалить</Button>
-          </div> */}
+					<div className={styles.buttons}>
+						{/* <Button>Редактировать</Button> */}
+						<Button type='danger' onClick={handleDelete}>
+							<DeleteIcon />
+							Удалить
+						</Button>
+					</div>
 				</div>
 				<div className={styles.badges}>
 					<Badge type='main'>{item?.item.source.name}</Badge>
 					{item?.item.tags.map(el => {
-						return <Badge>{el.name}</Badge>
+						return <Badge key={el.id}>{el.name}</Badge>
 					})}
 				</div>
 				<a href={item?.item.url} target='_blank'>
@@ -136,7 +200,7 @@ export const TrackingPage = () => {
 					<YAxis />
 					<XAxis width='auto' dataKey='time' />
 					<Tooltip />
-					<Line type='monotone' dataKey='price' />
+					<Line type='monotone' dataKey='Цена' />
 				</LineChart>
 				<div className={styles.pricesBlock}>
 					<div className={styles.minPrice}>

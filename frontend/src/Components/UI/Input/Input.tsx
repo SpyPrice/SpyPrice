@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import styles from './Input.module.scss'
 
 interface InputProps {
@@ -10,6 +11,7 @@ interface InputProps {
 	onChange?: React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>
 	required?: boolean
 	disabled?: boolean
+	ref?: RefObject<HTMLInputElement | null>
 }
 
 export const Input = ({

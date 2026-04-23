@@ -10,6 +10,7 @@ interface ButtonProps {
 		| 'light-no-back'
 		| 'danger'
 		| 'warning'
+		| 'none'
 	size?: 'small' | 'medium' | 'large'
 	fullWidth?: boolean
 	onClick?: () => void

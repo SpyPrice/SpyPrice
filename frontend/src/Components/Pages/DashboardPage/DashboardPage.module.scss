@@ -27,31 +27,3 @@
 		}
 	}
 }
-
-.modal {
-	h3 {
-		font-size: 18px;
-		font-weight: bold;
-		margin-bottom: 14px;
-	}
-
-	form {
-		.input_group {
-			display: flex;
-			flex-direction: column;
-			margin-bottom: 8px;
-
-			label {
-				font-size: 14px;
-				font-weight: bold;
-				margin-bottom: 8px;
-			}
-		}
-	}
-
-	.groupButtons {
-		display: flex;
-		justify-content: end;
-		gap: 8px;
-	}
-}

@@ -62,11 +62,17 @@ export interface ItemStatistic {
 }
 
 export const cardsApi = {
-	addWatchItem: (sourceUrl: string) =>
-		api.post<WatchResponse>('/cards/add_watch_item', { source_url: sourceUrl }),
+	addWatchItem: (sourceUrl: string, tags?: { name: string }[]) =>
+		api.post<WatchResponse>('/cards/add_watch_item', {
+			source_url: sourceUrl,
+			tags: tags,
+		}),
 
 	getAllWatchItems: () => api.get<ItemRead[]>('/cards/get_all_watch_items'),
 
 	getCardInfo: (cardId: number) =>
 		api.get<ItemStatistic>(`/cards/card_info?card_id=${cardId}`),
+
+	deleteCard: (cardId: number) =>
+		api.post<WatchResponse>(`/cards/delete_watch_item?card_id=${cardId}`),
 }

@@ -13,6 +13,10 @@
 	cursor: pointer;
 	transition: all 0.2s ease-in-out;
 
+	svg {
+		height: 20px;
+	}
+
 	// Анимация при нажатии
 	&:active {
 		transform: scale(0.98);

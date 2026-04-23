@@ -1,5 +1,7 @@
-import type { ItemRead } from '@/Api/trackingApi'
+import { cardsApi, type ItemRead } from '@/Api/trackingApi'
+import DeleteIcon from '@/Assets/delete.svg?react'
 import Badge from '@/Components/UI/Badge'
+import Button from '@/Components/UI/Button'
 import Table, {
 	TableBody,
 	TableCell,
@@ -7,6 +9,7 @@ import Table, {
 	TableRow,
 } from '@/Components/UI/Table'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import styles from './ProductTable.module.scss'
 
 interface ProductTableProps {
@@ -42,6 +45,15 @@ export const ProductTable = ({ data }: ProductTableProps) => {
 		return `${day} ${month}, ${hours}:${minutes}`
 	}
 
+	const handleDelete = async (id: number) => {
+		const response: any = await cardsApi.deleteCard(id)
+		if (response.status == 'success') {
+			toast.info('Удалено успешно!')
+		} else {
+			toast.error('Ошибка удаления!')
+		}
+	}
+
 	return (
 		<Table>
 			<TableHeader>
@@ -73,7 +85,9 @@ export const ProductTable = ({ data }: ProductTableProps) => {
 								<Badge type='main'>{el.source.name}</Badge>
 							</TableCell>
 							<TableCell className={styles.price}>
-								{el.last_snapshot?.price} ₽
+								{el.last_snapshot?.price != null
+									? `${el.last_snapshot?.price} ₽`
+									: ''}
 							</TableCell>
 							<TableCell>
 								{el.snapshot_7_days_ago == null ? (
@@ -89,7 +103,20 @@ export const ProductTable = ({ data }: ProductTableProps) => {
 									el.snapshot_7_days_ago?.price
 								)}
 							</TableCell>
-							<TableCell>{formatDateShort(el.last_snapshot?.time!)}</TableCell>
+							<TableCell>
+								{el.last_snapshot == null ? (
+									<Button
+										type='danger'
+										size='small'
+										onClick={() => handleDelete(el.id)}
+									>
+										<DeleteIcon />
+										Удалить
+									</Button>
+								) : (
+									formatDateShort(el.last_snapshot?.time!)
+								)}
+							</TableCell>
 						</TableRow>
 					)
 				})}
