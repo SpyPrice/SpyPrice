@@ -26,7 +26,7 @@ async def add_watch(
         result = await cards_service.add_watch(str(item.source_url), current_user.id, item.tags, db)
     except Exception as e:
         raise HTTPException(
-            status_code=status.INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail='Непредвиденная ошибка на сервере при добавлении карточки'
         )
     if result == 'success':
