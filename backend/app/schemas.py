@@ -74,6 +74,7 @@ class ItemRead(MyDataModels):
     currency: str = 'RUB'
     last_snapshot: ShortPriceSnapshot | None
     snapshot_7_days_ago: ShortPriceSnapshot | None
+    snapshot_30_days_ago: ShortPriceSnapshot | None
     source: ShortSourceRead
 
     tags: list[TagRead] | None = Field(default_factory=list)

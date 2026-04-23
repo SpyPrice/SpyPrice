@@ -106,6 +106,8 @@ async def generate_item_read(item_id: int, db: AsyncSession, user_id=None) -> It
 
     last_row = snapshots.get('last')
     old_row = snapshots.get('old')
+    very_old_row = snapshots.get('very_old')
+
     last_snapshot = ShortPriceSnapshot(
         price=last_row.price,
         time=last_row.created_at
@@ -114,6 +116,10 @@ async def generate_item_read(item_id: int, db: AsyncSession, user_id=None) -> It
         price=old_row.price,
         time=old_row.created_at
     ) if old_row else None
+    snapshot_30_days_ago = ShortPriceSnapshot(
+        price=very_old_row.price,
+        time=very_old_row.created_at
+    ) if very_old_row else None
 
     return ItemRead(
         id=item_id,
@@ -123,6 +129,7 @@ async def generate_item_read(item_id: int, db: AsyncSession, user_id=None) -> It
         currency='RUB',  # Пока заглушка, потом поменять логику работы с currency
         last_snapshot=last_snapshot,
         snapshot_7_days_ago=snapshot_7_days_ago,
+        snapshot_30_days_ago=snapshot_30_days_ago,
         source=ShortSourceRead(
             id=source.id,
             name=source.name
@@ -136,6 +143,16 @@ async def get_all_users_cards_with_snapshots(user_id: int, db: AsyncSession) -> 
     user_tracking_cards = await cards_repository.get_user_cards(user_id, db)
     for tracking_cards in user_tracking_cards:
         item_read = await generate_item_read(tracking_cards.tracking_item_id, db, user_id=user_id)
+        if item_read is not None:
+            result.append(item_read)
+    return result
+
+
+async def get_all_cards_with_snapshots(db: AsyncSession) -> list[ItemRead]:
+    result: list[ItemRead] = []
+    card_ids = await cards_repository.get_all_card_ids(db)
+    for card_id in card_ids:
+        item_read = await generate_item_read(card_id, db)
         if item_read is not None:
             result.append(item_read)
     return result
@@ -169,3 +186,8 @@ async def get_price_statistics(price_snapshots: list[ShortPriceSnapshot]) -> Pri
         max_price=max_price,
         avg_price=(sum_price/snapshots_count).quantize(Decimal('0.01'))
     )
+
+
+async def delete_watch_card(card_id: int, user_id: int, db: AsyncSession):
+    await cards_repository.delete_link_card_user(card_id, user_id, db)
+    await db.commit()
