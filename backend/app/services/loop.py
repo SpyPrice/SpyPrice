@@ -15,7 +15,7 @@ from itertools import zip_longest
 
 
 # Время в секундах. Пока общее, потом - для каждого магазина своё
-frequency_parse = 3 * 60 * 60
+frequency_parse = 6 * 60 * 60
 item_in_group_count = 10
 item_in_group_delta = 45
 between_groups_delta = 5 * 60
