@@ -35,7 +35,7 @@ export const CreateTrackingModal = ({
 			const response: any = await cardsApi.addWatchItem(inputsData.url, tags)
 			toast(response.message || 'Успешно добавлено')
 			fetchProducts()
-			setTimeout(fetchProducts, 8000)
+			// setTimeout(fetchProducts, 8000)
 			setTags([])
 			setOpen(false)
 		} catch (error: any) {
@@ -54,6 +54,14 @@ export const CreateTrackingModal = ({
 			tagInput.current!.value == '' ||
 			tags.find(x => x.name == tagInput.current!.value)
 		) {
+			return
+		}
+		if (tagInput.current!.value.length > 30) {
+			toast.error('Длина тега не больше 30 символов!')
+			return
+		}
+		if (tags.length == 15) {
+			toast.error('Лимит тегов!')
 			return
 		}
 		setTags([...tags, { name: tagInput.current!.value }])

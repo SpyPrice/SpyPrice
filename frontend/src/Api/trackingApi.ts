@@ -32,6 +32,7 @@ export interface ItemRead {
 	currency: string
 	last_snapshot: LastSnapshot | null
 	snapshot_7_days_ago: LastSnapshot | null
+	snapshot_30_days_ago: LastSnapshot | null
 	source: Source
 	tags: Tag[]
 }

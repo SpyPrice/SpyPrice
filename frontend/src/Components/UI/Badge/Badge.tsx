@@ -1,3 +1,5 @@
+import DownIcon from '@/Assets/down.svg?react'
+import UpIcon from '@/Assets/up.svg?react'
 import styles from './Badge.module.scss'
 
 interface BadgeProps {
@@ -6,7 +8,7 @@ interface BadgeProps {
 	onClick?: () => void
 	size?: 'small' | 'medium' | 'large'
 	type?: 'main' | 'second'
-	price?: 'none' | 'up' | 'down'
+	price?: 'none' | 'up' | 'down' | 'equals'
 }
 
 export const Badge = ({
@@ -22,13 +24,7 @@ export const Badge = ({
 			className={`${styles.badge} ${styles[size]} ${styles[type]} ${styles[price]} ${className || ''}`}
 			onClick={onClick}
 		>
-			{price == 'down' ? (
-				<img src='/down.svg' alt='Опускается' />
-			) : price == 'up' ? (
-				<img src='/up.svg' alt='Поднимается' />
-			) : (
-				''
-			)}
+			{price == 'down' ? <DownIcon /> : price == 'up' ? <UpIcon /> : ''}
 			{children}
 		</div>
 	)

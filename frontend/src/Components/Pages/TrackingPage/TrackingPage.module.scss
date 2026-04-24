@@ -23,6 +23,7 @@
 
 		.badges {
 			display: flex;
+			flex-wrap: wrap;
 			gap: 8px;
 			margin-bottom: 12px;
 		}
@@ -102,6 +103,101 @@
 
 		& * {
 			outline: none !important;
+		}
+	}
+}
+
+@media (max-width: 700px) {
+	.container {
+		max-width: 100vw;
+		padding: 15px;
+		width: fit-content;
+
+		.content {
+			margin-bottom: 20px;
+
+			a {
+				font-size: 14px;
+			}
+
+			.block {
+				gap: 5px;
+
+				h2 {
+					font-size: 20px;
+				}
+			}
+
+			.badges {
+				margin-bottom: 10px;
+			}
+		}
+
+		.topCard {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-areas:
+				'current-price last-update'
+				'change-7 change-30';
+			gap: 20px;
+
+			.currentPrice {
+				grid-area: current-price;
+			}
+
+			.updatePriceDate {
+				grid-area: last-update;
+			}
+
+			.updatePrice {
+				grid-area: change-7;
+			}
+
+			.updatePrice30 {
+				grid-area: change-30;
+			}
+
+			div {
+				.title {
+					font-size: 14px;
+				}
+
+				.currentPrice {
+					&_value {
+						font-size: 20px;
+					}
+				}
+
+				.updatePriceDate {
+					&_value {
+						font-size: 14px;
+					}
+				}
+			}
+		}
+
+		.bottomCard {
+			.pricesBlock {
+				.title {
+					font-size: 14px;
+				}
+
+				.minPrice {
+					.price {
+						font-size: 16px;
+					}
+				}
+				.maxPrice {
+					.price {
+						font-size: 16px;
+					}
+				}
+				.avgPrice {
+					.price {
+						font-size: 16px;
+					}
+				}
+			}
 		}
 	}
 }

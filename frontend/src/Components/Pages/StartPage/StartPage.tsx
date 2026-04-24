@@ -1,3 +1,6 @@
+import ArrowIcon from '@/Assets/arrow.svg?react'
+import BellIcon from '@/Assets/bell.svg?react'
+import ChartIcon from '@/Assets/chart.svg?react'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
 import Footer from '@/Components/Widgets/Footer'
@@ -52,7 +55,7 @@ export const StartPage = () => {
 			<section className={styles.cards}>
 				<Card>
 					<div className={`${styles.card_img} ${styles.card_img_blue}`}>
-						<img src='/arrow.svg' alt='Стрелка' />
+						<ArrowIcon />
 					</div>
 					<p className={styles.card_header}>Добавьте ссылку</p>
 					<p className={styles.card_content}>
@@ -61,7 +64,7 @@ export const StartPage = () => {
 				</Card>
 				<Card>
 					<div className={`${styles.card_img} ${styles.card_img_purple}`}>
-						<img src='/chart.svg' alt='График' />
+						<ChartIcon />
 					</div>
 					<p className={styles.card_header}>Смотрите графики</p>
 					<p className={styles.card_content}>
@@ -70,7 +73,7 @@ export const StartPage = () => {
 				</Card>
 				<Card>
 					<div className={`${styles.card_img} ${styles.card_img_green}`}>
-						<img src='/bell.svg' alt='Колкольчик' />
+						<BellIcon />
 					</div>
 					<p className={styles.card_header}>Получайте уведомления</p>
 					<p className={styles.card_content}>

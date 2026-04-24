@@ -18,8 +18,10 @@ export const RegisterPage = () => {
 		password: '',
 	})
 	const [isLoading, setIsLoading] = useState(false)
+	const [isError, setIsError] = useState(false)
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+		setIsError(false)
 		e.preventDefault()
 
 		if (!inputsData.email || !inputsData.password || !inputsData.name) {
@@ -27,8 +29,31 @@ export const RegisterPage = () => {
 			return
 		}
 
+		if (inputsData.name.length > 30) {
+			toast.error('Имя пользователя не больше 30 символов')
+			setIsError(true)
+			// return
+		}
+
 		if (inputsData.password.length < 8) {
 			toast.error('Пароль должен быть больше 8 символов')
+			setIsError(true)
+			// return
+		}
+
+		console.log(/[a-zA-Z]/.test(inputsData.password))
+
+		if (!/[a-zA-Z]/.test(inputsData.password)) {
+			toast.error('Пароль должен содержать латиницу')
+			setIsError(true)
+		}
+
+		if (!/[0-9]/.test(inputsData.password)) {
+			toast.error('Пароль должен содержать цифры')
+			setIsError(true)
+		}
+
+		if (isError) {
 			return
 		}
 
@@ -85,6 +110,13 @@ export const RegisterPage = () => {
 							setInputsData({ ...inputsData, password: el.currentTarget.value })
 						}
 					/>
+					{/* <p>
+						Пароль должен содержать:
+						<ul>
+							<li> Латинские символы</li>
+							<li>Цифры</li>
+						</ul>
+					</p> */}
 				</div>
 
 				<Button formType='submit' fullWidth disabled={isLoading}>

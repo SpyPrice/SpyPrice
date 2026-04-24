@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import styles from './Button.module.scss'
 
 interface ButtonProps {
@@ -16,6 +17,7 @@ interface ButtonProps {
 	onClick?: () => void
 	disabled?: boolean
 	formType?: 'button' | 'submit' | 'reset'
+	ref?: RefObject<HTMLButtonElement | null>
 }
 
 export const Button = ({

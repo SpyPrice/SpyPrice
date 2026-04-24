@@ -21,6 +21,8 @@ export const DashboardPage = () => {
 
 	useEffect(() => {
 		fetchProducts()
+		const timer = setInterval(fetchProducts, 15000)
+		timer
 	}, [])
 
 	const fetchProducts = async () => {
@@ -48,7 +50,7 @@ export const DashboardPage = () => {
 
 				{/* <Filter /> */}
 
-				<ProductTable data={products} />
+				<ProductTable data={products} fetchProducts={fetchProducts} />
 
 				<CreateTrackingModal
 					open={isModalOpen}

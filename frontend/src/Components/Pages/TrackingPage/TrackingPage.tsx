@@ -38,11 +38,20 @@ export const TrackingPage = () => {
 					new Date(a.time).getTime() - new Date(b.time).getTime(),
 			)
 
+			const now = new Date()
+			const thirtyDaysAgo = new Date()
+			thirtyDaysAgo.setDate(now.getDate() - 30)
+
+			const last30DaysHistory = sortedHistory?.filter((el: any) => {
+				const itemDate = new Date(el.time)
+				return itemDate >= thirtyDaysAgo
+			})
+
 			let chartData
-			if (sortedHistory?.length > 20) {
-				chartData = groupDataByDay(sortedHistory)
+			if (last30DaysHistory?.length > 20) {
+				chartData = groupDataByDay(last30DaysHistory)
 			} else {
-				chartData = sortedHistory?.map((el: any) => {
+				chartData = last30DaysHistory?.map((el: any) => {
 					return {
 						Цена: el.price,
 						time: formatDateShort(el.time, false),
@@ -169,7 +178,19 @@ export const TrackingPage = () => {
 					<p className={styles.title}>Изменение за 7 дней</p>
 					<div className={styles.updatePrice_value}>
 						{item?.item.snapshot_7_days_ago != null ? (
-							<Badge price='up'>{item?.item.snapshot_7_days_ago.price} ₽</Badge>
+							<Badge
+								price={
+									+item?.item.snapshot_7_days_ago.price <
+									+item?.item.last_snapshot?.price!
+										? 'down'
+										: +item?.item.snapshot_7_days_ago.price >
+											  +item?.item.last_snapshot?.price!
+											? 'up'
+											: 'equals'
+								}
+							>
+								{item?.item.snapshot_7_days_ago.price} ₽
+							</Badge>
 						) : (
 							<Badge size='large'>-</Badge>
 						)}
@@ -178,8 +199,20 @@ export const TrackingPage = () => {
 				<div className={styles.updatePrice30}>
 					<p className={styles.title}>Изменение за 30 дней</p>
 					<div className={styles.updatePrice30_value}>
-						{item?.item.snapshot_7_days_ago != null ? (
-							<Badge price='up'>{item?.item.snapshot_7_days_ago.price} ₽</Badge>
+						{item?.item.snapshot_30_days_ago != null ? (
+							<Badge
+								price={
+									+item?.item.snapshot_30_days_ago.price <
+									+item?.item.last_snapshot?.price!
+										? 'down'
+										: +item?.item.snapshot_30_days_ago.price >
+											  +item?.item.last_snapshot?.price!
+											? 'up'
+											: 'equals'
+								}
+							>
+								{item?.item.snapshot_30_days_ago.price} ₽
+							</Badge>
 						) : (
 							<Badge size='large'>-</Badge>
 						)}
@@ -227,14 +260,15 @@ export const TrackingPage = () => {
 						<TableCell>Цена</TableCell>
 					</TableHeader>
 					<TableBody>
-						{item?.update_history.map((el: any, index) => {
-							return (
-								<TableRow key={index}>
-									<TableCell>{formatDateShort(el.time, true)}</TableCell>
-									<TableCell>{el.price} ₽</TableCell>
-								</TableRow>
-							)
-						})}
+						{item?.update_history &&
+							[...item.update_history].reverse().map((el: any, index) => {
+								return (
+									<TableRow key={index}>
+										<TableCell>{formatDateShort(el.time, true)}</TableCell>
+										<TableCell>{el.price} ₽</TableCell>
+									</TableRow>
+								)
+							})}
 					</TableBody>
 				</Table>
 			</Card>
