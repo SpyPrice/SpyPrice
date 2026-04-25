@@ -77,7 +77,7 @@ export const TrackingPage = () => {
 		} = {}
 
 		history.forEach((el: any) => {
-			const dateKey = formatDateShort(el.time, false) // Только дата без времени
+			const dateKey = formatDateShort(el.time, false)
 			const currentDate = new Date(el.time)
 
 			if (
