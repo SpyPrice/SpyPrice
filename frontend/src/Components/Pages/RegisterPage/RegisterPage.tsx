@@ -18,7 +18,6 @@ export const RegisterPage = () => {
 		password: '',
 	})
 	const [isLoading, setIsLoading] = useState(false)
-	const [isError, setIsError] = useState(false)
 
 	const validateForm = () => {
 		const errors = []
