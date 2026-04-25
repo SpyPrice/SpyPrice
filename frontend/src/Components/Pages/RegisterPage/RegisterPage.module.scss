@@ -60,6 +60,31 @@
 			input {
 				width: 350px;
 			}
+
+			p {
+				font-size: 14px;
+				margin-top: 5px;
+				color: $gray;
+
+				ul {
+					li {
+						font-size: 13px;
+						list-style: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 700px) {
+	.container {
+		.block {
+			.input_group {
+				input {
+					width: 300px;
+				}
+			}
 		}
 	}
 }

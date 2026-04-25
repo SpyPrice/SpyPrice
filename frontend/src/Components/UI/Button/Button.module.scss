@@ -13,6 +13,10 @@
 	cursor: pointer;
 	transition: all 0.2s ease-in-out;
 
+	svg {
+		height: 20px;
+	}
+
 	// Анимация при нажатии
 	&:active {
 		transform: scale(0.98);
@@ -126,4 +130,21 @@
 
 .withIconRight {
 	padding-right: 12px;
+}
+
+@media (max-width: 700px) {
+	.small {
+		padding: 6px 12px;
+		font-size: 10px;
+	}
+
+	.medium {
+		padding: 10px 20px;
+		font-size: 12px;
+	}
+
+	.large {
+		padding: 12px 24px;
+		font-size: 14px;
+	}
 }

@@ -1,8 +1,51 @@
+import BurgerIcon from '@/Assets/burger.svg?react'
+import Button from '@/Components/UI/Button'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styles from './Header.module.scss'
 
 export const Header = () => {
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const location = useLocation()
+	const menuRef = useRef<HTMLElement>(null)
+	const burgerButtonRef = useRef<HTMLButtonElement>(null)
+
+	// Закрытие меню при клике вне области навигации
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				isMenuOpen &&
+				menuRef.current &&
+				!menuRef.current.contains(event.target as Node) &&
+				burgerButtonRef.current &&
+				!burgerButtonRef.current.contains(event.target as Node)
+			) {
+				setIsMenuOpen(false)
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside)
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [isMenuOpen])
+
+	// Закрытие меню при смене роута
+	useEffect(() => {
+		setIsMenuOpen(false)
+	}, [location])
+
+	// Блокировка скролла при открытом меню
+	useEffect(() => {
+		if (isMenuOpen) {
+			document.body.style.overflow = 'hidden'
+		} else {
+			document.body.style.overflow = 'unset'
+		}
+		return () => {
+			document.body.style.overflow = 'unset'
+		}
+	}, [isMenuOpen])
 
 	return (
 		<header className={styles.header}>
@@ -12,7 +55,21 @@ export const Header = () => {
 						<img src='/logo.svg' alt='Логотип' />
 						<p>SpyPrice</p>
 					</div>
-					<nav className={styles.nav}>
+					<Button
+						ref={burgerButtonRef}
+						className={styles.burgerButton}
+						size='small'
+						type='light-no-back'
+						onClick={() => {
+							setIsMenuOpen(!isMenuOpen)
+						}}
+					>
+						<BurgerIcon />
+					</Button>
+					<nav
+						ref={menuRef}
+						className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}
+					>
 						<ul>
 							<li>
 								<Link
@@ -52,6 +109,12 @@ export const Header = () => {
 				</div> */}
 				</div>
 			</div>
+			{isMenuOpen && (
+				<div
+					className={styles.menuOverlay}
+					onClick={() => setIsMenuOpen(false)}
+				/>
+			)}
 		</header>
 	)
 }

@@ -1,3 +1,4 @@
+import ShopIcon from '@/Assets/shop.svg?react'
 import Card from '@/Components/UI/Card'
 import { useTitle } from '@/Hooks'
 import styles from './ShopsPage.module.scss'
@@ -16,7 +17,7 @@ export const ShopsPage = () => {
 		},
 		{
 			name: 'Steam',
-			url: 'https://store.steampowered.com/',
+			url: 'https://store.steampowered.com',
 		},
 		{
 			name: 'Steam market',
@@ -94,7 +95,7 @@ export const ShopsPage = () => {
 					return (
 						<Card key={index} className={styles.card}>
 							<div className={styles.card_img}>
-								<img src='/shop.svg' alt='Магазин' />
+								<ShopIcon />
 							</div>
 							<div className={styles.card_content}>
 								<h3>{el.name}</h3>

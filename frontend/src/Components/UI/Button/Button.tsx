@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import styles from './Button.module.scss'
 
 interface ButtonProps {
@@ -10,11 +11,13 @@ interface ButtonProps {
 		| 'light-no-back'
 		| 'danger'
 		| 'warning'
+		| 'none'
 	size?: 'small' | 'medium' | 'large'
 	fullWidth?: boolean
 	onClick?: () => void
 	disabled?: boolean
 	formType?: 'button' | 'submit' | 'reset'
+	ref?: RefObject<HTMLButtonElement | null>
 }
 
 export const Button = ({

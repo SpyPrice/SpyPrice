@@ -46,15 +46,18 @@
 		border-radius: 10px;
 		&_blue {
 			background: $blue;
+			color: $darkblue;
 		}
 		&_green {
 			background: $green;
+			color: $darkgreen;
 		}
 		&_purple {
 			background: $purple;
+			color: $darkpurple;
 		}
 
-		img {
+		svg {
 			width: 24px;
 			height: 24px;
 		}
@@ -91,6 +94,7 @@
 			font-size: 36px;
 			margin-bottom: 16px;
 			color: $white;
+			text-align: center;
 		}
 
 		h3 {
@@ -98,6 +102,7 @@
 			font-size: 20px;
 			margin-bottom: 32px;
 			color: $white;
+			text-align: center;
 		}
 	}
 }
@@ -130,5 +135,44 @@
 	.auth_buttons {
 		display: flex;
 		gap: 10px;
+	}
+}
+
+@media (max-width: 700px) {
+	.cards {
+		flex-direction: column;
+	}
+
+	.main_block {
+		h1 {
+			font-size: 35px;
+		}
+
+		h2 {
+			font-size: 18px;
+		}
+	}
+
+	.create_account_block {
+		.info_block {
+			h2 {
+				font-size: 30px;
+			}
+
+			h3 {
+				font-size: 18px;
+			}
+		}
+	}
+
+	.header {
+		.logo {
+			p {
+				font-size: 20px;
+			}
+		}
+		.auth_buttons {
+			gap: 5px;
+		}
 	}
 }

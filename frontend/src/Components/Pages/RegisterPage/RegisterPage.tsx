@@ -19,16 +19,41 @@ export const RegisterPage = () => {
 	})
 	const [isLoading, setIsLoading] = useState(false)
 
+	const validateForm = () => {
+		const errors = []
+
+		if (!inputsData.email || !inputsData.password || !inputsData.name) {
+			errors.push('Пожалуйста, заполните все поля')
+		}
+
+		if (inputsData.name && inputsData.name.length > 30) {
+			errors.push('Имя пользователя не больше 30 символов')
+		}
+
+		if (inputsData.password && inputsData.password.length < 8) {
+			errors.push('Пароль должен быть больше 8 символов')
+		}
+
+		if (inputsData.password && !/[a-zA-Z]/.test(inputsData.password)) {
+			errors.push('Пароль должен содержать латиницу')
+		}
+
+		if (inputsData.password && !/[0-9]/.test(inputsData.password)) {
+			errors.push('Пароль должен содержать цифры')
+		}
+
+		if (errors.length > 0) {
+			errors.forEach(error => toast.error(error))
+			return false
+		}
+
+		return true
+	}
+
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
-		if (!inputsData.email || !inputsData.password || !inputsData.name) {
-			toast.error('Пожалуйста, заполните все поля')
-			return
-		}
-
-		if (inputsData.password.length < 8) {
-			toast.error('Пароль должен быть больше 8 символов')
+		if (!validateForm()) {
 			return
 		}
 
@@ -85,6 +110,13 @@ export const RegisterPage = () => {
 							setInputsData({ ...inputsData, password: el.currentTarget.value })
 						}
 					/>
+					{/* <p>
+						Пароль должен содержать:
+						<ul>
+							<li> Латинские символы</li>
+							<li>Цифры</li>
+						</ul>
+					</p> */}
 				</div>
 
 				<Button formType='submit' fullWidth disabled={isLoading}>

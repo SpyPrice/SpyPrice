@@ -63,3 +63,15 @@
 		}
 	}
 }
+
+@media (max-width: 700px) {
+	.container {
+		.block {
+			.input_group {
+				input {
+					width: 300px;
+				}
+			}
+		}
+	}
+}
