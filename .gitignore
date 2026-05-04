@@ -13,7 +13,7 @@ __pycache__/
 ## Build artifacts
 dist/
 build/
-
+debug/
 ## Logs
 *.log
 
