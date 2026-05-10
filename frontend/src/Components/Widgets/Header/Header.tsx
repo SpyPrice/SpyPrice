@@ -51,10 +51,10 @@ export const Header = () => {
 		<header className={styles.header}>
 			<div className={styles.container}>
 				<div className={styles.left}>
-					<div className={styles.logo}>
+					<Link className={styles.logo} to={'/dashboard'}>
 						<img src='/logo.svg' alt='Логотип' />
 						<p>SpyPrice</p>
-					</div>
+					</Link>
 					<Button
 						ref={burgerButtonRef}
 						className={styles.burgerButton}
