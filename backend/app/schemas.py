@@ -82,6 +82,16 @@ class ItemRead(MyDataModels):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ItemNotify(MyDataModels):
+    id: int
+    url: str
+    name: str
+    text: str
+    delta: Decimal
+    last_snapshot: ShortPriceSnapshot | None
+    penultimate_snapshot: ShortPriceSnapshot | None
+
+
 class ShortSourceRead(MyDataModels):
     id: int
     name: str
