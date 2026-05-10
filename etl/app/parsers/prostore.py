@@ -7,7 +7,7 @@ from typing import Optional, Dict, Any
 
 from etl.app import config
 from etl.app.base_parser import BaseStoreParser
-from playwright.async_api import Page
+from playwright.async_api import Page, async_playwright
 
 
 class ProstoreParser(BaseStoreParser):
@@ -15,11 +15,19 @@ class ProstoreParser(BaseStoreParser):
 
     SELECTOR_NAME = '[class*="h-28-400-j"]'
     SELECTOR_PRICE = '.h-36-600-i.price-nowrap'
+    async def _create_browser_context(self):
+        profile_dir = os.path.join(config.DEBUG_DIR, 'ymarket-profile')
+        os.makedirs(profile_dir, exist_ok=True)
+        self.playwright = await async_playwright().start()
+        self.context = await self.playwright.chromium.launch_persistent_context(
+            user_data_dir=profile_dir,
+            headless=self.headless,
+            args=['--disable-blink-features=AutomationControlled'],
+            viewport=config.VIEWPORT
+        )
 
     async def _extract_info(self, page: Page, url: str) -> Optional[Dict[str, Any]]:
-        name = None
-        price = None
-        currency = 'RUB'
+        await page.wait_for_selector(self.SELECTOR_NAME, timeout=config.WAIT_TIMEOUT)
 
         await page.wait_for_selector(self.SELECTOR_NAME, timeout=config.WAIT_TIMEOUT)
 
@@ -35,7 +43,7 @@ class ProstoreParser(BaseStoreParser):
             return {
                 'name': name,
                 'price': price,
-                'price_str': f"{price:,.2f} {currency}".replace(',', ' '),
+                'price_str': f"{price}".replace(',', ' '),
                 'currency': 'RUB',
             }
         return None

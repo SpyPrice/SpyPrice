@@ -32,11 +32,11 @@ class AliExpress(BaseStoreParser):
 
         price_elem = page.locator('div[data-unformatted-price]').first
         price_raw = await price_elem.get_attribute('data-unformatted-price')
-        price_clean = int(price_raw)
+        price_clean = Decimal(price_raw)
 
         return {
             'name': name,
             'price_str': f"{price_clean:,} ₽".replace(',', ' '),
-            'price': Decimal(price_clean),
+            'price': price_clean,
             'extra': {}
         }

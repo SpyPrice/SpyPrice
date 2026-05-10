@@ -37,10 +37,10 @@ class OzonParser(BaseStoreParser):
         )
         price_elem = page.locator('span.pdp_bj.tsHeadline500Medium').first
         price_raw = await price_elem.inner_text(timeout=config.WAIT_TIMEOUT)
-        price_clean = int(re.sub(r"[^\d]", "", price_raw))
+        price_clean = Decimal(re.sub(r"[^\d]", "", price_raw))
         return {
             'name': name,
             'price_str': f"{price_clean:,} ₽".replace(',', ' '),
-            'price': Decimal(price_clean),
+            'price': price_clean,
             'extra': {}
         }

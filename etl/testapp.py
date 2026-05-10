@@ -46,7 +46,7 @@ if __name__ == '__main__':
             "mvideo" : "https://www.mvideo.ru/products/smartfon-apple-iphone-17-256gb-blue-bez-rustore-30087003",
             "playerok" : "https://playerok.com/products/c7a687b83150-250k-zolotaclash-royale",
             "prostoe-protechno" : "https://prostore-protechno.ru/shop/macbook-air/apple-macbook-air-13-m4-cpu10c-gpu-2025-16-gb-256-gb-ssd-silver",   
-            "yandex.market" : "https://market.yandex.ru/card/umnyy-sudoku-giiker-smart-sudoku-jksd001/4427388539"}
+            "yandex.market" : "https://market.yandex.ru/card/umnyy-sudoku-giiker-smart-sudoku-jksd001-s-led-displeyem-dlya-intellektualnykh-igr-universalnyy/4433071424"}
     listi = []
     for (i, j) in dict.items():
         success = False
