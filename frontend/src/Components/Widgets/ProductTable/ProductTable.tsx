@@ -70,7 +70,7 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 						<TableCell>Обновлено</TableCell>
 					</TableHeader>
 					<TableBody>
-						{data.reverse().map(el => {
+						{data.map(el => {
 							return (
 								<TableRow
 									key={el.id}

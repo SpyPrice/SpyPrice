@@ -50,7 +50,10 @@ export const DashboardPage = () => {
 
 				{/* <Filter /> */}
 
-				<ProductTable data={products} fetchProducts={fetchProducts} />
+				<ProductTable
+					data={[...products].reverse()}
+					fetchProducts={fetchProducts}
+				/>
 
 				<CreateTrackingModal
 					open={isModalOpen}
