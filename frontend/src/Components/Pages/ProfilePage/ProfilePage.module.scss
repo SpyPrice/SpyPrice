@@ -37,7 +37,7 @@
 			align-items: center;
 			gap: 10px;
 
-			img {
+			svg {
 				width: 20px;
 				height: 20px;
 			}
@@ -61,19 +61,25 @@
 	}
 
 	.actions_card {
-		display: block;
-
 		h3 {
 			font-size: 16px;
 			margin-bottom: 20px;
 		}
 
-		button {
-			justify-content: center;
+		.buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
 
-			p {
-				color: $white;
-				margin-bottom: 0;
+			button {
+				width: max-content;
+
+				justify-content: center;
+
+				p {
+					color: $white;
+					margin-bottom: 0;
+				}
 			}
 		}
 	}
