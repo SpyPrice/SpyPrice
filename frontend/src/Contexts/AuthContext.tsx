@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 			toast.success('Успешный вход!')
 		} catch (error: any) {
+			if (error.toJSON().message === 'Network Error') return
 			toast.error(
 				error.response?.data?.detail || 'Неправильный логин или пароль!',
 			)
@@ -60,6 +61,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 			setUser(response.user)
 			toast.success('Регистрация успешна!')
 		} catch (error: any) {
+			if (error.toJSON().message === 'Network Error') return
 			toast.error(error.response?.data?.detail || 'Ошибка регистрации!')
 			throw error
 		}
