@@ -25,7 +25,9 @@ export const DashboardPage = () => {
 	useEffect(() => {
 		fetchProducts()
 		const timer = setInterval(fetchProducts, 15000)
-		timer
+		if (!timer) {
+			timer
+		}
 	}, [])
 
 	const fetchProducts = async () => {
