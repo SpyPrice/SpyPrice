@@ -14,7 +14,7 @@
 }
 
 .modal {
-	background-color: white;
+	background-color: var(--white);
 	border-radius: 16px;
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 	animation: slideIn 0.3s ease;
@@ -59,7 +59,7 @@
 	margin: 0;
 	font-size: 20px;
 	font-weight: 600;
-	color: #333;
+	color: var(--text);
 }
 
 .closeButton {
@@ -79,7 +79,7 @@
 	line-height: 1;
 
 	&:hover {
-		color: #333;
+		color: var(--text-second);
 		background-color: #f0f0f0;
 	}
 }

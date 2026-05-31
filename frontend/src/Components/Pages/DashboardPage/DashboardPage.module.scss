@@ -6,6 +6,7 @@
 	h2 {
 		font-size: 30px;
 		margin-bottom: 4px;
+		color: var(--text);
 	}
 
 	.block {
@@ -14,14 +15,14 @@
 		margin-bottom: 24px;
 
 		p {
-			color: $gray;
+			color: var(--text-second);
 		}
 
 		button {
 			justify-content: center;
 
 			p {
-				color: $white;
+				color: #fff;
 				margin-bottom: 0;
 			}
 		}

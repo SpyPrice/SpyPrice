@@ -1,7 +1,7 @@
 .card {
 	padding: 24px;
-	background: $white;
-	border: 1px solid $border;
+	background: var(--white);
+	border: 1px solid var(--border);
 	border-radius: 14px;
 
 	display: flex;

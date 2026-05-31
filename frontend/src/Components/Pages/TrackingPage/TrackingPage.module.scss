@@ -37,7 +37,7 @@
 		div {
 			.title {
 				font-size: 14px;
-				color: $gray;
+				color: var(--gray);
 				margin-bottom: 4px;
 			}
 
@@ -65,32 +65,32 @@
 			justify-content: space-between;
 			margin-top: 24px;
 			padding-top: 24px;
-			border-top: 1px solid $border;
+			border-top: 1px solid var(--border);
 
 			.title {
 				font-size: 14px;
-				color: $gray;
+				color: var(--gray);
 				margin-bottom: 4px;
 			}
 
 			.minPrice {
 				.price {
 					font-size: 18px;
-					color: $down-badge;
+					color: var(--down-badge);
 					font-weight: 600;
 				}
 			}
 			.maxPrice {
 				.price {
 					font-size: 18px;
-					color: $up-badge;
+					color: var(--up-badge);
 					font-weight: 600;
 				}
 			}
 			.avgPrice {
 				.price {
 					font-size: 18px;
-					color: $darkblue;
+					color: var(--darkblue);
 					font-weight: 600;
 				}
 			}

@@ -1,13 +1,10 @@
 import CalendarIcon from '@/Assets/calendar.svg?react'
 import EmailIcon from '@/Assets/email.svg?react'
 import LogoutIcon from '@/Assets/logout.svg?react'
-import MoonIcon from '@/Assets/moon.svg?react'
 import ProfileIcon from '@/Assets/profile.svg?react'
-import SunIcon from '@/Assets/sun.svg?react'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
 import { useAuth } from '@/Contexts/AuthContext'
-import { useTheme } from '@/Contexts/ThemeContext'
 import { useTitle } from '@/Hooks'
 import { useNavigate } from 'react-router-dom'
 import styles from './ProfilePage.module.scss'
@@ -15,7 +12,6 @@ import styles from './ProfilePage.module.scss'
 export const ProfilePage = () => {
 	useTitle('Профиль')
 
-	const { theme, toggleTheme } = useTheme()
 	const { user, logout } = useAuth()
 	const navigate = useNavigate()
 
@@ -66,15 +62,14 @@ export const ProfilePage = () => {
 			<Card className={styles.actions_card}>
 				<h3>Действия</h3>
 				<div className={styles.buttons}>
-					<Button
-						type={`${theme}`}
+					{/* <Button
 						onClick={() => {
 							toggleTheme()
 						}}
 					>
 						{theme === 'dark' ? <MoonIcon /> : <SunIcon />}
 						<p>{theme === 'dark' ? 'Темная' : 'Светлая'} тема</p>
-					</Button>
+					</Button> */}
 					<Button
 						type='warning'
 						onClick={() => {

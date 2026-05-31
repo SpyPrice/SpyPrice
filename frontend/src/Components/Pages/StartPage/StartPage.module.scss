@@ -10,7 +10,7 @@
 		font-size: 60px;
 		margin-bottom: 24px;
 		text-align: center;
-		background: $accent;
+		background: var(--accent);
 		background-clip: text;
 		color: transparent;
 	}
@@ -18,7 +18,7 @@
 	h2 {
 		font-size: 20px;
 		margin-bottom: 32px;
-		color: $gray;
+		color: var(--gray);
 		font-weight: normal;
 		text-align: center;
 	}
@@ -45,16 +45,16 @@
 		width: 48px;
 		border-radius: 10px;
 		&_blue {
-			background: $blue;
-			color: $darkblue;
+			background: var(--blue);
+			color: var(--darkblue);
 		}
 		&_green {
-			background: $green;
-			color: $darkgreen;
+			background: var(--green);
+			color: var(--darkgreen);
 		}
 		&_purple {
-			background: $purple;
-			color: $darkpurple;
+			background: var(--purple);
+			color: var(--darkpurple);
 		}
 
 		svg {
@@ -70,7 +70,7 @@
 
 	.card_content {
 		font-size: 16px;
-		color: $gray;
+		color: var(--gray);
 	}
 }
 
@@ -88,12 +88,12 @@
 		justify-content: center;
 		align-items: center;
 
-		background: $accent;
+		background: var(--accent);
 
 		h2 {
 			font-size: 36px;
 			margin-bottom: 16px;
-			color: $white;
+			color: var(--white);
 			text-align: center;
 		}
 
@@ -101,7 +101,7 @@
 			font-weight: normal;
 			font-size: 20px;
 			margin-bottom: 32px;
-			color: $white;
+			color: var(--white);
 			text-align: center;
 		}
 	}
@@ -127,7 +127,7 @@
 
 		font-size: 30px;
 		font-weight: bold;
-		background: $accent;
+		background: var(--accent);
 		background-clip: text;
 		color: transparent;
 	}

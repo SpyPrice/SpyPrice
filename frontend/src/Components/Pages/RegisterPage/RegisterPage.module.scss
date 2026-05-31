@@ -19,7 +19,7 @@
 
 		h2 {
 			font-size: 30px;
-			background: $accent;
+			background: var(--accent);
 			background-clip: text;
 			color: transparent;
 		}
@@ -28,8 +28,8 @@
 	.block {
 		padding: 24px;
 		border-radius: 14px;
-		background: $white;
-		border: 1px solid $border;
+		background: var(--white);
+		border: 1px solid var(--border);
 
 		margin-bottom: 16px;
 
@@ -41,7 +41,7 @@
 
 		.have_account {
 			margin-top: 24px;
-			color: $gray;
+			color: var(--gray);
 			font-size: 14px;
 			text-align: center;
 		}
@@ -64,7 +64,7 @@
 			p {
 				font-size: 14px;
 				margin-top: 5px;
-				color: $gray;
+				color: var(--gray);
 
 				ul {
 					li {

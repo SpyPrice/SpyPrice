@@ -10,7 +10,7 @@ export const ShopsPage = () => {
 		{
 			name: 'DNS',
 			url: 'https://dns-shop.ru',
-			logo: null,
+			logo: '/shops_icon/dns.png',
 		},
 		{
 			name: 'Читай-город',
@@ -25,52 +25,52 @@ export const ShopsPage = () => {
 		{
 			name: 'Steam market',
 			url: 'https://steamcommunity.com/market',
-			logo: null,
+			logo: '/shops_icon/steam.png',
 		},
 		{
 			name: 'Ozon',
 			url: 'https://www.ozon.ru',
-			logo: null,
+			logo: '/shops_icon/ozon.png',
 		},
 		{
 			name: 'Aliexpress',
 			url: 'https://aliexpress.ru',
-			logo: null,
+			logo: '/shops_icon/aliexpress.png',
 		},
 		{
 			name: 'Авто.ру',
 			url: 'https://auto.ru',
-			logo: null,
+			logo: '/shops_icon/avtoru.png',
 		},
 		{
 			name: 'Авито',
 			url: 'https://www.avito.ru',
-			logo: null,
+			logo: '/shops_icon/avito.png',
 		},
 		{
 			name: 'Ситилинк',
 			url: 'https://www.citilink.ru',
-			logo: null,
+			logo: '/shops_icon/sitilink.jpg',
 		},
 		{
 			name: 'GGsel',
 			url: 'https://ggsel.net',
-			logo: null,
+			logo: '/shops_icon/ggsel.png',
 		},
 		{
 			name: 'Хоббигеймс',
 			url: 'https://hobbygames.ru',
-			logo: null,
+			logo: '/shops_icon/hg.png',
 		},
 		{
 			name: 'LisSkins',
 			url: 'https://lis-skins.com',
-			logo: null,
+			logo: '/shops_icon/lis.svg',
 		},
 		{
 			name: 'Мосигра',
 			url: 'https://www.mosigra.ru',
-			logo: null,
+			logo: '/shops_icon/mosigra.png',
 		},
 		{
 			name: 'М.Видео',
@@ -98,14 +98,6 @@ export const ShopsPage = () => {
 		<div className={styles.container}>
 			<h2>Поддерживаемые магазины</h2>
 			<p>Список магазинов, из которых можно отслеживать товары</p>
-
-			<Card className={styles.warning}>
-				<img src='/info.svg' alt='Предупреждение' />
-				<p>
-					На этапе MVP список магазинов фиксирован. Если нужный вам магазин
-					отсутствует, свяжитесь с поддержкой для добавления нового источника.
-				</p>
-			</Card>
 
 			<div className={styles.cards}>
 				{sites.map((el, index) => {

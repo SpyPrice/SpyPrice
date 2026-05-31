@@ -1,6 +1,7 @@
 import { cardsApi, type ItemRead } from '@/Api/trackingApi'
 import Button from '@/Components/UI/Button'
 import CreateTrackingModal from '@/Components/Widgets/CreateTrackingModal'
+import Filter from '@/Components/Widgets/Filter'
 import ProductTable from '@/Components/Widgets/ProductTable'
 import { useTitle } from '@/Hooks'
 import { useEffect, useState } from 'react'
@@ -17,7 +18,8 @@ export const DashboardPage = () => {
 	useTitle('Товары')
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [products, setProducts] = useState<ItemRead[]>([])
+	const [originalProducts, setOriginalProducts] = useState<ItemRead[]>([])
+	const [filteredProducts, setFilteredProducts] = useState<ItemRead[]>([])
 
 	useEffect(() => {
 		fetchProducts()
@@ -28,7 +30,8 @@ export const DashboardPage = () => {
 	const fetchProducts = async () => {
 		try {
 			const data: any = await cardsApi.getAllWatchItems()
-			setProducts(data)
+			setOriginalProducts(data)
+			setFilteredProducts(data)
 		} catch (error) {
 			console.error('Failed to fetch products:', error)
 		}
@@ -40,7 +43,7 @@ export const DashboardPage = () => {
 				<h2>Отслеживаемые товары</h2>
 				<div className={styles.block}>
 					<p>
-						{products.length} {getProductText(products.length)}
+						{filteredProducts.length} {getProductText(filteredProducts.length)}
 					</p>
 					<Button onClick={() => setIsModalOpen(true)}>
 						<img src='/plus.svg' alt='Плюс' />
@@ -48,9 +51,15 @@ export const DashboardPage = () => {
 					</Button>
 				</div>
 
-				{/* <Filter /> */}
+				<Filter
+					setFilteredProducts={setFilteredProducts}
+					originalProducts={originalProducts}
+				/>
 
-				<ProductTable data={products.reverse()} fetchProducts={fetchProducts} />
+				<ProductTable
+					data={[...filteredProducts].reverse()}
+					fetchProducts={fetchProducts}
+				/>
 
 				<CreateTrackingModal
 					open={isModalOpen}

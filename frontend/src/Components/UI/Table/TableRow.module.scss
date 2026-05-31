@@ -6,10 +6,10 @@
 	}
 
 	&.selected {
-		background-color: rgba($gray, 0.1);
+		background-color: rgba(var(--gray), 0.1);
 
 		&:hover {
-			background-color: rgba($gray, 0.15);
+			background-color: rgba(var(--gray), 0.15);
 		}
 	}
 }

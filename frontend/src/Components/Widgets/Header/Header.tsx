@@ -1,5 +1,11 @@
 import BurgerIcon from '@/Assets/burger.svg?react'
+import DashboardIcon from '@/Assets/dashboard.svg?react'
+import MoonIcon from '@/Assets/moon.svg?react'
+import ProfileIcon from '@/Assets/profile.svg?react'
+import ShopIcon from '@/Assets/shop.svg?react'
+import SunIcon from '@/Assets/sun.svg?react'
 import Button from '@/Components/UI/Button'
+import { useTheme } from '@/Contexts/ThemeContext'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styles from './Header.module.scss'
@@ -9,8 +15,8 @@ export const Header = () => {
 	const location = useLocation()
 	const menuRef = useRef<HTMLElement>(null)
 	const burgerButtonRef = useRef<HTMLButtonElement>(null)
+	const { theme, toggleTheme } = useTheme()
 
-	// Закрытие меню при клике вне области навигации
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
@@ -30,12 +36,10 @@ export const Header = () => {
 		}
 	}, [isMenuOpen])
 
-	// Закрытие меню при смене роута
 	useEffect(() => {
 		setIsMenuOpen(false)
 	}, [location])
 
-	// Блокировка скролла при открытом меню
 	useEffect(() => {
 		if (isMenuOpen) {
 			document.body.style.overflow = 'hidden'
@@ -76,7 +80,7 @@ export const Header = () => {
 									className={`${styles.navLink} ${location.pathname === '/dashboard' ? styles.active : ''}`}
 									to={'/dashboard'}
 								>
-									<img src='/dashboard.svg' alt='Товары' />
+									<DashboardIcon />
 									Товары
 								</Link>
 							</li>
@@ -85,7 +89,7 @@ export const Header = () => {
 									className={`${styles.navLink} ${location.pathname === '/shops' ? styles.active : ''}`}
 									to={'/shops'}
 								>
-									<img src='/shop.svg' alt='Магазин' />
+									<ShopIcon />
 									Магазины
 								</Link>
 							</li>
@@ -94,7 +98,7 @@ export const Header = () => {
 									className={`${styles.navLink} ${location.pathname === '/profile' ? styles.active : ''}`}
 									to={'/profile'}
 								>
-									<img src='/profile.svg' alt='Профиль' />
+									<ProfileIcon />
 									Профиль
 								</Link>
 							</li>
@@ -102,11 +106,16 @@ export const Header = () => {
 					</nav>
 				</div>
 				<div className={styles.right}>
-					{/* <div className='theme'>
-					<Button>
-						<img src='./dark.svg' />
-					</Button>
-				</div> */}
+					<div className='theme'>
+						<Button
+							type='dark-no-back'
+							onClick={() => {
+								toggleTheme()
+							}}
+						>
+							{theme === 'dark' ? <MoonIcon /> : <SunIcon />}
+						</Button>
+					</div>
 				</div>
 			</div>
 			{isMenuOpen && (

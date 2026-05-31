@@ -1,20 +1,134 @@
-// Colors
-$background: #f9fafb;
-$secondary-background: #eceef2;
-$white: #fff;
-$black: #000;
-$gray: #4a5565;
+// // Colors
+// $background: #f9fafb;
+// $secondary-background: #eceef2;
+// $white: #fff;
+// $black: #000;
+// $gray: #4a5565;
+// $accent: linear-gradient(to right, #155dfc, #9810fa);
+// $border: #ebe6e7;
+// $blue: #dbeafe;
+// $purple: #f3e8ff;
+// $green: #dcfce7;
+// $input-background: #f3f3f5;
+// $up-badge-background: #fef2f2;
+// $up-badge: #e7000b;
+// $down-badge-background: #f0fdf4;
+// $down-badge: #00a63e;
+// $darkblue: #155dfc;
+// $warning: #d48318;
+// $darkpurple: #9810fa;
+// $darkgreen: #00a63e;
+
+// Light theme colors (по умолчанию)
+$light-background: #f9fafb;
+$light-secondary-background: #eceef2;
+$light-white: #fff;
+$light-black: #000;
+$light-gray: #4a5565;
+$light-border: #ebe6e7;
+$light-input-background: #f3f3f5;
+$light-up-badge-background: #fef2f2;
+$light-down-badge-background: #f0fdf4;
+$light-text: #000;
+$light-text-second: #4a5565;
+$light-light-button: #f5f5f5;
+$light-light-button-hover: #e8e8e8;
+$light-light-button-active: #dbdbdb;
+$light-dark-text-second: #eceef2;
+$light-dark-button: #1a1a1a;
+$light-dark-button-hover: #333333;
+$light-dark-button-active: #000000;
+
+// Dark theme colors
+$dark-background: #0f0f12;
+$dark-secondary-background: #1a1a1f;
+$dark-white: #1e1e24;
+$dark-black: #ffffff;
+$dark-gray: #9ca3af;
+$dark-border: #2a2a30;
+$dark-input-background: #2a2a30;
+$dark-up-badge-background: #2a1215;
+$dark-down-badge-background: #0f1f12;
+$dark-text: #fff;
+$dark-text-second: #eceef2;
+$dark-dark-button: #1a1a1a;
+$dark-dark-button-hover: #333333;
+$dark-dark-button-active: #000000;
+$dark-light-button: #f5f5f5;
+$dark-light-button-hover: #e8e8e8;
+$dark-light-button-active: #dbdbdb;
+
+// Common colors (остаются без изменений)
 $accent: linear-gradient(to right, #155dfc, #9810fa);
-$border: #ebe6e7;
 $blue: #dbeafe;
 $purple: #f3e8ff;
 $green: #dcfce7;
-$input-background: #f3f3f5;
-$up-badge-background: #fef2f2;
 $up-badge: #e7000b;
-$down-badge-background: #f0fdf4;
 $down-badge: #00a63e;
 $darkblue: #155dfc;
 $warning: #d48318;
 $darkpurple: #9810fa;
 $darkgreen: #00a63e;
+
+:root {
+	--background: #{$light-background};
+	--secondary-background: #{$light-secondary-background};
+	--white: #{$light-white};
+	--black: #{$light-black};
+	--gray: #{$light-gray};
+	--border: #{$light-border};
+	--input-background: #{$light-input-background};
+	--up-badge-background: #{$light-up-badge-background};
+	--down-badge-background: #{$light-down-badge-background};
+	--accent: linear-gradient(to right, #155dfc, #9810fa);
+	--blue: #{$blue};
+	--purple: #{$blue};
+	--green: #{$green};
+	--up-badge: #{$up-badge};
+	--down-badge: #{$down-badge};
+	--darkblue: #{$darkblue};
+	--warning: #{$warning};
+	--darkpurple: #{$darkpurple};
+	--darkgreen: #{$darkgreen};
+	--text: #{$light-text};
+	--text-second: #{$light-text-second};
+
+	--dark-button: #{$light-light-button};
+	--dark-button-hover: #{$light-light-button-hover};
+	--dark-button-active: #{$light-light-button-active};
+	--light-button: #{$light-dark-button};
+	--light-button-hover: #{$light-dark-button-hover};
+	--light-button-active: #{$light-dark-button-active};
+}
+
+.light_theme {
+	--background: #{$light-background};
+	--secondary-background: #{$light-secondary-background};
+	--white: #{$light-white};
+	--black: #{$light-black};
+	--gray: #{$light-gray};
+	--border: #{$light-border};
+	--input-background: #{$light-input-background};
+	--up-badge-background: #{$light-up-badge-background};
+	--down-badge-background: #{$light-down-badge-background};
+}
+
+.dark_theme {
+	--background: #{$dark-background};
+	--secondary-background: #{$dark-secondary-background};
+	--white: #{$dark-white};
+	--black: #{$dark-black};
+	--gray: #{$dark-gray};
+	--border: #{$dark-border};
+	--input-background: #{$dark-input-background};
+	--up-badge-background: #{$dark-up-badge-background};
+	--down-badge-background: #{$dark-down-badge-background};
+	--text: #{$dark-text};
+	--text-second: #{$dark-text-second};
+	--dark-button: #{$light-dark-button};
+	--dark-button-hover: #{$light-dark-button-hover};
+	--dark-button-active: #{$light-dark-button-active};
+	--light-button: #{$light-light-button};
+	--light-button-hover: #{$light-light-button-hover};
+	--light-button-active: #{$light-light-button-active};
+}
