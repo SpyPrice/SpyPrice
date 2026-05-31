@@ -1,4 +1,4 @@
-import asyncio
+# ozon.py
 import re
 import os
 from decimal import Decimal
@@ -22,22 +22,25 @@ class OzonParser(BaseStoreParser):
             viewport=config.VIEWPORT
         )
 
-
     async def _extract_info(self, page, url):
-        await page.wait_for_selector('[data-widget="webPrice"], .c2h5, [class*="price"]', timeout=config.WAIT_TIMEOUT)
-
+        await page.wait_for_selector('h1', timeout=config.WAIT_TIMEOUT)
         name = (await page.locator("h1").first.text_content()).strip()
-        await page.wait_for_function(
-            """(selector) => {
-                const el = document.querySelector(selector);
-                return el && el.innerText.trim().match(/\\d/);
-            }""",
-            arg='span.pdp_bj.tsHeadline500Medium',
-            timeout=config.WAIT_TIMEOUT
-        )
-        price_elem = page.locator('span.pdp_bj.tsHeadline500Medium').first
-        price_raw = await price_elem.inner_text(timeout=config.WAIT_TIMEOUT)
-        price_clean = Decimal(re.sub(r"[^\d]", "", price_raw))
+
+        price_selectors = [
+            'span.tsHeadline600Large',
+            'span[class*="tsHeadline"][class*="Large"]',
+            '.c35_3_16-a1.tsHeadline500Medium'
+        ]
+        price_elem = None
+        for selector in price_selectors:
+            if await page.locator(selector).first.count() > 0:
+                price_elem = page.locator(selector).first
+                break
+        if not price_elem:
+            return None
+
+        price_raw = await price_elem.inner_text()
+        price_clean = Decimal(re.sub(r'[^\d]', '', price_raw))
         return {
             'name': name,
             'price_str': f"{price_clean:,} ₽".replace(',', ' '),
