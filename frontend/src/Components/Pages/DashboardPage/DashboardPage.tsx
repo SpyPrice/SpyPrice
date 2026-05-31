@@ -1,4 +1,5 @@
 import { cardsApi, type ItemRead } from '@/Api/trackingApi'
+import PlusIcon from '@/Assets/plus.svg?react'
 import Button from '@/Components/UI/Button'
 import CreateTrackingModal from '@/Components/Widgets/CreateTrackingModal'
 import Filter from '@/Components/Widgets/Filter'
@@ -46,7 +47,8 @@ export const DashboardPage = () => {
 						{filteredProducts.length} {getProductText(filteredProducts.length)}
 					</p>
 					<Button onClick={() => setIsModalOpen(true)}>
-						<img src='/plus.svg' alt='Плюс' />
+						<PlusIcon />
+
 						<p>Добавить товар</p>
 					</Button>
 				</div>

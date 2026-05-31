@@ -50,8 +50,8 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 20px 24px;
-	border-bottom: 1px solid #e0e0e0;
-	background-color: #fafafa;
+	border-bottom: 1px solid var(--border);
+	background-color: var(--surface-muted);
 	border-radius: 16px 16px 0 0;
 }
 
@@ -67,7 +67,7 @@
 	border: none;
 	font-size: 28px;
 	cursor: pointer;
-	color: #999;
+	color: var(--muted-text);
 	padding: 0;
 	width: 32px;
 	height: 32px;
@@ -80,7 +80,7 @@
 
 	&:hover {
 		color: var(--text-second);
-		background-color: #f0f0f0;
+		background-color: var(--hover-strong);
 	}
 }
 
@@ -94,24 +94,24 @@
 	}
 
 	&::-webkit-scrollbar-track {
-		background: #f1f1f1;
+		background: var(--scrollbar-track);
 		border-radius: 4px;
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background: #c1c1c1;
+		background: var(--scrollbar-thumb);
 		border-radius: 4px;
 
 		&:hover {
-			background: #a8a8a8;
+			background: var(--scrollbar-thumb-hover);
 		}
 	}
 }
 
 .footer {
 	padding: 16px 24px;
-	border-top: 1px solid #e0e0e0;
-	background-color: #fafafa;
+	border-top: 1px solid var(--border);
+	background-color: var(--surface-muted);
 	border-radius: 0 0 16px 16px;
 	display: flex;
 	justify-content: flex-end;

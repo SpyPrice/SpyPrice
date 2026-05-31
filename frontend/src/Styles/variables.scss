@@ -1,25 +1,4 @@
-// // Colors
-// $background: #f9fafb;
-// $secondary-background: #eceef2;
-// $white: #fff;
-// $black: #000;
-// $gray: #4a5565;
-// $accent: linear-gradient(to right, #155dfc, #9810fa);
-// $border: #ebe6e7;
-// $blue: #dbeafe;
-// $purple: #f3e8ff;
-// $green: #dcfce7;
-// $input-background: #f3f3f5;
-// $up-badge-background: #fef2f2;
-// $up-badge: #e7000b;
-// $down-badge-background: #f0fdf4;
-// $down-badge: #00a63e;
-// $darkblue: #155dfc;
-// $warning: #d48318;
-// $darkpurple: #9810fa;
-// $darkgreen: #00a63e;
-
-// Light theme colors (по умолчанию)
+// Light theme colors
 $light-background: #f9fafb;
 $light-secondary-background: #eceef2;
 $light-white: #fff;
@@ -31,13 +10,22 @@ $light-up-badge-background: #fef2f2;
 $light-down-badge-background: #f0fdf4;
 $light-text: #000;
 $light-text-second: #4a5565;
+$light-surface-muted: #fafafa;
+$light-hover: #f5f5f5;
+$light-hover-strong: #f0f0f0;
+$light-muted-text: #999;
 $light-light-button: #f5f5f5;
 $light-light-button-hover: #e8e8e8;
 $light-light-button-active: #dbdbdb;
-$light-dark-text-second: #eceef2;
 $light-dark-button: #1a1a1a;
 $light-dark-button-hover: #333333;
 $light-dark-button-active: #000000;
+$light-select-hover: #f1f5f9;
+$light-select-selected-bg: #eff6ff;
+$light-scrollbar-track: #f1f1f1;
+$light-scrollbar-thumb: #c1c1c1;
+$light-scrollbar-thumb-hover: #a8a8a8;
+$light-hover-overlay: rgba(0, 0, 0, 0.05);
 
 // Dark theme colors
 $dark-background: #0f0f12;
@@ -51,84 +39,194 @@ $dark-up-badge-background: #2a1215;
 $dark-down-badge-background: #0f1f12;
 $dark-text: #fff;
 $dark-text-second: #eceef2;
-$dark-dark-button: #1a1a1a;
-$dark-dark-button-hover: #333333;
-$dark-dark-button-active: #000000;
+$dark-surface-muted: #252529;
+$dark-hover: #2a2a30;
+$dark-hover-strong: #333338;
+$dark-muted-text: #6b7280;
 $dark-light-button: #f5f5f5;
 $dark-light-button-hover: #e8e8e8;
 $dark-light-button-active: #dbdbdb;
+$dark-dark-button: #1a1a1a;
+$dark-dark-button-hover: #333333;
+$dark-dark-button-active: #000000;
+$dark-select-hover: #2a2a30;
+$dark-select-selected-bg: #152a4a;
+$dark-scrollbar-track: #1a1a1f;
+$dark-scrollbar-thumb: #3a3a42;
+$dark-scrollbar-thumb-hover: #4a4a52;
+$dark-hover-overlay: rgba(255, 255, 255, 0.06);
 
-// Common colors (остаются без изменений)
+// Accent backgrounds
+$light-blue: #dbeafe;
+$light-purple: #f3e8ff;
+$light-green: #dcfce7;
+$dark-blue: #152a4a;
+$dark-purple: #251a33;
+$dark-green: #152019;
+
+// Common colors
 $accent: linear-gradient(to right, #155dfc, #9810fa);
-$blue: #dbeafe;
-$purple: #f3e8ff;
-$green: #dcfce7;
 $up-badge: #e7000b;
 $down-badge: #00a63e;
 $darkblue: #155dfc;
 $warning: #d48318;
 $darkpurple: #9810fa;
 $darkgreen: #00a63e;
+$danger: #e53e3e;
+$danger-hover: #c53030;
+$danger-active: #9b2c2c;
+$on-accent: #ffffff;
 
-:root {
-	--background: #{$light-background};
-	--secondary-background: #{$light-secondary-background};
-	--white: #{$light-white};
-	--black: #{$light-black};
-	--gray: #{$light-gray};
-	--border: #{$light-border};
-	--input-background: #{$light-input-background};
-	--up-badge-background: #{$light-up-badge-background};
-	--down-badge-background: #{$light-down-badge-background};
-	--accent: linear-gradient(to right, #155dfc, #9810fa);
+@mixin theme-vars(
+	$background,
+	$secondary-background,
+	$surface,
+	$text,
+	$text-second,
+	$black,
+	$gray,
+	$border,
+	$input-background,
+	$up-badge-background,
+	$down-badge-background,
+	$surface-muted,
+	$hover,
+	$hover-strong,
+	$muted-text,
+	$blue,
+	$purple,
+	$green,
+	$btn-primary-bg,
+	$btn-primary-hover,
+	$btn-primary-active,
+	$btn-primary-text,
+	$btn-secondary-bg,
+	$btn-secondary-hover,
+	$btn-secondary-active,
+	$btn-secondary-border,
+	$hover-overlay,
+	$select-hover,
+	$select-selected-bg,
+	$scrollbar-track,
+	$scrollbar-thumb,
+	$scrollbar-thumb-hover
+) {
+	--background: #{$background};
+	--secondary-background: #{$secondary-background};
+	--white: #{$surface};
+	--black: #{$black};
+	--gray: #{$gray};
+	--border: #{$border};
+	--input-background: #{$input-background};
+	--up-badge-background: #{$up-badge-background};
+	--down-badge-background: #{$down-badge-background};
+	--text: #{$text};
+	--text-second: #{$text-second};
+	--surface-muted: #{$surface-muted};
+	--hover: #{$hover};
+	--hover-strong: #{$hover-strong};
+	--muted-text: #{$muted-text};
 	--blue: #{$blue};
-	--purple: #{$blue};
+	--purple: #{$purple};
 	--green: #{$green};
+	--accent: #{$accent};
 	--up-badge: #{$up-badge};
 	--down-badge: #{$down-badge};
 	--darkblue: #{$darkblue};
 	--warning: #{$warning};
 	--darkpurple: #{$darkpurple};
 	--darkgreen: #{$darkgreen};
-	--text: #{$light-text};
-	--text-second: #{$light-text-second};
-
-	--dark-button: #{$light-light-button};
-	--dark-button-hover: #{$light-light-button-hover};
-	--dark-button-active: #{$light-light-button-active};
-	--light-button: #{$light-dark-button};
-	--light-button-hover: #{$light-dark-button-hover};
-	--light-button-active: #{$light-dark-button-active};
+	--danger: #{$danger};
+	--danger-hover: #{$danger-hover};
+	--danger-active: #{$danger-active};
+	--on-accent: #{$on-accent};
+	--light-button: #{$btn-primary-bg};
+	--light-button-hover: #{$btn-primary-hover};
+	--light-button-active: #{$btn-primary-active};
+	--btn-primary-text: #{$btn-primary-text};
+	--dark-button: #{$btn-secondary-bg};
+	--dark-button-hover: #{$btn-secondary-hover};
+	--dark-button-active: #{$btn-secondary-active};
+	--btn-secondary-border: #{$btn-secondary-border};
+	--hover-overlay: #{$hover-overlay};
+	--select-hover: #{$select-hover};
+	--select-selected-bg: #{$select-selected-bg};
+	--scrollbar-track: #{$scrollbar-track};
+	--scrollbar-thumb: #{$scrollbar-thumb};
+	--scrollbar-thumb-hover: #{$scrollbar-thumb-hover};
 }
 
+:root,
 .light_theme {
-	--background: #{$light-background};
-	--secondary-background: #{$light-secondary-background};
-	--white: #{$light-white};
-	--black: #{$light-black};
-	--gray: #{$light-gray};
-	--border: #{$light-border};
-	--input-background: #{$light-input-background};
-	--up-badge-background: #{$light-up-badge-background};
-	--down-badge-background: #{$light-down-badge-background};
+	@include theme-vars(
+		$light-background,
+		$light-secondary-background,
+		$light-white,
+		$light-text,
+		$light-text-second,
+		$light-black,
+		$light-gray,
+		$light-border,
+		$light-input-background,
+		$light-up-badge-background,
+		$light-down-badge-background,
+		$light-surface-muted,
+		$light-hover,
+		$light-hover-strong,
+		$light-muted-text,
+		$light-blue,
+		$light-purple,
+		$light-green,
+		$light-dark-button,
+		$light-dark-button-hover,
+		$light-dark-button-active,
+		$on-accent,
+		$light-light-button,
+		$light-light-button-hover,
+		$light-light-button-active,
+		$light-border,
+		$light-hover-overlay,
+		$light-select-hover,
+		$light-select-selected-bg,
+		$light-scrollbar-track,
+		$light-scrollbar-thumb,
+		$light-scrollbar-thumb-hover
+	);
 }
 
 .dark_theme {
-	--background: #{$dark-background};
-	--secondary-background: #{$dark-secondary-background};
-	--white: #{$dark-white};
-	--black: #{$dark-black};
-	--gray: #{$dark-gray};
-	--border: #{$dark-border};
-	--input-background: #{$dark-input-background};
-	--up-badge-background: #{$dark-up-badge-background};
-	--down-badge-background: #{$dark-down-badge-background};
-	--text: #{$dark-text};
-	--text-second: #{$dark-text-second};
-	--dark-button: #{$light-dark-button};
-	--dark-button-hover: #{$light-dark-button-hover};
-	--dark-button-active: #{$light-dark-button-active};
-	--light-button: #{$light-light-button};
-	--light-button-hover: #{$light-light-button-hover};
-	--light-button-active: #{$light-light-button-active};
+	@include theme-vars(
+		$dark-background,
+		$dark-secondary-background,
+		$dark-white,
+		$dark-text,
+		$dark-text-second,
+		$dark-black,
+		$dark-gray,
+		$dark-border,
+		$dark-input-background,
+		$dark-up-badge-background,
+		$dark-down-badge-background,
+		$dark-surface-muted,
+		$dark-hover,
+		$dark-hover-strong,
+		$dark-muted-text,
+		$dark-blue,
+		$dark-purple,
+		$dark-green,
+		$dark-light-button,
+		$dark-light-button-hover,
+		$dark-light-button-active,
+		$dark-dark-button,
+		$dark-secondary-background,
+		$dark-input-background,
+		$dark-hover-strong,
+		$dark-border,
+		$dark-hover-overlay,
+		$dark-select-hover,
+		$dark-select-selected-bg,
+		$dark-scrollbar-track,
+		$dark-scrollbar-thumb,
+		$dark-scrollbar-thumb-hover
+	);
 }

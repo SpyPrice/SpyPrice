@@ -1,7 +1,7 @@
 import React, {
 	createContext,
 	useContext,
-	useEffect,
+	useLayoutEffect,
 	useState,
 	type ReactNode,
 } from 'react'
@@ -19,34 +19,39 @@ interface ThemeProviderProps {
 	children: ReactNode
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-	const getInitialTheme = (): Theme => {
-		const savedTheme = localStorage.getItem('theme') as Theme
-		if (savedTheme) return savedTheme
+const getInitialTheme = (): Theme => {
+	const savedTheme = localStorage.getItem('theme') as Theme
+	if (savedTheme) return savedTheme
 
-		const prefersDark = window.matchMedia(
-			'(prefers-color-scheme: dark)',
-		).matches
-		return prefersDark ? 'dark' : 'light'
+	const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+	return prefersDark ? 'dark' : 'light'
+}
+
+const applyThemeClass = (theme: Theme) => {
+	const root = document.documentElement
+
+	if (theme === 'dark') {
+		root.classList.add('dark_theme')
+		root.classList.remove('light_theme')
+	} else {
+		root.classList.add('light_theme')
+		root.classList.remove('dark_theme')
 	}
+}
 
-	const [theme, setTheme] = useState<Theme>(getInitialTheme)
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+	const [theme, setTheme] = useState<Theme>(() => {
+		const initialTheme = getInitialTheme()
+		applyThemeClass(initialTheme)
+		return initialTheme
+	})
 
 	const toggleTheme = () => {
 		setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'))
 	}
 
-	useEffect(() => {
-		const root = document.documentElement
-
-		if (theme === 'dark') {
-			root.classList.add('dark_theme')
-			root.classList.remove('light_theme')
-		} else {
-			root.classList.add('light_theme')
-			root.classList.remove('dark_theme')
-		}
-
+	useLayoutEffect(() => {
+		applyThemeClass(theme)
 		localStorage.setItem('theme', theme)
 	}, [theme])
 

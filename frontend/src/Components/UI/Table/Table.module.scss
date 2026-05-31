@@ -13,31 +13,29 @@
 
 	// Варианты оформления
 	&.default {
-		// background-color: white;
-
 		td,
 		th {
-			border-bottom: 1px solid #e0e0e0;
+			border-bottom: 1px solid var(--border);
 		}
 	}
 
 	&.striped {
 		tbody tr:nth-child(odd) {
-			background-color: #f9f9f9;
+			background-color: var(--hover);
 		}
 
 		td,
 		th {
-			border-bottom: 1px solid #e0e0e0;
+			border-bottom: 1px solid var(--border);
 		}
 	}
 
 	&.bordered {
-		border: 1px solid #e0e0e0;
+		border: 1px solid var(--border);
 
 		td,
 		th {
-			border: 1px solid #e0e0e0;
+			border: 1px solid var(--border);
 		}
 	}
 
