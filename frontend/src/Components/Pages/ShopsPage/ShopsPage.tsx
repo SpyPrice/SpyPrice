@@ -15,7 +15,7 @@ export const ShopsPage = () => {
 		{
 			name: 'Читай-город',
 			url: 'https://www.chitai-gorod.ru',
-			logo: '/shops_icon/Читай город.jpg',
+			logo: '/shops_icon/readcity.jpg',
 		},
 		{
 			name: 'Steam',
@@ -75,7 +75,7 @@ export const ShopsPage = () => {
 		{
 			name: 'М.Видео',
 			url: 'https://www.mvideo.ru',
-			logo: '/shops_icon/М.Видео.webp',
+			logo: '/shops_icon/mvideo.webp',
 		},
 		{
 			name: 'Playerok',

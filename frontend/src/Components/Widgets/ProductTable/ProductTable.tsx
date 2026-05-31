@@ -82,7 +82,15 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 								>
 									<TableCell>
 										<div className={styles.name}>
-											<p>{el.name}</p>
+											<p>
+												{el.name == 'Ожидание работы парсера цен...' ? (
+													<>
+														{el.name} <div className={styles.loading}></div>
+													</>
+												) : (
+													el.name
+												)}
+											</p>
 											<div className={styles.badges}>
 												{el.tags.map(tag => {
 													return <Badge key={tag.id}>{tag.name}</Badge>
@@ -93,7 +101,7 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 									<TableCell>
 										<Badge type='main'>{el.source.name}</Badge>
 									</TableCell>
-									<TableCell className={styles.price}>
+									<TableCell className={`${styles.price} ${styles.noWrap}`}>
 										{el.last_snapshot?.price != null
 											? `${el.last_snapshot?.price} ₽`
 											: ''}
@@ -149,7 +157,9 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 												Удалить
 											</Button>
 										) : (
-											formatDateShort(el.last_snapshot?.time!)
+											<p className={styles.noWrap}>
+												{formatDateShort(el.last_snapshot?.time!)}
+											</p>
 										)}
 									</TableCell>
 								</TableRow>
@@ -171,7 +181,16 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 									}
 								}}
 							>
-								<p className={styles.name}>{el.name}</p>
+								<p className={styles.name}>
+									{' '}
+									{el.name == 'Ожидание работы парсера цен...' ? (
+										<>
+											{el.name} <div className={styles.loading}></div>
+										</>
+									) : (
+										el.name
+									)}
+								</p>
 								<div className={styles.badges}>
 									<Badge type='main'>{el.source.name}</Badge>
 									{el.tags.map(tag => {

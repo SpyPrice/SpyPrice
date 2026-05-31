@@ -140,37 +140,11 @@ export const Filter = ({
 				}))}
 				placeholder='Выберите магазин'
 			/>
-			<div className={styles.tagsBlock}>
-				<FilterIcon />
-				<div className={styles.tags}>
-					{visibleTags.map(tag => (
-						<Badge
-							key={tag}
-							type={selectedTags.has(tag) ? 'main' : 'second'}
-							onClick={() => handleTagToggle(tag)}
-						>
-							{tag}
-						</Badge>
-					))}
-					{allTags.length > 5 && (
-						<Badge onClick={() => setShowAllTags(!showAllTags)}>...</Badge>
-					)}
-				</div>
-				{selectedTags.size > 0 && (
-					<Button className={styles.clearButton} onClick={handleClearTags}>
-						Очистить теги
-					</Button>
-				)}
-			</div>
-
-			{showAllTags && (
-				<div className={styles.tagsPopup} ref={tagsPopupRef}>
-					<div className={styles.tagsPopupHeader}>
-						<span>Все теги</span>
-						<button onClick={() => setShowAllTags(false)}>✕</button>
-					</div>
-					<div className={styles.tagsPopupContent}>
-						{sortedTags.map(tag => (
+			<div className={styles.tagsAllBlock}>
+				<div className={styles.tagsBlock}>
+					<FilterIcon />
+					<div className={styles.tags}>
+						{visibleTags.map(tag => (
 							<Badge
 								key={tag}
 								type={selectedTags.has(tag) ? 'main' : 'second'}
@@ -179,9 +153,37 @@ export const Filter = ({
 								{tag}
 							</Badge>
 						))}
+						{allTags.length > 5 && (
+							<Badge onClick={() => setShowAllTags(!showAllTags)}>...</Badge>
+						)}
 					</div>
+					{selectedTags.size > 0 && (
+						<Button className={styles.clearButton} onClick={handleClearTags}>
+							Очистить теги
+						</Button>
+					)}
 				</div>
-			)}
+
+				{showAllTags && (
+					<div className={styles.tagsPopup} ref={tagsPopupRef}>
+						<div className={styles.tagsPopupHeader}>
+							<span>Все теги</span>
+							<button onClick={() => setShowAllTags(false)}>✕</button>
+						</div>
+						<div className={styles.tagsPopupContent}>
+							{sortedTags.map(tag => (
+								<Badge
+									key={tag}
+									type={selectedTags.has(tag) ? 'main' : 'second'}
+									onClick={() => handleTagToggle(tag)}
+								>
+									{tag}
+								</Badge>
+							))}
+						</div>
+					</div>
+				)}
+			</div>
 		</Card>
 	)
 }
