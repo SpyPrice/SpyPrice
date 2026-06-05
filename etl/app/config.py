@@ -1,3 +1,5 @@
+import os
+
 WAIT_TIMEOUT = 30000
 """
 Максимальное время ожидания попадания на страницу (в миллисекундах)
@@ -28,7 +30,8 @@ VIEWPORT = {'width': 1920, 'height': 1080}
 Влияет на то, как сайт отображает контент
 """
 
-DEBUG_DIR = 'app/debug'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DEBUG_DIR = os.path.join(BASE_DIR, 'debug')
 """
 Корневая директория для сохранения отладочных файлов
 Внутри создаются подпапки с названиями магазинов

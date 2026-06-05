@@ -1,4 +1,3 @@
-# ozon.py
 import re
 import os
 from decimal import Decimal
@@ -13,6 +12,15 @@ class OzonParser(BaseStoreParser):
 
     async def _create_browser_context(self):
         profile_dir = os.path.join(config.DEBUG_DIR, 'ozon_profile')
+
+        if os.path.exists(profile_dir):
+            print(f"Ozon профиль: {profile_dir}")
+            prefs_file = os.path.join(profile_dir, 'Default', 'Preferences')
+            if os.path.exists(prefs_file):
+                print(f"Файл сессии существует: {prefs_file}")
+        else:
+            print(f"Ozon профиль не найден(({profile_dir}")
+
         os.makedirs(profile_dir, exist_ok=True)
         self.playwright = await async_playwright().start()
         self.context = await self.playwright.chromium.launch_persistent_context(
