@@ -19,8 +19,18 @@ class LisSkinsParser(BaseStoreParser):
             return None
 
         price_text = (await price_elem.text_content()).strip()
-        price_part = price_text.split()[0] if price_text else ''
-        price_clean = re.sub(r'[^\d.]', '', price_part)
+        price_clear_m = []
+        for i in range(len(price_text)):
+            if price_text[i] in "0123456789 .":
+                price_clear_m.append(price_text[i])
+            else:
+                break
+
+
+
+        price_clean = ''.join(price_clear_m)
+        price_clean = price_clean.replace(' ', '').replace('.', ',', 1).replace('.', '')
+        price_clean = price_clean.replace(',', '.')
         if not price_clean or price_clean.count('.') > 1:
             return None
 
