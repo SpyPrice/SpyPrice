@@ -35,7 +35,10 @@ class Ymarket(BaseStoreParser):
             timeout=config.WAIT_TIMEOUT
         )
 
-        name = (await page.locator('[data-auto="productCardTitle"]').first.text_content()).strip()
+        try:
+            name = (await page.locator('[data-auto="productCardTitle"]').first.text_content()).strip()
+        except:
+            return None
 
         price_selector = '[data-auto="snippet-price-current"]'
         if not await page.locator(price_selector).first.is_visible():

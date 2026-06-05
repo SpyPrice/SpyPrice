@@ -107,6 +107,11 @@ class BaseStoreParser(ABC):
             await page.goto(url, wait_until='domcontentloaded', timeout=config.PAGE_LOAD_TIMEOUT)
             await self._emulate_human(page)
 
+            try:
+                await page.wait_for_load_state('networkidle', timeout=5000)
+            except Exception:
+                pass
+
             content = await page.content()
             if await page.locator('#challenge-form').count() > 0 or 'Checking your browser' in content:
                 await self._save_debug(page, 'captcha')

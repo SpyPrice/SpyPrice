@@ -1,4 +1,3 @@
-import asyncio
 import re
 import os
 from decimal import Decimal
@@ -23,25 +22,34 @@ class DNSParser(BaseStoreParser):
         )
 
     async def _extract_info(self, page, url):
-        await page.wait_for_load_state("networkidle")
         await page.wait_for_selector('h1.product-card-top__title', timeout=config.WAIT_TIMEOUT)
-        await page.wait_for_selector('.product-buy__price', timeout=config.WAIT_TIMEOUT)
-
         name = (await page.locator("h1.product-card-top__title").first.text_content()).strip()
-        await page.wait_for_function(
-            """(selector) => {
-                const el = document.querySelector(selector);
-                return el && el.innerText.trim().match(/\\d/);
-            }""",
-            arg='.product-buy__price',
-            timeout=config.WAIT_TIMEOUT
-        )
-        price_elem = page.locator('.product-buy__price').first
-        price_raw = await price_elem.inner_text(timeout=config.WAIT_TIMEOUT)
-        price_clean = int(re.sub(r"[^\d]", "", price_raw))
+
+        price_selector = '.product-buy__price_active'
+        try:
+            await page.wait_for_selector(price_selector, timeout=5000)
+        except:
+            price_selector = '.product-buy__price'
+            await page.wait_for_selector(price_selector, timeout=config.WAIT_TIMEOUT)
+
+        price_elem = page.locator(price_selector).first
+        full_text = (await price_elem.inner_text()).strip()
+
+        prev_span = price_elem.locator('.product-buy__prev').first
+        if await prev_span.count() > 0:
+            prev_text = (await prev_span.inner_text()).strip()
+            # Удаляем текст старой цены из общего текста
+            full_text = full_text.replace(prev_text, '').strip()
+
+        price_clean = re.sub(r'[^\d]', '', full_text)
+        if not price_clean:
+            return None
+
+        price = Decimal(price_clean)   # или int(price_clean)
         return {
             'name': name,
-            'price_str': f"{price_clean:,} ₽".replace(',', ' '),
-            'price': Decimal(price_clean),
+            'price_str': f"{price:,.0f} ₽".replace(',', ' '),
+            'price': price,
+            'currency': 'RUB',
             'extra': {}
         }
