@@ -108,7 +108,7 @@ export const CreateTrackingModal = ({
 								disabled={isLoading}
 							/>
 							<Button type='light' onClick={createTag} disabled={isLoading}>
-								Добавить
+								Добавить тег
 							</Button>
 						</div>
 						<div className={styles.tags_div}>

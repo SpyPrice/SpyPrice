@@ -122,7 +122,15 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 															: 'equals'
 												}
 											>
-												{el.snapshot_7_days_ago.price} ₽
+												{(+el.last_snapshot!.price -
+													+el.snapshot_7_days_ago.price <
+												0
+													? +el.snapshot_7_days_ago.price -
+														+el.last_snapshot!.price
+													: +el.last_snapshot!.price -
+														+el.snapshot_7_days_ago.price
+												).toFixed(2)}{' '}
+												₽
 											</Badge>
 										)}
 									</TableCell>
@@ -142,7 +150,15 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 															: 'equals'
 												}
 											>
-												{el.snapshot_30_days_ago.price} ₽
+												{(+el.last_snapshot!.price -
+													+el.snapshot_30_days_ago.price <
+												0
+													? +el.snapshot_30_days_ago.price -
+														+el.last_snapshot!.price
+													: +el.last_snapshot!.price -
+														+el.snapshot_30_days_ago.price
+												).toFixed(2)}{' '}
+												₽
 											</Badge>
 										)}
 									</TableCell>

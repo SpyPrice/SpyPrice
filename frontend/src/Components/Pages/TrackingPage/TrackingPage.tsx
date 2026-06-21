@@ -189,7 +189,15 @@ export const TrackingPage = () => {
 											: 'equals'
 								}
 							>
-								{item?.item.snapshot_7_days_ago.price} ₽
+								{(+item?.item.last_snapshot!.price -
+									+item?.item.snapshot_7_days_ago.price <
+								0
+									? +item?.item.snapshot_7_days_ago.price -
+										+item?.item.last_snapshot!.price
+									: +item?.item.last_snapshot!.price -
+										+item?.item.snapshot_7_days_ago.price
+								).toFixed(2)}{' '}
+								₽
 							</Badge>
 						) : (
 							<Badge size='large'>-</Badge>
@@ -211,7 +219,15 @@ export const TrackingPage = () => {
 											: 'equals'
 								}
 							>
-								{item?.item.snapshot_30_days_ago.price} ₽
+								{(+item?.item.last_snapshot!.price -
+									+item?.item.snapshot_30_days_ago.price <
+								0
+									? +item?.item.snapshot_30_days_ago.price -
+										+item?.item.last_snapshot!.price
+									: +item?.item.last_snapshot!.price -
+										+item?.item.snapshot_30_days_ago.price
+								).toFixed(2)}{' '}
+								₽
 							</Badge>
 						) : (
 							<Badge size='large'>-</Badge>
@@ -227,7 +243,7 @@ export const TrackingPage = () => {
 			</Card>
 
 			<Card className={styles.bottomCard}>
-				<div>График цен</div>
+				<div className={styles.bottomCard_title}>График цен</div>
 				<LineChart className={styles.chart} responsive data={dataChart}>
 					<CartesianGrid strokeDasharray='3 3' />
 					<YAxis />
