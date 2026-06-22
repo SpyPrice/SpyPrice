@@ -21,7 +21,7 @@ export const Badge = ({
 }: BadgeProps) => {
 	return (
 		<div
-			className={`${styles.badge} ${styles[size]} ${styles[type]} ${styles[price]} ${className || ''}`}
+			className={`${styles.badge} ${styles[size]} ${styles[type]} ${styles[price]} ${onClick != undefined ? styles.onClick : ''} ${className || ''}`}
 			onClick={onClick}
 		>
 			{price == 'down' ? <DownIcon /> : price == 'up' ? <UpIcon /> : ''}

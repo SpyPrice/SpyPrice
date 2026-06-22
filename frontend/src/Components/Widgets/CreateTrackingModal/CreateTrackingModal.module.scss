@@ -36,6 +36,7 @@
 
 		button {
 			padding: 4px 20px;
+			text-wrap: nowrap;
 		}
 	}
 
@@ -59,7 +60,7 @@
 				border: none;
 
 				&:hover {
-					color: $up-badge;
+					color: var(--up-badge);
 				}
 			}
 		}

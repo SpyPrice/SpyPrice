@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const api = axios.create({
 	baseURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api',
@@ -24,6 +25,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
 	response => response.data,
 	error => {
+		if (error.toJSON().message === 'Network Error') {
+			toast.error('Нет соединения с сервером! Попробуйе позже')
+		}
 		if (error.response?.status === 401) {
 			localStorage.removeItem('access_token')
 			window.location.href = '/login'

@@ -1,9 +1,9 @@
 .header {
 	max-width: 100%;
 	height: 64px;
-	background: $white;
+	background: var(--white);
 
-	border-bottom: 1px solid $border;
+	border-bottom: 1px solid var(--border);
 
 	.container {
 		max-width: 1200px;
@@ -34,7 +34,7 @@
 
 				font-size: 30px;
 				font-weight: bold;
-				background: $accent;
+				background: var(--accent);
 				background-clip: text;
 				color: transparent;
 			}
@@ -66,10 +66,10 @@
 
 					border-radius: 8px;
 
-					color: $black;
+					color: var(--black);
 
 					&:hover {
-						background: $secondary-background;
+						background: var(--secondary-background);
 					}
 
 					img {
@@ -78,9 +78,17 @@
 					}
 
 					&.active {
-						background: $secondary-background;
+						background: var(--secondary-background);
 					}
 				}
+			}
+		}
+
+		.right {
+			margin-left: 5px;
+			svg {
+				height: 20px;
+				width: 20px;
 			}
 		}
 
@@ -120,6 +128,7 @@
 
 				.logo {
 					font-size: 20px;
+					gap: 5px;
 
 					img {
 						width: 30px;
@@ -134,7 +143,7 @@
 					height: 0;
 					top: 64px;
 					left: 0;
-					background: $background;
+					background: var(--background);
 					overflow: hidden;
 					transition: height 0.3s ease-in-out;
 					z-index: 1000;

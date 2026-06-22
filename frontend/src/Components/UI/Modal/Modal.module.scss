@@ -14,7 +14,7 @@
 }
 
 .modal {
-	background-color: white;
+	background-color: var(--white);
 	border-radius: 16px;
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 	animation: slideIn 0.3s ease;
@@ -50,8 +50,8 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 20px 24px;
-	border-bottom: 1px solid #e0e0e0;
-	background-color: #fafafa;
+	border-bottom: 1px solid var(--border);
+	background-color: var(--surface-muted);
 	border-radius: 16px 16px 0 0;
 }
 
@@ -59,7 +59,7 @@
 	margin: 0;
 	font-size: 20px;
 	font-weight: 600;
-	color: #333;
+	color: var(--text);
 }
 
 .closeButton {
@@ -67,7 +67,7 @@
 	border: none;
 	font-size: 28px;
 	cursor: pointer;
-	color: #999;
+	color: var(--muted-text);
 	padding: 0;
 	width: 32px;
 	height: 32px;
@@ -79,8 +79,8 @@
 	line-height: 1;
 
 	&:hover {
-		color: #333;
-		background-color: #f0f0f0;
+		color: var(--text-second);
+		background-color: var(--hover-strong);
 	}
 }
 
@@ -94,24 +94,24 @@
 	}
 
 	&::-webkit-scrollbar-track {
-		background: #f1f1f1;
+		background: var(--scrollbar-track);
 		border-radius: 4px;
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background: #c1c1c1;
+		background: var(--scrollbar-thumb);
 		border-radius: 4px;
 
 		&:hover {
-			background: #a8a8a8;
+			background: var(--scrollbar-thumb-hover);
 		}
 	}
 }
 
 .footer {
 	padding: 16px 24px;
-	border-top: 1px solid #e0e0e0;
-	background-color: #fafafa;
+	border-top: 1px solid var(--border);
+	background-color: var(--surface-muted);
 	border-radius: 0 0 16px 16px;
 	display: flex;
 	justify-content: flex-end;

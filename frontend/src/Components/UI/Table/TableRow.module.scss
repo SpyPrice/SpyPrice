@@ -2,14 +2,14 @@
 	transition: background-color 0.2s ease;
 
 	&.hoverable:hover {
-		background-color: #f5f5f5;
+		background-color: var(--hover);
 	}
 
 	&.selected {
-		background-color: rgba($gray, 0.1);
+		background-color: var(--secondary-background);
 
 		&:hover {
-			background-color: rgba($gray, 0.15);
+			background-color: var(--hover);
 		}
 	}
 }

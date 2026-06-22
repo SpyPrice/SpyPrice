@@ -19,12 +19,12 @@
 }
 
 .main {
-	background: $white;
-	border: 2px solid $secondary-background;
+	background: var(--white);
+	border: 2px solid var(--secondary-background);
 }
 
 .second {
-	background: $secondary-background;
+	background: var(--secondary-background);
 }
 
 .down {
@@ -32,8 +32,8 @@
 	justify-content: center;
 	align-items: center;
 	gap: 4px;
-	background: $down-badge-background;
-	color: $down-badge;
+	background: var(--down-badge-background);
+	color: var(--down-badge);
 	font-size: 20px;
 	font-weight: 600;
 	padding: 4px 8px;
@@ -54,8 +54,8 @@
 	justify-content: center;
 	align-items: center;
 	gap: 4px;
-	background: $up-badge-background;
-	color: $up-badge;
+	background: var(--up-badge-background);
+	color: var(--up-badge);
 	border-radius: 4px;
 	font-size: 20px;
 	font-weight: 600;
@@ -82,6 +82,10 @@
 		font-size: 14px;
 		padding: 4px 8px;
 	}
+}
+
+.onClick {
+	cursor: pointer;
 }
 
 @media (max-width: 700px) {

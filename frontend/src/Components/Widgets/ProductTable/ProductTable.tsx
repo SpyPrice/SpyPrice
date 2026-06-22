@@ -2,6 +2,7 @@ import { cardsApi, type ItemRead } from '@/Api/trackingApi'
 import DeleteIcon from '@/Assets/delete.svg?react'
 import Badge from '@/Components/UI/Badge'
 import Button from '@/Components/UI/Button'
+import Card from '@/Components/UI/Card'
 import Table, {
 	TableBody,
 	TableCell,
@@ -57,101 +58,196 @@ export const ProductTable = ({ data, fetchProducts }: ProductTableProps) => {
 	}
 
 	return (
-		<Table>
-			<TableHeader>
-				<TableCell>Товар</TableCell>
-				<TableCell>Магазин</TableCell>
-				<TableCell>Текущая цена</TableCell>
-				<TableCell>За 7 дней</TableCell>
-				<TableCell>За 30 дней</TableCell>
-				<TableCell>Обновлено</TableCell>
-			</TableHeader>
-			<TableBody>
-				{data.reverse().map(el => {
-					return (
-						<TableRow
-							key={el.id}
-							onClick={() => {
-								if (el.last_snapshot != null) {
-									navigate(`/tracking/${el.id}`)
-								}
-							}}
-						>
-							<TableCell>
-								<div className={styles.name}>
-									<p>{el.name}</p>
-									<div className={styles.badges}>
-										{el.tags.map(tag => {
-											return <Badge key={tag.id}>{tag.name}</Badge>
-										})}
-									</div>
+		<>
+			<div className={styles.desktop_view}>
+				<Table>
+					<TableHeader>
+						<TableCell>Товар</TableCell>
+						<TableCell>Магазин</TableCell>
+						<TableCell>Текущая цена</TableCell>
+						<TableCell>За 7 дней</TableCell>
+						<TableCell>За 30 дней</TableCell>
+						<TableCell>Обновлено</TableCell>
+					</TableHeader>
+					<TableBody>
+						{data.map(el => {
+							return (
+								<TableRow
+									key={el.id}
+									onClick={() => {
+										if (el.last_snapshot != null) {
+											navigate(`/tracking/${el.id}`)
+										}
+									}}
+								>
+									<TableCell>
+										<div className={styles.name}>
+											<p>
+												{el.name == 'Ожидание работы парсера цен...' ? (
+													<>
+														{el.name} <div className={styles.loading}></div>
+													</>
+												) : (
+													el.name
+												)}
+											</p>
+											<div className={styles.badges}>
+												{el.tags.map(tag => {
+													return <Badge key={tag.id}>{tag.name}</Badge>
+												})}
+											</div>
+										</div>
+									</TableCell>
+									<TableCell>
+										<Badge type='main'>{el.source.name}</Badge>
+									</TableCell>
+									<TableCell className={`${styles.price} ${styles.noWrap}`}>
+										{el.last_snapshot?.price != null
+											? `${el.last_snapshot?.price} ₽`
+											: ''}
+									</TableCell>
+									<TableCell>
+										{el.snapshot_7_days_ago == null ? (
+											<Badge size='large'>-</Badge>
+										) : (
+											<Badge
+												size='small'
+												price={
+													+el.snapshot_7_days_ago.price <
+													+el.last_snapshot?.price!
+														? 'down'
+														: +el.snapshot_7_days_ago.price >
+															  +el.last_snapshot?.price!
+															? 'up'
+															: 'equals'
+												}
+											>
+												{(+el.last_snapshot!.price -
+													+el.snapshot_7_days_ago.price <
+												0
+													? +el.snapshot_7_days_ago.price -
+														+el.last_snapshot!.price
+													: +el.last_snapshot!.price -
+														+el.snapshot_7_days_ago.price
+												).toFixed(2)}{' '}
+												₽
+											</Badge>
+										)}
+									</TableCell>
+									<TableCell>
+										{el.snapshot_30_days_ago == null ? (
+											<Badge size='large'>-</Badge>
+										) : (
+											<Badge
+												size='small'
+												price={
+													+el.snapshot_30_days_ago.price <
+													+el.last_snapshot?.price!
+														? 'down'
+														: +el.snapshot_30_days_ago.price >
+															  +el.last_snapshot?.price!
+															? 'up'
+															: 'equals'
+												}
+											>
+												{(+el.last_snapshot!.price -
+													+el.snapshot_30_days_ago.price <
+												0
+													? +el.snapshot_30_days_ago.price -
+														+el.last_snapshot!.price
+													: +el.last_snapshot!.price -
+														+el.snapshot_30_days_ago.price
+												).toFixed(2)}{' '}
+												₽
+											</Badge>
+										)}
+									</TableCell>
+									<TableCell>
+										{el.last_snapshot == null ? (
+											<Button
+												type='danger'
+												size='small'
+												onClick={() => handleDelete(el.id)}
+											>
+												<DeleteIcon />
+												Удалить
+											</Button>
+										) : (
+											<p className={styles.noWrap}>
+												{formatDateShort(el.last_snapshot?.time!)}
+											</p>
+										)}
+									</TableCell>
+								</TableRow>
+							)
+						})}
+					</TableBody>
+				</Table>
+			</div>
+			<div className={styles.mobile_view}>
+				<div className={styles.product_cards}>
+					{data.map(el => {
+						return (
+							<Card
+								key={el.id}
+								className={styles.card}
+								onClick={() => {
+									if (el.last_snapshot != null) {
+										navigate(`/tracking/${el.id}`)
+									}
+								}}
+							>
+								<p className={styles.name}>
+									{' '}
+									{el.name == 'Ожидание работы парсера цен...' ? (
+										<>
+											{el.name} <div className={styles.loading}></div>
+										</>
+									) : (
+										el.name
+									)}
+								</p>
+								<div className={styles.badges}>
+									<Badge type='main'>{el.source.name}</Badge>
+									{el.tags.map(tag => {
+										return <Badge>{tag.name}</Badge>
+									})}
 								</div>
-							</TableCell>
-							<TableCell>
-								<Badge type='main'>{el.source.name}</Badge>
-							</TableCell>
-							<TableCell className={styles.price}>
-								{el.last_snapshot?.price != null
-									? `${el.last_snapshot?.price} ₽`
-									: ''}
-							</TableCell>
-							<TableCell>
-								{el.snapshot_7_days_ago == null ? (
-									<Badge size='large'>-</Badge>
-								) : (
-									<Badge
-										size='small'
-										price={
-											+el.snapshot_7_days_ago.price < +el.last_snapshot?.price!
-												? 'down'
-												: +el.snapshot_7_days_ago.price >
-													  +el.last_snapshot?.price!
-													? 'up'
-													: 'equals'
-										}
-									>
-										{el.snapshot_7_days_ago.price} ₽
-									</Badge>
-								)}
-							</TableCell>
-							<TableCell>
-								{el.snapshot_30_days_ago == null ? (
-									<Badge size='large'>-</Badge>
-								) : (
-									<Badge
-										size='small'
-										price={
-											+el.snapshot_30_days_ago.price < +el.last_snapshot?.price!
-												? 'down'
-												: +el.snapshot_30_days_ago.price >
-													  +el.last_snapshot?.price!
-													? 'up'
-													: 'equals'
-										}
-									>
-										{el.snapshot_30_days_ago.price} ₽
-									</Badge>
-								)}
-							</TableCell>
-							<TableCell>
 								{el.last_snapshot == null ? (
-									<Button
-										type='danger'
-										size='small'
-										onClick={() => handleDelete(el.id)}
-									>
-										<DeleteIcon />
-										Удалить
-									</Button>
+									<div className={styles.deleteButton}>
+										<Button
+											type='danger'
+											size='small'
+											onClick={() => handleDelete(el.id)}
+										>
+											<DeleteIcon />
+											Удалить
+										</Button>
+									</div>
 								) : (
-									formatDateShort(el.last_snapshot?.time!)
+									<div className={styles.card__bottom}>
+										<div>
+											<p>Текущая цена:</p>
+											<p className={styles.price}>
+												{el.last_snapshot?.price != null ? (
+													`${el.last_snapshot?.price} ₽`
+												) : (
+													<Badge>-</Badge>
+												)}
+											</p>
+										</div>
+										<div>
+											<p>Последнее обновление:</p>
+											{formatDateShort(el.last_snapshot.time)}
+										</div>
+									</div>
 								)}
-							</TableCell>
-						</TableRow>
-					)
-				})}
-			</TableBody>
-		</Table>
+							</Card>
+						)
+					})}
+				</div>
+			</div>
+		</>
 	)
 }
 

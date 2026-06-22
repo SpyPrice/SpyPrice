@@ -3,6 +3,7 @@
 	border-radius: 8px;
 	padding: 4px 12px;
 	font-size: 14px;
-	background: $input-background;
+	background: var(--input-background);
+	color: var(--text);
 	border: none;
 }

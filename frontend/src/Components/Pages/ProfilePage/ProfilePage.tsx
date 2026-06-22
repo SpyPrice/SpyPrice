@@ -1,3 +1,7 @@
+import CalendarIcon from '@/Assets/calendar.svg?react'
+import EmailIcon from '@/Assets/email.svg?react'
+import LogoutIcon from '@/Assets/logout.svg?react'
+import ProfileIcon from '@/Assets/profile.svg?react'
 import Button from '@/Components/UI/Button'
 import Card from '@/Components/UI/Card'
 import { useAuth } from '@/Contexts/AuthContext'
@@ -7,6 +11,7 @@ import styles from './ProfilePage.module.scss'
 
 export const ProfilePage = () => {
 	useTitle('Профиль')
+
 	const { user, logout } = useAuth()
 	const navigate = useNavigate()
 
@@ -29,21 +34,21 @@ export const ProfilePage = () => {
 				<p>Данные вашего профиля</p>
 				<div className={styles.info_group}>
 					<Card className={styles.info_item}>
-						<img src='/profile.svg' alt='Пользователь' />
+						<ProfileIcon />
 						<div className={styles.info_text}>
 							<p className={styles.info_label}>Имя пользователя</p>
 							<p className={styles.info_value}>{user?.name}</p>
 						</div>
 					</Card>
 					<Card className={styles.info_item}>
-						<img src='/email.svg' alt='Почта' />
+						<EmailIcon />
 						<div className={styles.info_text}>
 							<p className={styles.info_label}>Email</p>
 							<p className={styles.info_value}>{user?.email}</p>
 						</div>
 					</Card>
 					<Card className={styles.info_item}>
-						<img src='/calendar.svg' alt='Календарь' />
+						<CalendarIcon />
 						<div className={styles.info_text}>
 							<p className={styles.info_label}>Дата регистрации</p>
 							<p className={styles.info_value}>
@@ -56,16 +61,26 @@ export const ProfilePage = () => {
 
 			<Card className={styles.actions_card}>
 				<h3>Действия</h3>
-				<Button
-					type='warning'
-					onClick={() => {
-						logout()
-						navigate('/')
-					}}
-				>
-					<img src='/logout.svg' alt='Выход' />
-					<p>Выйти из аккаунта</p>
-				</Button>
+				<div className={styles.buttons}>
+					{/* <Button
+						onClick={() => {
+							toggleTheme()
+						}}
+					>
+						{theme === 'dark' ? <MoonIcon /> : <SunIcon />}
+						<p>{theme === 'dark' ? 'Темная' : 'Светлая'} тема</p>
+					</Button> */}
+					<Button
+						type='warning'
+						onClick={() => {
+							logout()
+							navigate('/')
+						}}
+					>
+						<LogoutIcon />
+						<p>Выйти из аккаунта</p>
+					</Button>
+				</div>
 			</Card>
 		</div>
 	)
