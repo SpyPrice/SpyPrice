@@ -24,6 +24,7 @@ services:
       API_BASE_URL: http://backend:8000
       JWT_SECRET: ${JWT_SECRET:-change-me}
       ETL_API_KEY: ${ETL_API_KEY:-change-me-etl-key}
+      ALGORITHM: ${ALGORITHM:-change-me}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
     ports:
       - "8000:8000"
