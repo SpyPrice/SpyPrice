@@ -1,10 +1,17 @@
 from datetime import datetime, timedelta, timezone
 from jose import jwt
+import os
 
 
-SECRET_KEY = "хранить в env"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv(
+    "JWT_SECRET",
+    "хранить в env"
+)
 
+ALGORITHM = os.getenv(
+    "ALGORITHM",
+    "хранить в env"
+)
 
 def create_access_token(data: dict, expires_minutes: int = 180) -> str:
     to_encode = data.copy()
