@@ -1,0 +1,15 @@
+.row {
+	transition: background-color 0.2s ease;
+
+	&.hoverable:hover {
+		background-color: var(--hover);
+	}
+
+	&.selected {
+		background-color: var(--secondary-background);
+
+		&:hover {
+			background-color: var(--hover);
+		}
+	}
+}

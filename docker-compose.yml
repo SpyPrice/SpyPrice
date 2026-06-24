@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-price_tracker}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-price_tracker}"]
       interval: 5s
@@ -19,9 +19,12 @@ services:
     build:
       context: ./backend
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-price_tracker}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-price_tracker}
+      ETL_URL: http://etl:8080
+      API_BASE_URL: http://backend:8000
       JWT_SECRET: ${JWT_SECRET:-change-me}
       ETL_API_KEY: ${ETL_API_KEY:-change-me-etl-key}
+      ALGORITHM: ${ALGORITHM:-change-me}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
     ports:
       - "8000:8000"
@@ -42,6 +45,17 @@ services:
     depends_on:
       - backend
     profiles: ["manual"]
+    expose:
+     - "8080"
+    init: true
+
+  nginx:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   pg_data:

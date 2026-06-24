@@ -1,131 +1,55 @@
-import sys
-import json
-import random
-from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
+import re
+import os
+from decimal import Decimal
 
-"""Прочитай описание в файле intruction_get_price.md"""
+from playwright.async_api import async_playwright
+from etl.app.base_parser import BaseStoreParser
+from etl.app import config
 
-# Константы
-PRICE_SELECTOR = '.product-buy__price'
-WAIT_TIMEOUT = 60000
-DEBUG_HTML_FILE = 'debug_page.html' # Сохраняю еще страницу, чтобы чекать ошибки или находить селекторы
 
-def _create_browser_context(profile_path, headless=True):
-    """Запускаем браузер с искусственным профилем"""
-    playwright = sync_playwright().start()
-    context = playwright.chromium.launch_persistent_context(
-        user_data_dir=profile_path,
-        headless=headless,
-        args=['--disable-blink-features=AutomationControlled']
-        # В args можно много параметров передавать, также можно сделать так чтобы браузер считал
-        # что у нас открыто окно но headless=true, но чет не работало
-    )
-    return playwright, context
+class DNSParser(BaseStoreParser):
+    store_name = "DNS"
 
-def _emulate_human_behavior(page):
-    """Имитирует движения мыши и скролл для обхода защиты"""
-    page.mouse.move(random.randint(100, 500), random.randint(100, 500))
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight * 0.3);")
-    page.wait_for_timeout(2000)
+    async def _create_browser_context(self):
+        profile_dir = os.path.join(config.DEBUG_DIR, 'dns-profile')
+        os.makedirs(profile_dir, exist_ok=True)
+        self.playwright = await async_playwright().start()
+        self.context = await self.playwright.chromium.launch_persistent_context(
+            user_data_dir=profile_dir,
+            headless=self.headless,
+            args=['--disable-blink-features=AutomationControlled'],
+            viewport=config.VIEWPORT
+        )
 
-def _extract_price_from_page(html):
-    """
-    Извлекает цену из HTML страницы.
-    Сначала пробует JSON, затем ищет элемент с классом product-buy__price.
-    Возвращает float или None.
-    """
-    soup = BeautifulSoup(html, 'html.parser')
+    async def _extract_info(self, page, url):
+        await page.wait_for_selector('h1.product-card-top__title', timeout=config.WAIT_TIMEOUT)
+        name = (await page.locator("h1.product-card-top__title").first.text_content()).strip()
 
-    # JSON
-    script = soup.find('script', type='application/ld+json')
-    if script:
+        price_selector = '.product-buy__price_active'
         try:
-            data = json.loads(script.string)
-            if 'offers' in data:
-                price = data['offers'].get('price')
-                if price:
-                    print(f"Цена из JSON-LD: {price}")
-                    return float(price)
-        except Exception as e:
-            print(f"Ошибка парсинга JSON: {e}")
-
-    # HTML элемент
-    price_elem = soup.find(class_='product-buy__price')
-    if price_elem:
-        price_text = price_elem.get_text(strip=True)
-        print(f"Найден элемент с классом product-buy__price: {price_text}")
-        price_clean = price_text.replace('\xa0', ' ').replace('₽', '').strip().replace(' ', '')
-        try:
-            return float(price_clean)
+            await page.wait_for_selector(price_selector, timeout=5000)
         except:
-            pass
-    return None
+            price_selector = '.product-buy__price'
+            await page.wait_for_selector(price_selector, timeout=config.WAIT_TIMEOUT)
 
-def _save_debug_page(html):
-    """Сохраняет HTML в файл для отладки."""
-    with open(DEBUG_HTML_FILE, 'w', encoding='utf-8') as f:
-        f.write(html)
-    print(f"Страница сохранена в {DEBUG_HTML_FILE} для анализа")
+        price_elem = page.locator(price_selector).first
+        full_text = (await price_elem.inner_text()).strip()
 
-def fetch_price_from_url(url, profile_path='./chrome_profile', headless=True):
-    """
-    Получает цену товара со страницы DNS.
+        prev_span = price_elem.locator('.product-buy__prev').first
+        if await prev_span.count() > 0:
+            prev_text = (await prev_span.inner_text()).strip()
+            # Удаляем текст старой цены из общего текста
+            full_text = full_text.replace(prev_text, '').strip()
 
-    :param url: ссылка на товар
-    :param profile_path: путь к папке с профилем браузера
-    :param headless: запускать браузер в фоновом режиме (True) или с окном (False)
-    :return цена товара (float)
-    """
-    playwright = None
-    context = None
-    try:
-        playwright, context = _create_browser_context(profile_path, headless)
-        page = context.new_page()
+        price_clean = re.sub(r'[^\d]', '', full_text)
+        if not price_clean:
+            return None
 
-        print("Переход на страницу...")
-        page.goto(url, wait_until='networkidle', timeout=WAIT_TIMEOUT)
-
-        # Ждём загрузку динамического контента
-        page.wait_for_timeout(3000)
-
-        # Имитация человеческого поведения
-        _emulate_human_behavior(page)
-
-        # Проверяем наличие цены
-        price_element = page.locator(PRICE_SELECTOR).first
-        if price_element.count() > 0:
-            print(f"Найден элемент с ценой: {price_element.text_content()}")
-
-        html = page.content()
-        price = _extract_price_from_page(html)
-
-        if price is None:
-            _save_debug_page(html)
-            raise ValueError("Цена не найдена на странице")
-
-        return price
-
-    finally:
-        if context:
-            context.close()
-        if playwright:
-            playwright.stop()
-
-
-def run():
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-    else:
-        url = input("Введите ссылку на товар DNS: ").strip()
-
-    try:
-        price = fetch_price_from_url(url, headless=False)  # можно изменить на False для отладки
-        print(f"Цена товара: {price} ₽")
-    except Exception as e:
-        print(f"Ошибка: {e}")
-        sys.exit(1)
-
-
-if __name__ == '__main__':
-    run()
+        price = Decimal(price_clean)   # или int(price_clean)
+        return {
+            'name': name,
+            'price_str': f"{price:,.0f} ₽".replace(',', ' '),
+            'price': price,
+            'currency': 'RUB',
+            'extra': {}
+        }

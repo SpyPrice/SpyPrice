@@ -1,0 +1,31 @@
+.container {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: var(--text);
+
+	p {
+		font-size: 120px;
+		font-weight: bold;
+	}
+
+	a {
+		font-size: 40px;
+		color: var(--darkblue);
+	}
+}
+
+@media (max-width: 700px) {
+	.container {
+		p {
+			font-size: 80px;
+		}
+
+		a {
+			font-size: 30px;
+		}
+	}
+}

@@ -1,0 +1,66 @@
+.tableWrapper {
+	overflow-x: auto;
+	border-radius: 8px;
+}
+
+.table {
+	border-collapse: collapse;
+	width: 100%;
+
+	&.fullWidth {
+		width: 100%;
+	}
+
+	// Варианты оформления
+	&.default {
+		td,
+		th {
+			border-bottom: 1px solid var(--border);
+		}
+	}
+
+	&.striped {
+		tbody tr:nth-child(odd) {
+			background-color: var(--hover);
+		}
+
+		td,
+		th {
+			border-bottom: 1px solid var(--border);
+		}
+	}
+
+	&.bordered {
+		border: 1px solid var(--border);
+
+		td,
+		th {
+			border: 1px solid var(--border);
+		}
+	}
+
+	// Размеры
+	&.small {
+		td,
+		th {
+			padding: 8px 12px;
+			font-size: 13px;
+		}
+	}
+
+	&.medium {
+		td,
+		th {
+			padding: 12px 16px;
+			font-size: 14px;
+		}
+	}
+
+	&.large {
+		td,
+		th {
+			padding: 16px 20px;
+			font-size: 15px;
+		}
+	}
+}

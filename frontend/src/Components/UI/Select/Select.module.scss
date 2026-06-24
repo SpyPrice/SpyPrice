@@ -1,0 +1,104 @@
+.customSelect {
+	position: relative;
+	min-width: 200px;
+	user-select: none;
+}
+
+.selectHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px;
+	background: var(--secondary-background);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+
+	&:hover {
+		border-color: var(--gray);
+	}
+}
+
+.selectedValue {
+	color: var(--text);
+	font-size: 14px;
+}
+
+.arrow {
+	display: flex;
+	align-items: center;
+	color: var(--gray);
+	transition: transform 0.2s ease;
+}
+
+.arrowUp {
+	transform: rotate(180deg);
+}
+
+.arrowDown {
+	transform: rotate(0deg);
+}
+
+.selectDropdown {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	background: var(--white);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	max-height: 300px;
+	overflow-y: auto;
+	z-index: 1000;
+	padding: 4px;
+	margin: 0;
+	list-style: none;
+}
+
+.selectOption {
+	padding: 8px 12px;
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	color: var(--text);
+	transition: background 0.2s ease;
+
+	&:hover {
+		background: var(--select-hover);
+	}
+
+	&.selected {
+		background: var(--select-selected-bg);
+		color: var(--darkblue);
+		font-weight: 500;
+	}
+}
+
+.checkmark {
+	display: flex;
+	align-items: center;
+	color: var(--darkblue);
+}
+
+// Анимация появления дропдауна
+.selectDropdown {
+	animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

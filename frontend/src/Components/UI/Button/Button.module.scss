@@ -1,0 +1,150 @@
+.button {
+	// Базовые стили
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+
+	svg {
+		height: 20px;
+	}
+
+	// Анимация при нажатии
+	&:active {
+		transform: scale(0.98);
+	}
+
+	// Отключенное состояние
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+		transform: none;
+	}
+
+	// Фокус для доступности
+	&:focus-visible {
+		outline: 2px solid var(--light-button);
+		outline-offset: 2px;
+	}
+}
+
+// Dark тип (основной)
+.dark {
+	background-color: var(--light-button);
+	color: var(--btn-primary-text);
+
+	&:hover:not(:disabled) {
+		background-color: var(--light-button-hover);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--light-button-active);
+	}
+}
+
+// Light тип (светлый)
+.light {
+	background-color: var(--dark-button);
+	color: var(--text);
+	border: 1px solid var(--btn-secondary-border);
+
+	&:hover:not(:disabled) {
+		background-color: var(--dark-button-hover);
+		border-color: var(--border);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--dark-button-active);
+	}
+}
+
+.dark-no-back {
+	background-color: transparent;
+	color: var(--text);
+
+	&:hover:not(:disabled) {
+		background-color: var(--hover-overlay);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--hover);
+	}
+}
+
+.danger {
+	background-color: var(--danger);
+	color: var(--on-accent);
+
+	&:hover:not(:disabled) {
+		background-color: var(--danger-hover);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--danger-active);
+	}
+}
+
+.warning {
+	background-color: var(--warning);
+	color: var(--on-accent);
+
+	&:hover:not(:disabled) {
+		background-color: var(--warning);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--warning);
+	}
+}
+
+.small {
+	padding: 6px 12px;
+	font-size: 12px;
+}
+
+.medium {
+	padding: 10px 20px;
+	font-size: 14px;
+}
+
+.large {
+	padding: 12px 24px;
+	font-size: 16px;
+}
+
+.fullWidth {
+	width: 100%;
+}
+
+.withIconLeft {
+	padding-left: 12px;
+}
+
+.withIconRight {
+	padding-right: 12px;
+}
+
+@media (max-width: 700px) {
+	.small {
+		padding: 6px 12px;
+		font-size: 10px;
+	}
+
+	.medium {
+		padding: 10px 20px;
+		font-size: 12px;
+	}
+
+	.large {
+		padding: 12px 24px;
+		font-size: 14px;
+	}
+}

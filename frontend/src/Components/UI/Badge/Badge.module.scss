@@ -1,0 +1,101 @@
+.badge {
+	width: max-content;
+	border-radius: 8px;
+}
+
+.small {
+	padding: 2px 8px;
+	font-size: 10px;
+}
+
+.medium {
+	padding: 2px 8px;
+	font-size: 12px;
+}
+
+.large {
+	padding: 4px 10px;
+	font-size: 18px;
+}
+
+.main {
+	background: var(--white);
+	border: 2px solid var(--secondary-background);
+}
+
+.second {
+	background: var(--secondary-background);
+}
+
+.down {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	background: var(--down-badge-background);
+	color: var(--down-badge);
+	font-size: 20px;
+	font-weight: 600;
+	padding: 4px 8px;
+
+	&.small {
+		font-size: 14px;
+		padding: 4px 8px;
+	}
+
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+.up {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	background: var(--up-badge-background);
+	color: var(--up-badge);
+	border-radius: 4px;
+	font-size: 20px;
+	font-weight: 600;
+	padding: 4px 8px;
+
+	&.small {
+		font-size: 14px;
+		padding: 4px 8px;
+	}
+
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+.equals {
+	border-radius: 4px;
+	font-size: 20px;
+	font-weight: 600;
+	padding: 4px 8px;
+
+	&.small {
+		font-size: 14px;
+		padding: 4px 8px;
+	}
+}
+
+.onClick {
+	cursor: pointer;
+}
+
+@media (max-width: 700px) {
+	.down {
+		font-size: 16px;
+	}
+	.up {
+		font-size: 16px;
+	}
+	.equals {
+		font-size: 16px;
+	}
+}
